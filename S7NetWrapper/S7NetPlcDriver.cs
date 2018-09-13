@@ -1,10 +1,6 @@
 ﻿using S7.Net;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace S7NetWrapper
 {
@@ -12,16 +8,16 @@ namespace S7NetWrapper
     {
         #region Private fields
 
-        Plc client;     
+        Plc client;
 
-        #endregion     
+        #endregion
 
         #region Constructor
 
         public S7NetPlcDriver(CpuType cpu, string ip, short rack, short slot)
         {
             client = new Plc(cpu, ip, rack, slot);
-        } 
+        }
 
         #endregion
 
@@ -37,12 +33,14 @@ namespace S7NetWrapper
         public void Connect()
         {
             ConnectionState = ConnectionStates.Connecting;
-            var error = client.Open();
-            if (error != ErrorCode.NoError)
-            {
-                ConnectionState = ConnectionStates.Offline;
-                throw new Exception(error.ToString());
-            }
+            // NHT
+            client.Open();
+            //var error = client.Open();
+            //if (error != ErrorCode.NoError)
+            //{
+            //    ConnectionState = ConnectionStates.Offline;
+            //    throw new Exception(error.ToString());
+            //}
             ConnectionState = ConnectionStates.Online;
         }
 
@@ -50,7 +48,7 @@ namespace S7NetWrapper
         {
             ConnectionState = ConnectionStates.Offline;
             client.Close();
-        }        
+        }
 
         public List<Tag> ReadItems(List<Tag> itemList)
         {
@@ -93,11 +91,13 @@ namespace S7NetWrapper
                 {
                     value = (bool)tag.ItemValue ? 1 : 0;
                 }
-                var result = client.Write(tag.ItemName, value);
-                if (result is ErrorCode && (ErrorCode)result != ErrorCode.NoError)
-                {
-                    throw new Exception(((ErrorCode)result).ToString() + "\n" + "Tag: " + tag.ItemName);
-                }
+                // NHT
+                client.Write(tag.ItemName, value);
+                //var result = client.Write(tag.ItemName, value);
+                //if (result is ErrorCode && (ErrorCode)result != ErrorCode.NoError)
+                //{
+                //    throw new Exception(((ErrorCode)result).ToString() + "\n" + "Tag: " + tag.ItemName);
+                //}
             }
         }
 
@@ -109,7 +109,7 @@ namespace S7NetWrapper
         public void WriteClass(object sourceClass, int db)
         {
             client.WriteClass(sourceClass, db);
-        }       
+        }
 
         #endregion
     }

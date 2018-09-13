@@ -1,10 +1,4 @@
 ﻿#region Using
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks; 
 #endregion
 
 namespace S7NetWrapper
@@ -27,18 +21,18 @@ namespace S7NetWrapper
 
         public Tag()
         {
-            
+
         }
 
-        public Tag(string itemName) 
+        public Tag(string itemName)
         {
             this.ItemName = itemName;
         }
 
-        public Tag(string itemName, object itemValue) 
+        public Tag(string itemName, object itemValue)
         {
             this.ItemName = itemName;
             this.ItemValue = itemValue;
-        }        
+        }
     }
 }

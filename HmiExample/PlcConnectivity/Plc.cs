@@ -2,11 +2,7 @@
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HmiExample.PlcConnectivity
 {
@@ -15,7 +11,7 @@ namespace HmiExample.PlcConnectivity
         #region Singleton
 
         // For implementation refer to: http://geekswithblogs.net/BlackRabbitCoder/archive/2010/05/19/c-system.lazylttgt-and-the-singleton-design-pattern.aspx        
-        private static readonly Lazy<Plc> _instance = new Lazy<Plc>(() => new Plc());       
+        private static readonly Lazy<Plc> _instance = new Lazy<Plc>(() => new Plc());
 
         public static Plc Instance
         {
@@ -23,7 +19,7 @@ namespace HmiExample.PlcConnectivity
             {
                 return _instance.Value;
             }
-        } 
+        }
 
         #endregion
 
@@ -31,7 +27,7 @@ namespace HmiExample.PlcConnectivity
 
         public ConnectionStates ConnectionState { get { return plcDriver != null ? plcDriver.ConnectionState : ConnectionStates.Offline; } }
 
-        public DB1 Db1 { get; set; }        
+        public DB1 Db1 { get; set; }
 
         public TimeSpan CycleReadTime { get; private set; }
 
@@ -56,14 +52,14 @@ namespace HmiExample.PlcConnectivity
             timer.Elapsed += timer_Elapsed;
             timer.Enabled = true;
             lastReadTime = DateTime.Now;
-        }          
+        }
 
         #endregion
 
         #region Event handlers
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {            
+        {
             if (plcDriver == null || plcDriver.ConnectionState != ConnectionStates.Online)
             {
                 return;
@@ -71,11 +67,11 @@ namespace HmiExample.PlcConnectivity
 
             timer.Enabled = false;
             CycleReadTime = DateTime.Now - lastReadTime;
-            try            
-            {                
+            try
+            {
                 RefreshTags();
-            }            
-            finally 
+            }
+            finally
             {
                 timer.Enabled = true;
                 lastReadTime = DateTime.Now;
@@ -86,14 +82,14 @@ namespace HmiExample.PlcConnectivity
 
         #region Public methods
 
-        public void Connect(string ipAddress) 
-        {           
+        public void Connect(string ipAddress)
+        {
             if (!IsValidIp(ipAddress))
-            {               
-                throw new ArgumentException("Ip address is not valid");                
+            {
+                throw new ArgumentException("Ip address is not valid");
             }
             plcDriver = new S7NetPlcDriver(CpuType.S7300, ipAddress, 0, 2);
-            plcDriver.Connect();          
+            plcDriver.Connect();
         }
 
         public void Disconnect()
@@ -101,8 +97,8 @@ namespace HmiExample.PlcConnectivity
             if (plcDriver == null || this.ConnectionState == ConnectionStates.Offline)
             {
                 return;
-            }            
-            plcDriver.Disconnect();            
+            }
+            plcDriver.Disconnect();
         }
 
         public void Write(string name, object value)
@@ -144,6 +140,6 @@ namespace HmiExample.PlcConnectivity
 
         #endregion
 
-        
+
     }
 }
