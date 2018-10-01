@@ -39,6 +39,9 @@ namespace HmiExample
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            // save user settings
+            // Properties.Settings.Default.Save();
+
             // base.OnClosing(e);
             // show the message box here and collect the result
             MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to exit?", "Exit Confirmation",
@@ -52,6 +55,11 @@ namespace HmiExample
                 // if you want to stop it, set e.Cancel = true
                 e.Cancel = true;
             }
+        }
+
+        private void miSettings_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Settings());
         }
     }
 }

@@ -10,7 +10,17 @@
       Title="Report">
 
     <Grid Name="gridReport">
-        <ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Content="From"></Label>
+            <DatePicker Name="dtFrom"></DatePicker>
+            <Label Content="To"></Label>
+            <DatePicker Name="dtTo"></DatePicker>
+        </StackPanel>        
+        <ScrollViewer Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Machines}" Margin="5">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

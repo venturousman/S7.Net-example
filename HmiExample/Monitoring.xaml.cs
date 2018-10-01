@@ -7,7 +7,6 @@ using HmiExample.PlcConnectivity;
 using S7NetWrapper;
 using System.Globalization;
 using System.Windows.Threading;
-using HmiExample.Properties;
 #endregion
 
 namespace HmiExample
@@ -25,7 +24,7 @@ namespace HmiExample
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += timer_Tick;
             timer.IsEnabled = true;
-            txtIpAddress.Text = Settings.Default.IpAddress;
+            txtIpAddress.Text = Properties.Settings.Default.IpAddress;
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -47,8 +46,8 @@ namespace HmiExample
             try
             {
                 Plc.Instance.Connect(txtIpAddress.Text);
-                Settings.Default.IpAddress = txtIpAddress.Text;
-                Settings.Default.Save();
+                Properties.Settings.Default.IpAddress = txtIpAddress.Text;
+                Properties.Settings.Default.Save();
             }
             catch (Exception exc)
             {

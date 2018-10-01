@@ -86,9 +86,11 @@
     </Compile>
     <Compile Include="AboutDataProviders\AboutAssemblyDataProvider.cs" />
     <Compile Include="AboutDataProviders\IAboutDataProvider.cs" />
+    <Compile Include="Helpers\SettingHelpers.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\ObservableBase.cs" />
     <Compile Include="Monitoring.xaml.cs">
@@ -96,6 +98,10 @@
     </Compile>
     <Compile Include="Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
@@ -105,16 +111,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow1.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow1.xaml.cs">
-      <DependentUpon>MainWindow1.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Monitoring.xaml">
@@ -122,6 +120,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Report.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -13,14 +13,15 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Menu Name="mainMenu" Width="{Binding ElementName=gridMain, Path=ActualWidth}" IsMainMenu="True" Padding="6,4,6,4">
+                <MenuItem Header="Settings" Name="miSettings" Click="miSettings_Click"></MenuItem>
                 <MenuItem Header="Monitoring" Name="miMonitoring" Click="miMonitoring_Click"></MenuItem>
-                <MenuItem Header="Report" Name="miReport" Click="miReport_Click"></MenuItem>
+                <MenuItem Header="Report" Name="miReport" Click="miReport_Click"></MenuItem>                
                 <MenuItem Header="About" Name="miAbout" Click="miAbout_Click"></MenuItem>
                 <!--<MenuItem Header="Exit" Name="miExit" Click="miExit_Click"></MenuItem>-->
             </Menu>
         </Grid>
         <Grid Grid.Row="1">
-            <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Monitoring.xaml"></Frame>
+            <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Settings.xaml"></Frame>
         </Grid>
     </Grid>
 </Window>
