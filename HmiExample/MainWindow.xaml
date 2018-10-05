@@ -4,24 +4,41 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HmiExample"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Production equipment control software" WindowState="Maximized" WindowStyle="SingleBorderWindow">
     <Grid Name="gridMain">
         <Grid.RowDefinitions>
-            <RowDefinition Height="31"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Menu Name="mainMenu" Width="{Binding ElementName=gridMain, Path=ActualWidth}" IsMainMenu="True" Padding="6,4,6,4">
-                <MenuItem Header="Settings" Name="miSettings" Click="miSettings_Click"></MenuItem>
-                <MenuItem Header="Monitoring" Name="miMonitoring" Click="miMonitoring_Click"></MenuItem>
-                <MenuItem Header="Report" Name="miReport" Click="miReport_Click"></MenuItem>                
-                <MenuItem Header="About" Name="miAbout" Click="miAbout_Click"></MenuItem>
+                <!--<MenuItem Header="Settings" Name="miSettings" Click="miSettings_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Settings" />
+                    </MenuItem.Icon>
+                </MenuItem>-->
+                <MenuItem Header="Monitoring" Name="miMonitoring" Click="miMonitoring_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Monitor" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Report" Name="miReport" Click="miReport_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ChartLine" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="About" Name="miAbout" Click="miAbout_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="InformationOutline" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!--<MenuItem Header="Exit" Name="miExit" Click="miExit_Click"></MenuItem>-->
             </Menu>
         </Grid>
         <Grid Grid.Row="1">
-            <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Settings.xaml"></Frame>
+            <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Monitoring.xaml"></Frame>
         </Grid>
     </Grid>
 </Window>

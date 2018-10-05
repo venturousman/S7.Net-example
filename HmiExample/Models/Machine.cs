@@ -8,6 +8,10 @@ namespace HmiExample.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
 
+        public string Code { get; set; }    // unique
+
+        public string Supervisor { get; set; }  // TODO: User Supervisor
+
         // testing
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }

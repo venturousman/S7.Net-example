@@ -57,9 +57,9 @@ namespace HmiExample
             }
         }
 
-        private void miSettings_Click(object sender, RoutedEventArgs e)
-        {
-            mainFrame.Navigate(new Settings());
-        }
+        //private void miSettings_Click(object sender, RoutedEventArgs e)
+        //{
+        //    mainFrame.Navigate(new Settings());
+        //}
     }
 }
