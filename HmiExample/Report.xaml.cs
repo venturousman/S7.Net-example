@@ -1,9 +1,14 @@
-﻿using HmiExample.Models;
+﻿using HmiExample.Helpers;
+using HmiExample.Models;
 using LiveCharts;
 using LiveCharts.Wpf;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace HmiExample
 {
@@ -16,49 +21,48 @@ namespace HmiExample
         {
             InitializeComponent();
 
-            //SeriesCollection = new SeriesCollection
-            //{
-            //    new ColumnSeries
-            //    {
-            //        Title = "2015",
-            //        Values = new ChartValues<double> { 10, 50, 39, 50 }
-            //    }
-            //};
+            // can be ColumnSeries or LineSeries
+            SeriesCollection = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Machine 1",
+                    Values = new ChartValues<double> { 4, 6, 5, 2, 7, 6, 7, 3, 4, 6 },
+                    Fill = Brushes.Transparent
+                },
+                new LineSeries
+                {
+                    Title = "Machine 2",
+                    Values = new ChartValues<double> { 6, 7, 3, 4, 6, 2, 8, 4, 1, 6 },
+                    Fill = Brushes.Transparent
+                },
+                new LineSeries
+                {
+                    Title = "Machine 3",
+                    Values = new ChartValues<double> { 2, 8, 4, 1, 6, 4, 6, 5, 2, 7 },
+                    Fill = Brushes.Transparent
+                },
+                new LineSeries
+                {
+                    Title = "Machine 4",
+                    Values = new ChartValues<double> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+                    Fill = Brushes.Transparent
+                },
+                new LineSeries
+                {
+                    Title = "Machine 5",
+                    Values = new ChartValues<double> { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 },
+                    Fill = Brushes.Transparent
+                }
+            };
 
-            ////adding series will update and animate the chart automatically
-            //SeriesCollection.Add(new ColumnSeries
-            //{
-            //    Title = "2016",
-            //    Values = new ChartValues<double> { 11, 56, 42 }
-            //});
-
-            ////also adding values updates and animates the chart automatically
-            //SeriesCollection[1].Values.Add(48d);
-
-            //Labels = new[] { "Maria", "Susan", "Charles", "Frida" };
-            //Formatter = value => value.ToString("N");
-
-
-            // add user controls 
-            //for (int i = 0; i < 30; i++)
-            //{
-            //    UCBarChart chart = new UCBarChart();
-            //    wrapPanelReport.Children.Add(chart);
-            //}
-
-            //this.chart1.SeriesCollection = this.SeriesCollection;
-            //this.chart1.Labels = this.Labels;
-            //this.chart1.Formatter = this.Formatter;
-
-            //this.chart2.SeriesCollection = this.SeriesCollection;
-            //this.chart2.Labels = this.Labels;
-            //this.chart2.Formatter = this.Formatter;
-
-            //this.chart3.SeriesCollection = this.SeriesCollection;
-            //this.chart3.Labels = this.Labels;
-            //this.chart3.Formatter = this.Formatter; 
+            Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct" };
+            //Formatter = value => value.ToString("C");
+            Formatter = value => value.ToString();
 
 
+            /*
+            // sample 1
             Machines = new List<Machine>();
             for (int i = 0; i < 30; i++)
             {
@@ -84,13 +88,67 @@ namespace HmiExample
                 };
                 Machines.Add(machine);
             }
+            */
 
             this.DataContext = this;
         }
 
-        //public SeriesCollection SeriesCollection { get; set; }
-        //public string[] Labels { get; set; }
-        //public Func<double, string> Formatter { get; set; }
-        public List<Machine> Machines { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> Formatter { get; set; }
+
+        private void btnExport_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // sample 1
+            // ChartHelpers.SaveToPng(chartProductivity, "chart.png");
+
+            // https://tedgustaf.com/blog/2012/create-excel-20072010-spreadsheets-with-c-and-epplus/
+            // sample 2
+            var currentDate = DateTime.Now;
+
+            // Set the file name and get the output directory
+            var fileName = "Report-" + currentDate.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
+            var baseDirectory = @"C:\" + Constants.ApplicationName + @"\reports\";
+            var filePath = Path.Combine(baseDirectory, fileName);
+
+            try
+            {
+                if (!Directory.Exists(baseDirectory))
+                {
+                    Directory.CreateDirectory(baseDirectory);
+                }
+
+                // Create the file using the FileInfo object
+                var file = new FileInfo(filePath);
+
+                // Create the package and make sure you wrap it in a using statement
+                using (var package = new ExcelPackage(file))
+                {
+                    // add a new worksheet to the empty workbook
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Productivity list - " + currentDate.ToShortDateString());
+
+                    // --------- Data and styling goes here -------------- //
+                    var imageChart = ChartHelpers.ChartToImage(chartProductivity);
+                    var picture = worksheet.Drawings.AddPicture("chart", imageChart);
+
+                    //picture.SetPosition(rowIndex, 0, colIndex, 0);
+                    //picture.SetSize(Height, Width);
+
+                    // var img = System.Drawing.Image.FromFile(@"D:\pics\success.jpg"); // testing ok
+                    // var pic = worksheet.Drawings.AddPicture("Sample", img);
+
+                    // end
+                    package.Save();
+                }
+
+                MessageBox.Show("Successfully exported report " + fileName, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        //public List<Machine> Machines { get; set; }
     }
 }

@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="AboutDataProviders\AboutAssemblyDataProvider.cs" />
     <Compile Include="AboutDataProviders\IAboutDataProvider.cs" />
+    <Compile Include="Helpers\ChartHelpers.cs" />
     <Compile Include="Helpers\SettingHelpers.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

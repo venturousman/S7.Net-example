@@ -19,17 +19,22 @@ namespace HmiExample
     /// </summary>
     public partial class Monitoring : Page
     {
+        // http://www.abhisheksur.com/2011/03/all-about-net-timers-comparison.html
+        // https://www.codeproject.com/Articles/167365/All-about-NET-Timers-A-Comparison
         DispatcherTimer timer = new DispatcherTimer();
 
         public Monitoring()
         {
             InitializeComponent();
+
+            // timer
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += timer_Tick;
             timer.IsEnabled = true;
+
+            // default values
             txtIpAddress.Text = Properties.Settings.Default.IpAddress;
 
-            // init values
             if (SettingHelpers.hasSetting(Constants.MoldLife))
             {
                 txtMoldLife.Text = Properties.Settings.Default[Constants.MoldLife].ToString();
@@ -62,10 +67,11 @@ namespace HmiExample
                 Plc.Instance.Connect(txtIpAddress.Text);
                 Properties.Settings.Default.IpAddress = txtIpAddress.Text;
                 Properties.Settings.Default.Save();
+                MessageBox.Show("Successfully connected to " + txtIpAddress.Text, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                MessageBox.Show(exc.Message, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -118,7 +124,7 @@ namespace HmiExample
         private void txtSetRealVariable_TextChanged(object sender, TextChangedEventArgs e)
         {
             double realVar;
-            bool canConvert = Double.TryParse(txtSetTemperature.Text, out realVar);
+            bool canConvert = double.TryParse(txtSetTemperature.Text, out realVar);
             if (canConvert)
             {
                 Plc.Instance.Write(PlcTags.DoubleVariable, realVar);

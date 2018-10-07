@@ -25,7 +25,13 @@ namespace HmiExample.PlcConnectivity
 
         #region Public properties
 
-        public ConnectionStates ConnectionState { get { return plcDriver != null ? plcDriver.ConnectionState : ConnectionStates.Offline; } }
+        public ConnectionStates ConnectionState
+        {
+            get
+            {
+                return plcDriver != null ? plcDriver.ConnectionState : ConnectionStates.Offline;
+            }
+        }
 
         public DB1 Db1 { get; set; }
 
@@ -88,7 +94,9 @@ namespace HmiExample.PlcConnectivity
             {
                 throw new ArgumentException("Ip address is not valid");
             }
-            plcDriver = new S7NetPlcDriver(CpuType.S7300, ipAddress, 0, 2);
+            short rack = 0;
+            short slot = 1; // The "Plcsim Rack / Slot" options are 0 and 1 for S7-1200 PLCs.
+            plcDriver = new S7NetPlcDriver(CpuType.S71200, ipAddress, rack, slot);
             plcDriver.Connect();
         }
 

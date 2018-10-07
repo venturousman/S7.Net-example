@@ -34,14 +34,24 @@ namespace S7NetWrapper
         {
             ConnectionState = ConnectionStates.Connecting;
             // NHT
-            client.Open();
+            try
+            {
+                client.Open();
+                ConnectionState = ConnectionStates.Online;
+            }
+            catch (Exception ex)
+            {
+                ConnectionState = ConnectionStates.Offline;
+                throw ex;
+            }
+
             //var error = client.Open();
             //if (error != ErrorCode.NoError)
             //{
             //    ConnectionState = ConnectionStates.Offline;
             //    throw new Exception(error.ToString());
             //}
-            ConnectionState = ConnectionStates.Online;
+            //ConnectionState = ConnectionStates.Online;
         }
 
         public void Disconnect()
@@ -92,7 +102,15 @@ namespace S7NetWrapper
                     value = (bool)tag.ItemValue ? 1 : 0;
                 }
                 // NHT
-                client.Write(tag.ItemName, value);
+                try
+                {
+                    client.Write(tag.ItemName, value);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
                 //var result = client.Write(tag.ItemName, value);
                 //if (result is ErrorCode && (ErrorCode)result != ErrorCode.NoError)
                 //{

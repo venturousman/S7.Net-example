@@ -10,7 +10,7 @@ namespace HmiExample.Models
 
         public string Code { get; set; }    // unique
 
-        public string Supervisor { get; set; }  // TODO: User Supervisor
+        public string Supervisor { get; set; }  // TODO: User Supervisor, should be a code or id
 
         // testing
         public SeriesCollection SeriesCollection { get; set; }
