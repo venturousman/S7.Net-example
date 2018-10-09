@@ -13,11 +13,11 @@ using System.Windows.Media;
 namespace HmiExample
 {
     /// <summary>
-    /// Interaction logic for Report.xaml
+    /// Interaction logic for Reports.xaml
     /// </summary>
-    public partial class Report : Page
+    public partial class Reports : Page
     {
-        public Report()
+        public Reports()
         {
             InitializeComponent();
 

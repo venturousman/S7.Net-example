@@ -14,17 +14,17 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Menu Name="mainMenu" Width="{Binding ElementName=gridMain, Path=ActualWidth}" IsMainMenu="True" Padding="6,4,6,4">
-                <!--<MenuItem Header="Settings" Name="miSettings" Click="miSettings_Click">
+                <MenuItem Header="Settings" Name="miSettings" Click="miSettings_Click">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="Settings" />
                     </MenuItem.Icon>
-                </MenuItem>-->
+                </MenuItem>
                 <MenuItem Header="Monitoring" Name="miMonitoring" Click="miMonitoring_Click">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="Monitor" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Report" Name="miReport" Click="miReport_Click">
+                <MenuItem Header="Reports" Name="miReports" Click="miReports_Click">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="ChartLine" />
                     </MenuItem.Icon>

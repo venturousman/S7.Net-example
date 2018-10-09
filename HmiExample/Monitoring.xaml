@@ -8,15 +8,6 @@
       mc:Ignorable="d" d:DesignHeight="340" d:DesignWidth="625"
       Title="Monitoring">
 
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- note you only need bring in these extra resource dictionaries when using non-default styles, so only bring them into your controls where the default style is not what you want -->
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -28,62 +19,53 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Name="gbConnection" Header="Connection" Margin="0,0,0,10" Width="auto">
+            <GroupBox Grid.Column="0" Name="gbConnection" Header="Connection" Margin="0,0,0,5" Width="auto">
                 <StackPanel Orientation="Horizontal">
-                    <TextBox materialDesign:HintAssist.Hint="IP Address" Width="160" Margin="0,0,10,0"
+                    <TextBox materialDesign:HintAssist.Hint="IP Address" Width="160" Margin="0,0,5,0"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
                      Name="txtIpAddress" />
                     <Button x:Name="btnConnect" Content="Connect" Click="btnConnect_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnDisconnect" Content="Disconnect" Click="btnDisconnect_Click"></Button>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Column="1" Name="gbSettings" Header="App Settings" Margin="0,0,0,10" Width="auto">
+            <GroupBox Grid.Column="1" Name="gbRuntime" Header="Runtime" Margin="0,0,0,5" Width="auto">
                 <!-- L,T,R,B -->
                 <StackPanel Orientation="Horizontal">
-                    <TextBox materialDesign:HintAssist.Hint="Mold Life" Width="160" Margin="0,0,10,0"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
-                     Name="txtMoldLife" PreviewTextInput="OnPreviewTextInput" />
-                    <TextBox materialDesign:HintAssist.Hint="Max Cycle Time" Width="160" Margin="0,0,10,0"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
-                     Name="txtMaxCycleTime" PreviewTextInput="OnPreviewTextInput" />
-                    <Button Content="Save changes" Name="btnSaveSettings" Click="btnSaveSettings_Click"></Button>
+                    <Ellipse x:Name="ledMachineInRun" Fill="#FFF4F4F5" Width="35" Height="35" Stroke="Black" Margin="0,0,5,0"></Ellipse>
+                    <Button Name="btnStart" Content="Start" Click="btnStart_Click" Margin="0,0,5,0"></Button>
+                    <Button Name="btnStop" Content="Stop" Click="btnStop_Click" Margin="0,0,5,0"></Button>
                 </StackPanel>
             </GroupBox>
         </Grid>
         <Grid Grid.Row="1">
-            <Button Content="Start" HorizontalAlignment="Left" Height="35" Margin="15,116,0,0" VerticalAlignment="Top" Width="113" Click="btnStart_Click"/>
-            <Button Content="Stop" HorizontalAlignment="Left" Height="35" Margin="15,156,0,0" VerticalAlignment="Top" Width="113" Click="btnStop_Click"/>
-            <Ellipse x:Name="ledMachineInRun" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="35" Margin="138,116,0,0" Stroke="Black" VerticalAlignment="Top" Width="35"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <!-- Real -->
+                <Label Content="Set real variable:" HorizontalAlignment="Left" Margin="13,7,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="txtSetTemperature"  HorizontalAlignment="Left" Margin="118,11,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetRealVariable_TextChanged"/>
+                <Label x:Name="lblTemperature" Content="###.##" HorizontalAlignment="Left" Margin="236,7,0,0" VerticalAlignment="Top" />
 
-            <!-- Real -->
-            <Label Content="Set real variable:" HorizontalAlignment="Left" Margin="213,107,0,0" VerticalAlignment="Top" />
-            <TextBox x:Name="txtSetTemperature"  HorizontalAlignment="Left" Margin="318,111,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetRealVariable_TextChanged"/>
-            <Label x:Name="lblTemperature" Content="###.##" HorizontalAlignment="Left" Margin="436,107,0,0" VerticalAlignment="Top" />
+                <!-- Word (16 bit +/-) -->
+                <Label Content="Set word variable:" HorizontalAlignment="Left" Margin="13,38,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="txtSetSpeed" HorizontalAlignment="Left" Margin="118,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetWordVariable_TextChanged"/>
+                <Label x:Name="lblSpeed" Content="###.##" HorizontalAlignment="Left" Margin="236,38,0,0" VerticalAlignment="Top" />
 
-            <!-- Word (16 bit +/-) -->
-            <Label Content="Set word variable:" HorizontalAlignment="Left" Margin="213,138,0,0" VerticalAlignment="Top" />
-            <TextBox x:Name="txtSetSpeed" HorizontalAlignment="Left" Margin="318,142,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetWordVariable_TextChanged"/>
-            <Label x:Name="lblSpeed" Content="###.##" HorizontalAlignment="Left" Margin="436,138,0,0" VerticalAlignment="Top" />
+                <!-- Dint (32 bit signed) -->
+                <Label Content="Set DInt variable:" HorizontalAlignment="Left" Margin="313,7,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="txtSetAutomaticSpeed" HorizontalAlignment="Left" Margin="418,11,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetDIntVariable_TextChanged"/>
+                <Label x:Name="lblAutomaticSpeed" Content="###.##" HorizontalAlignment="Left" Margin="536,7,0,0" VerticalAlignment="Top" />
 
-            <!-- Dint (32 bit signed) -->
-            <Label Content="Set DInt variable:" HorizontalAlignment="Left" Margin="213,173,0,0" VerticalAlignment="Top" />
-            <TextBox x:Name="txtSetAutomaticSpeed" HorizontalAlignment="Left" Margin="318,173,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetDIntVariable_TextChanged"/>
-            <Label x:Name="lblAutomaticSpeed" Content="###.##" HorizontalAlignment="Left" Margin="436,173,0,0" VerticalAlignment="Top" />
+                <!-- DWord (16 bit unsigned) -->
+                <Label Content="Set Dword variable:" HorizontalAlignment="Left" Margin="313,38,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="txtSetDwordVariable" HorizontalAlignment="Left" Margin="418,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetSetDwordVariable_TextChanged"/>
+                <Label x:Name="lblSetDwordVariable" Content="###.##" HorizontalAlignment="Left" Margin="536,38,0,0" VerticalAlignment="Top" />
 
-            <!-- DWord (16 bit unsigned) -->
-            <Label Content="Set Dword variable:" HorizontalAlignment="Left" Margin="213,204,0,0" VerticalAlignment="Top" />
-            <TextBox x:Name="txtSetDwordVariable" HorizontalAlignment="Left" Margin="318,204,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetSetDwordVariable_TextChanged"/>
-            <Label x:Name="lblSetDwordVariable" Content="###.##" HorizontalAlignment="Left" Margin="436,204,0,0" VerticalAlignment="Top" />
-
+            </Grid>
+            <DataGrid Grid.Row="1" Name="dgRuntime" CanUserSortColumns="True" CanUserAddRows="False" />
         </Grid>
-
-
-        <!--<TextBlock Text="IP Address:" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" Width="123"/>
-        <TextBox x:Name="txtIpAddress" HorizontalAlignment="Left" Margin="10,38,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="123"/>
-        <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="138,38,0,0" VerticalAlignment="Top" Click="btnConnect_Click"/>
-        <Button x:Name="btnDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="234,38,0,0" VerticalAlignment="Top" Click="btnDisconnect_Click"/>-->
-
-
 
         <StatusBar Grid.Row="2">
             <StatusBarItem>
@@ -101,6 +83,6 @@
             </StatusBarItem>
         </StatusBar>
 
-        
+
     </Grid>
 </Page>

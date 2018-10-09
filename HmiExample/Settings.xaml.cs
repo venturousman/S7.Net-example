@@ -1,19 +1,9 @@
 ﻿using HmiExample.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HmiExample
 {
@@ -25,6 +15,17 @@ namespace HmiExample
         public Settings()
         {
             InitializeComponent();
+
+            // default values
+            if (SettingHelpers.hasSetting(Constants.MoldLife))
+            {
+                txtMoldLife.Text = Properties.Settings.Default[Constants.MoldLife].ToString();
+            }
+
+            if (SettingHelpers.hasSetting(Constants.MaxCycleTime))
+            {
+                txtMaxCycleTime.Text = Properties.Settings.Default[Constants.MaxCycleTime].ToString();
+            }
         }
 
         private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -61,19 +62,6 @@ namespace HmiExample
             catch (Exception exc)
             {
                 MessageBox.Show(exc.Message);
-            }
-        }
-
-        private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (SettingHelpers.hasSetting(Constants.MoldLife))
-            {
-                txtMoldLife.Text = Properties.Settings.Default[Constants.MoldLife].ToString();
-            }
-
-            if (SettingHelpers.hasSetting(Constants.MaxCycleTime))
-            {
-                txtMaxCycleTime.Text = Properties.Settings.Default[Constants.MaxCycleTime].ToString();
             }
         }
     }

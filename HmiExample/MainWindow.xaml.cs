@@ -27,9 +27,14 @@ namespace HmiExample
             mainFrame.Navigate(new Monitoring());
         }
 
-        private void miReport_Click(object sender, RoutedEventArgs e)
+        private void miReports_Click(object sender, RoutedEventArgs e)
         {
-            mainFrame.Navigate(new Report());
+            mainFrame.Navigate(new Reports());
+        }
+
+        private void miSettings_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new Settings());
         }
 
         //private void miExit_Click(object sender, RoutedEventArgs e)
@@ -56,10 +61,5 @@ namespace HmiExample
                 e.Cancel = true;
             }
         }
-
-        //private void miSettings_Click(object sender, RoutedEventArgs e)
-        //{
-        //    mainFrame.Navigate(new Settings());
-        //}
     }
 }
