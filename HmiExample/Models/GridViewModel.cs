@@ -1,87 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
 
 namespace HmiExample.Models
 {
-    public class GridViewModel : INotifyPropertyChanged
+    public class GridViewModel<T> : ObservableBase where T : SelectableViewModel
     {
-        private readonly ObservableCollection<SelectableViewModel> _items3;
-        private bool? _isAllItems3Selected;
+        private readonly ObservableCollection<T> _items;
+        private bool? _isAllItemsSelected = false;
 
-        public GridViewModel()
+        public ObservableCollection<T> Items => _items;
+
+        public GridViewModel(ObservableCollection<T> _items)
         {
-            _items3 = CreateData();
+            this._items = _items;
         }
 
-        public bool? IsAllItems3Selected
+        public bool? IsAllItemsSelected
         {
-            get { return _isAllItems3Selected; }
+            get { return _isAllItemsSelected; }
             set
             {
-                if (_isAllItems3Selected == value) return;
+                if (_isAllItemsSelected == value) return;
 
-                _isAllItems3Selected = value;
+                _isAllItemsSelected = value;
 
-                if (_isAllItems3Selected.HasValue)
-                    SelectAll(_isAllItems3Selected.Value, Items3);
+                if (_isAllItemsSelected.HasValue)
+                    SelectAll(_isAllItemsSelected.Value, Items);
 
                 OnPropertyChanged();
             }
         }
 
-        private static void SelectAll(bool select, IEnumerable<SelectableViewModel> models)
+        private void SelectAll(bool select, ObservableCollection<T> models)
         {
             foreach (var model in models)
             {
                 model.IsSelected = select;
-            }
-        }
-
-        private static ObservableCollection<SelectableViewModel> CreateData()
-        {
-            return new ObservableCollection<SelectableViewModel>
-            {
-                new SelectableViewModel
-                {
-                    Code = 'M',
-                    Name = "Material Design",
-                    Description = "Material Design in XAML Toolkit"
-                },
-                new SelectableViewModel
-                {
-                    Code = 'D',
-                    Name = "Dragablz",
-                    Description = "Dragablz Tab Control",
-                    Food = "Fries"
-                },
-                new SelectableViewModel
-                {
-                    Code = 'P',
-                    Name = "Predator",
-                    Description = "If it bleeds, we can kill it"
-                }
-            };
-        }
-
-        public ObservableCollection<SelectableViewModel> Items3 => _items3;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public IEnumerable<string> Foods
-        {
-            get
-            {
-                yield return "Burger";
-                yield return "Fries";
-                yield return "Shake";
-                yield return "Lettuce";
             }
         }
     }

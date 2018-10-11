@@ -94,7 +94,13 @@
     </Compile>
     <Compile Include="AboutDataProviders\AboutAssemblyDataProvider.cs" />
     <Compile Include="AboutDataProviders\IAboutDataProvider.cs" />
+    <Compile Include="AddMachineDialog.xaml.cs">
+      <DependentUpon>AddMachineDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\ChartHelpers.cs" />
+    <Compile Include="Helpers\CommandsImplementation.cs" />
+    <Compile Include="Helpers\NotEmptyValidationRule.cs" />
+    <Compile Include="Helpers\NotifyPropertyChangedExtension.cs" />
     <Compile Include="Helpers\SettingHelpers.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -102,9 +108,11 @@
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\GridViewModel.cs" />
     <Compile Include="Models\Machine.cs" />
+    <Compile Include="Models\MachineViewModel.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ObservableBase.cs" />
     <Compile Include="Models\SelectableViewModel.cs" />
+    <Compile Include="Models\SettingsViewModel.cs" />
     <Compile Include="Monitoring.xaml.cs">
       <DependentUpon>Monitoring.xaml</DependentUpon>
     </Compile>
@@ -115,6 +123,10 @@
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddMachineDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

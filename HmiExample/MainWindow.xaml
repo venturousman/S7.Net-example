@@ -39,6 +39,7 @@
         </Grid>
         <Grid Grid.Row="1">
             <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Monitoring.xaml"></Frame>
+            <materialDesign:DialogHost Identifier="RootDialog"></materialDesign:DialogHost>
         </Grid>
     </Grid>
 </Window>

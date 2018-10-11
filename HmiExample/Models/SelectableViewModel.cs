@@ -1,16 +1,8 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace HmiExample.Models
+﻿namespace HmiExample.Models
 {
-    public class SelectableViewModel : INotifyPropertyChanged
+    public class SelectableViewModel : ObservableBase
     {
         private bool _isSelected;
-        private string _name;
-        private string _description;
-        private char _code;
-        private double _numeric;
-        private string _food;
 
         public bool IsSelected
         {
@@ -21,69 +13,6 @@ namespace HmiExample.Models
                 _isSelected = value;
                 OnPropertyChanged();
             }
-        }
-
-        public char Code
-        {
-            get { return _code; }
-            set
-            {
-                if (_code == value) return;
-                _code = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (_name == value) return;
-                _name = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                if (_description == value) return;
-                _description = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public double Numeric
-        {
-            get { return _numeric; }
-            set
-            {
-                if (_numeric == value) return;
-                _numeric = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Food
-        {
-            get { return _food; }
-            set
-            {
-                if (_food == value) return;
-                _food = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

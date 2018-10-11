@@ -1,4 +1,5 @@
 ﻿using HmiExample.Helpers;
+using HmiExample.Models;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -26,6 +27,8 @@ namespace HmiExample
             {
                 txtMaxCycleTime.Text = Properties.Settings.Default[Constants.MaxCycleTime].ToString();
             }
+
+            DataContext = new SettingsViewModel();            
         }
 
         private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -63,6 +66,6 @@ namespace HmiExample
             {
                 MessageBox.Show(exc.Message);
             }
-        }
+        }        
     }
 }
