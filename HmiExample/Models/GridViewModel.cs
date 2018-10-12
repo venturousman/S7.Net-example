@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using HmiExample.Helpers;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace HmiExample.Models
 {
@@ -7,11 +9,17 @@ namespace HmiExample.Models
         private readonly ObservableCollection<T> _items;
         private bool? _isAllItemsSelected = false;
 
-        public ObservableCollection<T> Items => _items;
+        //public ObservableCollection<T> Items => _items;
+        //public ICommand AddItemCommand => new CommandsImplementation(ExecuteAddItem);
 
         public GridViewModel(ObservableCollection<T> _items)
         {
             this._items = _items;
+        }
+
+        public ObservableCollection<T> Items
+        {
+            get { return _items; }
         }
 
         public bool? IsAllItemsSelected
@@ -37,5 +45,14 @@ namespace HmiExample.Models
                 model.IsSelected = select;
             }
         }
+
+        //private void ExecuteAddItem(object o)
+        //{
+        //    var newItem = o as T;
+        //    if (newItem != null)
+        //    {
+        //        Items.Add(newItem);
+        //    }
+        //}
     }
 }
