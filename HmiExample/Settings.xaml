@@ -67,7 +67,7 @@
                             <DataGridTextColumn Binding="{Binding Code}" Header="Code" 
                                                 EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
                             <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name}" Header="Name" 
-                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />                            
+                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -82,13 +82,33 @@
                                        Foreground="{DynamicResource SecondaryAccentForegroundBrush}"
                                        Background="{DynamicResource SecondaryAccentBrush}"></TextBlock>
                             <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
-                                    ToolTip="Add new employee" Margin="5,0,0,0" Height="24" Width="24">
+                                    ToolTip="Add new employee" Margin="5,0,0,0" Height="24" Width="24"
+                                    Command="{Binding AddEmployeeCommand}">
                                 <materialDesign:PackIcon Kind="Plus"></materialDesign:PackIcon>
                             </Button>
                         </StackPanel>
                     </materialDesign:ColorZone>
 
-                    <DataGrid Name="dgEmployees" CanUserSortColumns="True" CanUserAddRows="False"></DataGrid>
+                    <DataGrid Name="dgEmployees" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
+                              DataContext="{Binding Employees}" ItemsSource="{Binding Items}">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
+                                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
+                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                                <DataGridCheckBoxColumn.Header>
+                                    <!--padding to allow hit test to pass thru for sorting -->
+                                    <Border Background="Transparent" Padding="6 0 6 0" HorizontalAlignment="Center">
+                                        <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsAllItemsSelected}"
+                                                  DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext}" />
+                                    </Border>
+                                </DataGridCheckBoxColumn.Header>
+                            </DataGridCheckBoxColumn>
+                            <DataGridTextColumn Binding="{Binding Code}" Header="Code" 
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name}" Header="Name" 
+                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </DockPanel>
             </Border>
 

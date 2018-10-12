@@ -94,6 +94,9 @@
     </Compile>
     <Compile Include="AboutDataProviders\AboutAssemblyDataProvider.cs" />
     <Compile Include="AboutDataProviders\IAboutDataProvider.cs" />
+    <Compile Include="AddEmployeeDialog.xaml.cs">
+      <DependentUpon>AddEmployeeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddMachineDialog.xaml.cs">
       <DependentUpon>AddMachineDialog.xaml</DependentUpon>
     </Compile>
@@ -106,6 +109,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Constants.cs" />
+    <Compile Include="Models\EmployeeViewModel.cs" />
     <Compile Include="Models\GridViewModel.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\MachineViewModel.cs" />
@@ -123,6 +127,10 @@
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddEmployeeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
