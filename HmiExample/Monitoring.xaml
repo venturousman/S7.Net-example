@@ -39,32 +39,78 @@
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <!-- Real -->
-                <Label Content="Set real variable:" HorizontalAlignment="Left" Margin="13,7,0,0" VerticalAlignment="Top" />
-                <TextBox x:Name="txtSetTemperature"  HorizontalAlignment="Left" Margin="118,11,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetRealVariable_TextChanged"/>
-                <Label x:Name="lblTemperature" Content="###.##" HorizontalAlignment="Left" Margin="236,7,0,0" VerticalAlignment="Top" />
 
-                <!-- Word (16 bit +/-) -->
-                <Label Content="Set word variable:" HorizontalAlignment="Left" Margin="13,38,0,0" VerticalAlignment="Top" />
-                <TextBox x:Name="txtSetSpeed" HorizontalAlignment="Left" Margin="118,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetWordVariable_TextChanged"/>
-                <Label x:Name="lblSpeed" Content="###.##" HorizontalAlignment="Left" Margin="236,38,0,0" VerticalAlignment="Top" />
+            <DockPanel Grid.Row="0" LastChildFill="True">
 
-                <!-- Dint (32 bit signed) -->
-                <Label Content="Set DInt variable:" HorizontalAlignment="Left" Margin="313,7,0,0" VerticalAlignment="Top" />
-                <TextBox x:Name="txtSetAutomaticSpeed" HorizontalAlignment="Left" Margin="418,11,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetDIntVariable_TextChanged"/>
-                <Label x:Name="lblAutomaticSpeed" Content="###.##" HorizontalAlignment="Left" Margin="536,7,0,0" VerticalAlignment="Top" />
+                <materialDesign:ColorZone Mode="Accent" Padding="5" DockPanel.Dock="Top">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Production Plan" Padding="5" FontSize="14" FontWeight="Bold" TextAlignment="Center"
+                                   Foreground="{DynamicResource SecondaryAccentForegroundBrush}"
+                                   Background="{DynamicResource SecondaryAccentBrush}"></TextBlock>
+                    </StackPanel>
+                </materialDesign:ColorZone>
 
-                <!-- DWord (16 bit unsigned) -->
-                <Label Content="Set Dword variable:" HorizontalAlignment="Left" Margin="313,38,0,0" VerticalAlignment="Top" />
-                <TextBox x:Name="txtSetDwordVariable" HorizontalAlignment="Left" Margin="418,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" TextChanged="txtSetSetDwordVariable_TextChanged"/>
-                <Label x:Name="lblSetDwordVariable" Content="###.##" HorizontalAlignment="Left" Margin="536,38,0,0" VerticalAlignment="Top" />
+                <DataGrid Name="dgPlans" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
+                          DataContext="{Binding Plans}" ItemsSource="{Binding Items}">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
+                                                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
+                            <DataGridCheckBoxColumn.Header>
+                                <!--padding to allow hit test to pass thru for sorting -->
+                                <Border Background="Transparent" Padding="6 0 6 0" HorizontalAlignment="Center">
+                                    <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsAllItemsSelected}"
+                                              DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext}" />
+                                </Border>
+                            </DataGridCheckBoxColumn.Header>
+                        </DataGridCheckBoxColumn>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine}" Header="Machine" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Employee}" Header="Employee" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Product}" Header="Product" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
-            </Grid>
-            <DataGrid Grid.Row="1" Name="dgRuntime" CanUserSortColumns="True" CanUserAddRows="False" />
+                        <DataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity"
+                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+
+                        <DataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity"
+                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+
+                        <DataGridTemplateColumn Header="Online/Offline">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse x:Name="ledMachineStatus" Fill="#FFF4F4F5" Width="20" Height="20" Stroke="Black"></Ellipse>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Name="btnStartMachine" Content="Start" Margin="0,0,5,0"></Button>
+                                        <Button Name="btnStopMachine" Content="Stop"></Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete plan">
+                                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
         </Grid>
 
         <StatusBar Grid.Row="2">
@@ -82,7 +128,6 @@
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
-
 
     </Grid>
 </Page>

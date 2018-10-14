@@ -100,6 +100,9 @@
     <Compile Include="AddMachineDialog.xaml.cs">
       <DependentUpon>AddMachineDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddProductDialog.xaml.cs">
+      <DependentUpon>AddProductDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\ChartHelpers.cs" />
     <Compile Include="Helpers\CommandsImplementation.cs" />
     <Compile Include="Helpers\NotEmptyValidationRule.cs" />
@@ -113,8 +116,11 @@
     <Compile Include="Models\GridViewModel.cs" />
     <Compile Include="Models\Machine.cs" />
     <Compile Include="Models\MachineViewModel.cs" />
-    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Plan.cs" />
+    <Compile Include="Models\PlanViewModel.cs" />
     <Compile Include="Models\ObservableBase.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductViewModel.cs" />
     <Compile Include="Models\SelectableViewModel.cs" />
     <Compile Include="Models\SettingsViewModel.cs" />
     <Compile Include="Monitoring.xaml.cs">
@@ -135,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddMachineDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddProductDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -161,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="PlcConnectivity\Plc.cs" />
     <Compile Include="PlcConnectivity\Plc.DB1.cs" />

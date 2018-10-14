@@ -7,6 +7,8 @@ using HmiExample.PlcConnectivity;
 using S7NetWrapper;
 using System.Globalization;
 using System.Windows.Threading;
+using HmiExample.Models;
+using System.Collections.ObjectModel;
 #endregion
 
 namespace HmiExample
@@ -20,6 +22,8 @@ namespace HmiExample
         // https://www.codeproject.com/Articles/167365/All-about-NET-Timers-A-Comparison
         DispatcherTimer timer = new DispatcherTimer();
 
+        public GridViewModel<PlanViewModel> Plans { get; }
+
         public Monitoring()
         {
             InitializeComponent();
@@ -31,6 +35,10 @@ namespace HmiExample
 
             // default values
             txtIpAddress.Text = Properties.Settings.Default.IpAddress;
+
+            // testing
+            Plans = LoadPlans();
+            DataContext = this;
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -39,10 +47,10 @@ namespace HmiExample
             btnDisconnect.IsEnabled = Plc.Instance.ConnectionState != ConnectionStates.Offline;
             lblConnectionState.Text = Plc.Instance.ConnectionState.ToString();
             ledMachineInRun.Fill = Plc.Instance.Db1.BitVariable0 ? Brushes.Green : Brushes.Gray;
-            lblSpeed.Content = Plc.Instance.Db1.IntVariable;
-            lblTemperature.Content = Plc.Instance.Db1.RealVariable;
-            lblAutomaticSpeed.Content = Plc.Instance.Db1.DIntVariable;
-            lblSetDwordVariable.Content = Plc.Instance.Db1.DWordVariable;
+            //lblSpeed.Content = Plc.Instance.Db1.IntVariable;
+            //lblTemperature.Content = Plc.Instance.Db1.RealVariable;
+            //lblAutomaticSpeed.Content = Plc.Instance.Db1.DIntVariable;
+            //lblSetDwordVariable.Content = Plc.Instance.Db1.DWordVariable;
             // statusbar
             lblReadTime.Text = Plc.Instance.CycleReadTime.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
         }
@@ -84,6 +92,7 @@ namespace HmiExample
             try
             {
                 Plc.Instance.Write(PlcTags.BitVariable, 1);
+                // TODO: will start many machines
             }
             catch (Exception exc)
             {
@@ -108,47 +117,34 @@ namespace HmiExample
             }
         }
 
-        private void txtSetRealVariable_TextChanged(object sender, TextChangedEventArgs e)
+
+
+        private GridViewModel<PlanViewModel> LoadPlans()
         {
-            double realVar;
-            bool canConvert = double.TryParse(txtSetTemperature.Text, out realVar);
-            if (canConvert)
+            // TODO: listen Plans
+
+            var plans = new ObservableCollection<PlanViewModel>
             {
-                Plc.Instance.Write(PlcTags.DoubleVariable, realVar);
-            }
+                new PlanViewModel
+                {
+                    Machine = "Machine 002",
+                    Employee = "Employee A",
+                    Product = "Product A",
+                    ExpectedQuantity = 23,
+                    ActualQuantity = 34
+                },
+                new PlanViewModel
+                {
+                    Machine = "Machine 001",
+                    Employee = "Employee B",
+                    Product = "Product A",
+                    ExpectedQuantity = 45,
+                    ActualQuantity = 49
+                }
+            };
+
+            return new GridViewModel<PlanViewModel>(plans);
         }
-
-        private void txtSetWordVariable_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            short wordVar;
-            bool canConvert = short.TryParse(txtSetSpeed.Text, out wordVar);
-            if (canConvert)
-            {
-                Plc.Instance.Write(PlcTags.IntVariable, wordVar);
-            }
-        }
-
-        private void txtSetDIntVariable_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            int dintVar;
-            bool canConvert = int.TryParse(txtSetAutomaticSpeed.Text, out dintVar);
-            if (canConvert)
-            {
-                Plc.Instance.Write(PlcTags.DIntVariable, dintVar);
-            }
-        }
-
-        private void txtSetSetDwordVariable_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ushort dwordVar;
-            bool canConvert = ushort.TryParse(txtSetDwordVariable.Text, out dwordVar);
-            if (canConvert)
-            {
-                Plc.Instance.Write(PlcTags.DwordVariable, dwordVar);
-            }
-        }
-
-
 
 
 

@@ -1,9 +1,6 @@
 ﻿namespace HmiExample.Models
 {
-    /// <summary>
-    /// MachineViewModel is a selectable view model
-    /// </summary>
-    public class MachineViewModel : SelectableViewModel
+    public class ProductViewModel : SelectableViewModel
     {
         private string _name;
         private string _code;
@@ -13,7 +10,6 @@
             get { return _name; }
             set
             {
-                // this.MutateVerbose(ref _name, value, RaisePropertyChanged());
                 if (_name == value) return;
                 _name = value;
                 OnPropertyChanged();
@@ -30,10 +26,5 @@
                 OnPropertyChanged();
             }
         }
-
-        //private Action<PropertyChangedEventArgs> RaisePropertyChanged()
-        //{
-        //    return args => PropertyChanged?.Invoke(this, args);
-        //}        
     }
 }

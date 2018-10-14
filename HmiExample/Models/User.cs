@@ -10,7 +10,7 @@ namespace HmiExample.Models
         public string FirstName { get; set; }
         public string MidleName { get; set; }
         public string LastName { get; set; }
-        public string ImagePath { get; set; }
+        public string Picture { get; set; } // ImagePath
         public string PhoneNumber { get; set; }        
     }
 }

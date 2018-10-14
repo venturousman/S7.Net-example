@@ -3,14 +3,16 @@ using System;
 
 namespace HmiExample.Models
 {
-    public class Machine
+    public class Machine : BaseModel
     {
         public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public string Code { get; set; }    // unique
 
-        public string Supervisor { get; set; }  // TODO: User Supervisor, should be a code or id
+        public int AccumulatedTotal { get; set; }
+
 
         // testing
         public SeriesCollection SeriesCollection { get; set; }

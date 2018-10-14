@@ -11,14 +11,17 @@ namespace HmiExample.Models
     {
         public ICommand AddMachineCommand => new CommandsImplementation(ExecuteAddMachineDialog);
         public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployeeDialog);
+        public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProductDialog);
 
         public GridViewModel<MachineViewModel> Machines { get; }
         public GridViewModel<EmployeeViewModel> Employees { get; }
+        public GridViewModel<ProductViewModel> Products { get; }
 
         public SettingsViewModel()
         {
             Machines = LoadMachines();
             Employees = LoadEmployees();
+            Products = LoadProducts();
         }
 
         private GridViewModel<EmployeeViewModel> LoadEmployees()
@@ -65,18 +68,29 @@ namespace HmiExample.Models
             return new GridViewModel<MachineViewModel>(machines);
         }
 
-        private void Employees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private GridViewModel<ProductViewModel> LoadProducts()
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            // TODO: load databases
+
+            var products = new ObservableCollection<ProductViewModel>
             {
-                var tmp = e.OldItems;
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                var tmp = e.NewItems;
-            }
-            // TODO: save databases
+                new ProductViewModel
+                {
+                    Code = "P001",
+                    Name = "Product A",
+                },
+                new ProductViewModel
+                {
+                    Code = "P002",
+                    Name = "Product B",
+                }
+            };
+            products.CollectionChanged += Products_CollectionChanged;
+
+            return new GridViewModel<ProductViewModel>(products);
         }
+
+        #region Machines
 
         private void Machines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -128,6 +142,23 @@ namespace HmiExample.Models
             Console.WriteLine("You could intercept the open and affect the dialog using eventArgs.Session.");
         }
 
+        #endregion
+
+        #region Employees
+
+        private void Employees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var tmp = e.OldItems;
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var tmp = e.NewItems;
+            }
+            // TODO: save databases
+        }
+
         private async void ExecuteAddEmployeeDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
@@ -160,5 +191,57 @@ namespace HmiExample.Models
                 Employees.Items.Add(newEmployee);
             }
         }
+
+        #endregion
+
+        #region Products
+
+        private void Products_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var tmp = e.OldItems;
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var tmp = e.NewItems;
+            }
+            // TODO: save databases
+        }
+
+        private async void ExecuteAddProductDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddProductDialog
+            {
+                DataContext = new ProductViewModel()
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedProductDialogEventHandler, ClosingProductDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+        }
+
+        private void OpenedProductDialogEventHandler(object sender, DialogOpenedEventArgs eventargs)
+        {
+            Console.WriteLine("You could intercept the open and affect the dialog using eventArgs.Session.");
+        }
+
+        private void ClosingProductDialogEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true)) return;
+
+            var context = (ProductViewModel)((AddProductDialog)eventArgs.Session.Content).DataContext;
+
+            if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
+            {
+                var newProduct = new ProductViewModel { Name = context.Name, Code = context.Code };
+                Products.Items.Add(newProduct);
+            }
+        }
+
+        #endregion
     }
 }

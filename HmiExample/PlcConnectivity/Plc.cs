@@ -75,7 +75,7 @@ namespace HmiExample.PlcConnectivity
             CycleReadTime = DateTime.Now - lastReadTime;
             try
             {
-                RefreshTags();
+                //RefreshTags();
             }
             finally
             {
@@ -107,6 +107,16 @@ namespace HmiExample.PlcConnectivity
                 return;
             }
             plcDriver.Disconnect();
+        }
+
+        public List<Tag> Read(List<Tag> itemList)
+        {
+            if (plcDriver == null || plcDriver.ConnectionState != ConnectionStates.Online)
+            {
+                return new List<Tag>();
+            }
+            List<Tag> tagList = plcDriver.ReadItems(itemList);
+            return tagList;
         }
 
         public void Write(string name, object value)
@@ -147,7 +157,6 @@ namespace HmiExample.PlcConnectivity
         }
 
         #endregion
-
 
     }
 }
