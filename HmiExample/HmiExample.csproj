@@ -100,6 +100,9 @@
     <Compile Include="AddMachineDialog.xaml.cs">
       <DependentUpon>AddMachineDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddPlanDialog.xaml.cs">
+      <DependentUpon>AddPlanDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddProductDialog.xaml.cs">
       <DependentUpon>AddProductDialog.xaml</DependentUpon>
     </Compile>
@@ -141,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddMachineDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPlanDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

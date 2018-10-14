@@ -9,6 +9,11 @@ using System.Globalization;
 using System.Windows.Threading;
 using HmiExample.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using HmiExample.Helpers;
+using MaterialDesignThemes.Wpf;
+using System.Collections.Specialized;
+using Microsoft.Win32;
 #endregion
 
 namespace HmiExample
@@ -23,6 +28,8 @@ namespace HmiExample
         DispatcherTimer timer = new DispatcherTimer();
 
         public GridViewModel<PlanViewModel> Plans { get; }
+
+        public ICommand AddPlanCommand => new CommandsImplementation(ExecuteAddPlanCommand);
 
         public Monitoring()
         {
@@ -93,6 +100,7 @@ namespace HmiExample
             {
                 Plc.Instance.Write(PlcTags.BitVariable, 1);
                 // TODO: will start many machines
+                // dgPlans.SelectedItems
             }
             catch (Exception exc)
             {
@@ -116,6 +124,28 @@ namespace HmiExample
                 MessageBox.Show(exc.Message);
             }
         }
+
+        private void btnBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Excel Files|*.xls;*.xlsx";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                txtFilePath.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void btnImport_Click(object sender, RoutedEventArgs e)
+        {
+            var filePath = txtFilePath.Text.Trim();
+            if (string.IsNullOrEmpty(filePath))
+            {
+                MessageBox.Show("No file selected. Please select a valid import file!", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            MessageBox.Show("Plans were imported successfully.", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
 
 
 
@@ -142,12 +172,60 @@ namespace HmiExample
                     ActualQuantity = 49
                 }
             };
+            plans.CollectionChanged += Plans_CollectionChanged;
 
             return new GridViewModel<PlanViewModel>(plans);
         }
 
+        #region Plans
 
+        private void Plans_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var tmp = e.OldItems;
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var tmp = e.NewItems;
+            }
+            // TODO: save databases
+        }
 
+        private async void ExecuteAddPlanCommand(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddPlanDialog
+            {
+                DataContext = new PlanViewModel()
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedPlanDialogEventHandler, ClosingPlanDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+        }
+
+        private void ClosingPlanDialogEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            if (!Equals(eventArgs.Parameter, true)) return;
+
+            var context = (PlanViewModel)((AddPlanDialog)eventArgs.Session.Content).DataContext;
+
+            //if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
+            //{
+            //    var newPlan = new PlanViewModel { Name = context.Name, Code = context.Code };
+            //    Plans.Items.Add(newPlan);
+            //}
+        }
+
+        private void OpenedPlanDialogEventHandler(object sender, DialogOpenedEventArgs eventargs)
+        {
+            Console.WriteLine("You could intercept the open and affect the dialog using eventArgs.Session.");
+        }
+
+        #endregion
 
 
     }

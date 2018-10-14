@@ -52,7 +52,7 @@
                     </materialDesign:ColorZone>
 
                     <DataGrid Name="dgMachines" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                              DataContext="{Binding Machines}" ItemsSource="{Binding Items}">
+                              CanUserDeleteRows="False" DataContext="{Binding Machines}" ItemsSource="{Binding Items}">
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                     ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
@@ -91,7 +91,7 @@
                     </materialDesign:ColorZone>
 
                     <DataGrid Name="dgEmployees" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                              DataContext="{Binding Employees}" ItemsSource="{Binding Items}">
+                              CanUserDeleteRows="False" DataContext="{Binding Employees}" ItemsSource="{Binding Items}">
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                     ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
@@ -130,7 +130,7 @@
                     </materialDesign:ColorZone>
 
                     <DataGrid Name="dgProducts" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                              DataContext="{Binding Products}" ItemsSource="{Binding Items}">
+                              CanUserDeleteRows="False" DataContext="{Binding Products}" ItemsSource="{Binding Items}">
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                     ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 

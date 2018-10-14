@@ -16,24 +16,35 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GroupBox Grid.Column="0" Name="gbConnection" Header="Connection" Margin="0,0,0,5" Width="auto">
                 <StackPanel Orientation="Horizontal">
-                    <TextBox materialDesign:HintAssist.Hint="IP Address" Width="160" Margin="0,0,5,0"
+                    <TextBox materialDesign:HintAssist.Hint="IP Address" Width="140" Margin="0,0,5,0"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
                      Name="txtIpAddress" />
                     <Button x:Name="btnConnect" Content="Connect" Click="btnConnect_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnDisconnect" Content="Disconnect" Click="btnDisconnect_Click"></Button>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Grid.Column="1" Name="gbRuntime" Header="Runtime" Margin="0,0,0,5" Width="auto">
+            <GroupBox Grid.Column="1" Name="gbPlan" Header="Import/Export Plan" Margin="0,0,0,5" Width="auto">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox materialDesign:HintAssist.Hint="File Path" Width="320" Margin="0,0,5,0"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
+                     Name="txtFilePath" />
+                    <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click" Margin="0,0,5,0"></Button>
+                    <Button x:Name="btnImport" Content="Import" Click="btnImport_Click" Margin="0,0,5,0"></Button>
+                    <Button x:Name="btnDownload" Content="Download sample file"></Button>
+                </StackPanel>                
+            </GroupBox>
+            <GroupBox Grid.Column="2" Name="gbRuntime" Header="Runtime" Margin="0,0,0,5" Width="auto">
                 <!-- L,T,R,B -->
                 <StackPanel Orientation="Horizontal">
                     <Ellipse x:Name="ledMachineInRun" Fill="#FFF4F4F5" Width="35" Height="35" Stroke="Black" Margin="0,0,5,0"></Ellipse>
                     <Button Name="btnStart" Content="Start" Click="btnStart_Click" Margin="0,0,5,0"></Button>
-                    <Button Name="btnStop" Content="Stop" Click="btnStop_Click" Margin="0,0,5,0"></Button>
+                    <Button Name="btnStop" Content="Stop" Click="btnStop_Click"></Button>
                 </StackPanel>
             </GroupBox>
         </Grid>
@@ -49,11 +60,16 @@
                         <TextBlock Text="Production Plan" Padding="5" FontSize="14" FontWeight="Bold" TextAlignment="Center"
                                    Foreground="{DynamicResource SecondaryAccentForegroundBrush}"
                                    Background="{DynamicResource SecondaryAccentBrush}"></TextBlock>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                                ToolTip="Add new plan" Margin="5,0,0,0" Height="24" Width="24"
+                                Command="{Binding AddPlanCommand}">
+                            <materialDesign:PackIcon Kind="Plus"></materialDesign:PackIcon>
+                        </Button>
                     </StackPanel>
                 </materialDesign:ColorZone>
 
                 <DataGrid Name="dgPlans" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                          DataContext="{Binding Plans}" ItemsSource="{Binding Items}">
+                          CanUserDeleteRows="False" DataContext="{Binding Plans}" ItemsSource="{Binding Items}">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                 ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
@@ -91,8 +107,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Name="btnStartMachine" Content="Start" Margin="0,0,5,0"></Button>
-                                        <Button Name="btnStopMachine" Content="Stop"></Button>
+                                        <Button Name="btnStartMachine" Content="Start" Margin="0,0,5,0" ToolTip="Start machine"></Button>
+                                        <Button Name="btnStopMachine" Content="Stop" ToolTip="Stop machine"></Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
