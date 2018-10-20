@@ -22,27 +22,31 @@ namespace HmiExample.Models
         public SettingsViewModel()
         {
             Machines = LoadMachines();
-            Employees = LoadEmployees();
+            //Employees = LoadEmployees();
             Products = LoadProducts();
         }
 
         private GridViewModel<EmployeeViewModel> LoadEmployees()
         {
-            // TODO: load databases
+            var employees = new ObservableCollection<EmployeeViewModel>();
 
-            var employees = new ObservableCollection<EmployeeViewModel>
+            // load databases
+            using (var context = new ApplicationDbContext())
             {
-                new EmployeeViewModel
+                var dbEmployees = context.Employees; // define query
+                var lstEmployees = dbEmployees.ToList(); // query executed and data obtained from database
+                foreach (var employee in lstEmployees)
                 {
-                    Code = "E001",
-                    Name = "Employee A",
-                },
-                new EmployeeViewModel
-                {
-                    Code = "E002",
-                    Name = "Employee B",
+                    var employeeVM = new EmployeeViewModel
+                    {
+                        Name = employee.DisplayName,
+                        Code = employee.Code
+                    };
+                    employees.Add(employeeVM);
                 }
-            };
+            }
+
+            // register event
             employees.CollectionChanged += Employees_CollectionChanged;
 
             return new GridViewModel<EmployeeViewModel>(employees);
