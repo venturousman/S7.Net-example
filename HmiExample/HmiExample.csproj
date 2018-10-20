@@ -106,6 +106,8 @@
     <Compile Include="AddProductDialog.xaml.cs">
       <DependentUpon>AddProductDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\ApplicationDbContext.cs" />
+    <Compile Include="Data\ApplicationDbInitializer.cs" />
     <Compile Include="Helpers\ChartHelpers.cs" />
     <Compile Include="Helpers\CommandsImplementation.cs" />
     <Compile Include="Helpers\CommonHelpers.cs" />
@@ -179,7 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BaseModel.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Employee.cs" />
     <Compile Include="PlcConnectivity\Plc.cs" />
     <Compile Include="PlcConnectivity\Plc.DB1.cs" />
     <Compile Include="PlcConnectivity\PlcTags.cs" />

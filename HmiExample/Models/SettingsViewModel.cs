@@ -1,8 +1,10 @@
-﻿using HmiExample.Helpers;
+﻿using HmiExample.Data;
+using HmiExample.Helpers;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows.Input;
 
 namespace HmiExample.Models
@@ -48,21 +50,25 @@ namespace HmiExample.Models
 
         private GridViewModel<MachineViewModel> LoadMachines()
         {
-            // TODO: load databases
+            var machines = new ObservableCollection<MachineViewModel>();
 
-            var machines = new ObservableCollection<MachineViewModel>
+            // load databases
+            using (var context = new ApplicationDbContext())
             {
-                new MachineViewModel
+                var dbMachines = context.Machines; // define query
+                var lstMachines = dbMachines.ToList(); // query executed and data obtained from database
+                foreach (var machine in lstMachines)
                 {
-                    Code = "M001",
-                    Name = "Machine A",
-                },
-                new MachineViewModel
-                {
-                    Code = "M002",
-                    Name = "Machine B",
+                    var machineVM = new MachineViewModel
+                    {
+                        Name = machine.Name,
+                        Code = machine.Code
+                    };
+                    machines.Add(machineVM);
                 }
-            };
+            }
+
+            // register event
             machines.CollectionChanged += Machines_CollectionChanged;
 
             return new GridViewModel<MachineViewModel>(machines);
@@ -70,21 +76,25 @@ namespace HmiExample.Models
 
         private GridViewModel<ProductViewModel> LoadProducts()
         {
-            // TODO: load databases
+            var products = new ObservableCollection<ProductViewModel>();
 
-            var products = new ObservableCollection<ProductViewModel>
+            // load databases
+            using (var context = new ApplicationDbContext())
             {
-                new ProductViewModel
+                var dbProducts = context.Products; // define query
+                var lstProducts = dbProducts.ToList(); // query executed and data obtained from database
+                foreach (var product in lstProducts)
                 {
-                    Code = "P001",
-                    Name = "Product A",
-                },
-                new ProductViewModel
-                {
-                    Code = "P002",
-                    Name = "Product B",
+                    var productVM = new ProductViewModel
+                    {
+                        Name = product.Name,
+                        Code = product.Code
+                    };
+                    products.Add(productVM);
                 }
-            };
+            }
+
+            // register event
             products.CollectionChanged += Products_CollectionChanged;
 
             return new GridViewModel<ProductViewModel>(products);

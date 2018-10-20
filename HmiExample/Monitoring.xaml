@@ -18,7 +18,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GroupBox Grid.Column="0" Name="gbConnection" Header="Connection" Margin="0,0,0,5" Width="auto">
                 <StackPanel Orientation="Horizontal">
@@ -30,6 +29,7 @@
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Name="gbPlan" Header="Import/Export Plan" Margin="0,0,0,5" Width="auto">
+                <!-- Margin L,T,R,B -->
                 <StackPanel Orientation="Horizontal">
                     <TextBox materialDesign:HintAssist.Hint="File Path" Width="320" Margin="0,0,5,0"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
@@ -37,14 +37,6 @@
                     <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnImport" Content="Import" Click="btnImport_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnDownload" Content="Download sample file"></Button>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Grid.Column="2" Name="gbRuntime" Header="Runtime" Margin="0,0,0,5" Width="auto">
-                <!-- L,T,R,B -->
-                <StackPanel Orientation="Horizontal">
-                    <Ellipse x:Name="ledMachineInRun" Fill="#FFF4F4F5" Width="35" Height="35" Stroke="Black" Margin="0,0,5,0"></Ellipse>
-                    <Button Name="btnStart" Content="Start" Click="btnStart_Click" Margin="0,0,5,0"></Button>
-                    <Button Name="btnStop" Content="Stop" Click="btnStop_Click"></Button>
                 </StackPanel>
             </GroupBox>
         </Grid>
@@ -104,6 +96,14 @@
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Name="btnStart" Content="Start" Click="btnStart_Click" Margin="0,0,5,0"></Button>
+                                        <Button Name="btnStop" Content="Stop" Click="btnStop_Click"></Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

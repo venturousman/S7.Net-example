@@ -1,5 +1,7 @@
-﻿using LiveCharts;
-using System;
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HmiExample.Models
 {
@@ -7,16 +9,18 @@ namespace HmiExample.Models
     {
         public Guid Id { get; set; }
 
+        [MaxLength(255)]
+        [Required(ErrorMessage = "*")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "*")]
+        [MaxLength(128)]
+        [Index(IsUnique = true)]
         public string Code { get; set; }    // unique
 
-        public int AccumulatedTotal { get; set; }
+        public int Counts { get; set; } // so lan dap khuon tich luy
 
-
-        // testing
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> Formatter { get; set; }
+        [DefaultValue(-1)]
+        public int TagIndex { get; set; } // vd: M2{1}.0
     }
 }

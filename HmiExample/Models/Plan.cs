@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HmiExample.Models
 {
@@ -6,11 +7,24 @@ namespace HmiExample.Models
     {
         public Guid Id { get; set; }
 
-        public string Machine { get; set; }
-        public string Employee { get; set; }
-        public string Product { get; set; }
+        [Required(ErrorMessage = "*")]
+        public Guid MachineId { get; set; }
 
+        //[Required(ErrorMessage = "*")]
+        public Guid? EmployeeId { get; set; }
+
+        [Required(ErrorMessage = "*")]
+        public Guid ProductId { get; set; }
+
+        [Required(ErrorMessage = "*")]
         public int ExpectedQuantity { get; set; }
+
         public int ActualQuantity { get; set; }
+
+        #region Relationship
+        public virtual Machine Machine { get; set; }
+        public virtual Employee Employee { get; set; }
+        public virtual Product Product { get; set; }
+        #endregion
     }
 }
