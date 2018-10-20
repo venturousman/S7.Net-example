@@ -13,7 +13,7 @@ namespace HmiExample.Models
         public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployeeDialog);
         public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProductDialog);
 
-        public GridViewModel<MachineViewModel> Machines { get; }
+        public GridViewModel<MachineViewModel> Machines { get; }    // should be GridMachinesVM
         public GridViewModel<EmployeeViewModel> Employees { get; }
         public GridViewModel<ProductViewModel> Products { get; }
 

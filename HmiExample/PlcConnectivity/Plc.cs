@@ -33,7 +33,8 @@ namespace HmiExample.PlcConnectivity
             }
         }
 
-        public DB1 Db1 { get; set; }
+        //public DB1 Db1 { get; set; }
+        public List<Tag> allTags { get; set; }
 
         public TimeSpan CycleReadTime { get; private set; }
 
@@ -53,7 +54,9 @@ namespace HmiExample.PlcConnectivity
 
         private Plc()
         {
-            Db1 = new DB1();
+            //Db1 = new DB1();
+            allTags = new List<Tag>();
+
             timer.Interval = 100; // ms
             timer.Elapsed += timer_Elapsed;
             timer.Enabled = true;
@@ -153,7 +156,8 @@ namespace HmiExample.PlcConnectivity
 
         private void RefreshTags()
         {
-            plcDriver.ReadClass(Db1, 1);
+            //plcDriver.ReadClass(Db1, 1);
+            allTags = plcDriver.ReadItems(allTags);
         }
 
         #endregion

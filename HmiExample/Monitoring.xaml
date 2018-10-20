@@ -37,7 +37,7 @@
                     <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnImport" Content="Import" Click="btnImport_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnDownload" Content="Download sample file"></Button>
-                </StackPanel>                
+                </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="2" Name="gbRuntime" Header="Runtime" Margin="0,0,0,5" Width="auto">
                 <!-- L,T,R,B -->
@@ -69,7 +69,7 @@
                 </materialDesign:ColorZone>
 
                 <DataGrid Name="dgPlans" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                          CanUserDeleteRows="False" DataContext="{Binding Plans}" ItemsSource="{Binding Items}">
+                          CanUserDeleteRows="False" DataContext="{Binding GridPlanVMs}" ItemsSource="{Binding Items}">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                 ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
@@ -98,7 +98,7 @@
                         <DataGridTemplateColumn Header="Online/Offline">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Ellipse x:Name="ledMachineStatus" Fill="#FFF4F4F5" Width="20" Height="20" Stroke="Black"></Ellipse>
+                                    <Ellipse Fill="{Binding LedColor}" Width="20" Height="20" Stroke="Black"></Ellipse>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -107,8 +107,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Name="btnStartMachine" Content="Start" Margin="0,0,5,0" ToolTip="Start machine"></Button>
-                                        <Button Name="btnStopMachine" Content="Stop" ToolTip="Stop machine"></Button>
+                                        <Button Content="Start" Margin="0,0,5,0" ToolTip="Start machine" Click="btnStartMachine_Click" IsEnabled="{Binding IsConnected}"></Button>
+                                        <Button Content="Stop" ToolTip="Stop machine" Click="btnStopMachine_Click" IsEnabled="{Binding IsConnected}"></Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

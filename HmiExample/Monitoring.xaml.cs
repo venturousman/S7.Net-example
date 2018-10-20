@@ -1,19 +1,21 @@
 ﻿#region Using
+using HmiExample.Helpers;
+using HmiExample.Models;
+using HmiExample.PlcConnectivity;
+using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
+using S7NetWrapper;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using HmiExample.PlcConnectivity;
-using S7NetWrapper;
-using System.Globalization;
-using System.Windows.Threading;
-using HmiExample.Models;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
-using HmiExample.Helpers;
-using MaterialDesignThemes.Wpf;
-using System.Collections.Specialized;
-using Microsoft.Win32;
+using System.Windows.Media;
+using System.Windows.Threading;
 #endregion
 
 namespace HmiExample
@@ -27,7 +29,7 @@ namespace HmiExample
         // https://www.codeproject.com/Articles/167365/All-about-NET-Timers-A-Comparison
         DispatcherTimer timer = new DispatcherTimer();
 
-        public GridViewModel<PlanViewModel> Plans { get; }
+        public GridViewModel<PlanViewModel> GridPlanVMs { get; }
 
         public ICommand AddPlanCommand => new CommandsImplementation(ExecuteAddPlanCommand);
 
@@ -44,7 +46,7 @@ namespace HmiExample
             txtIpAddress.Text = Properties.Settings.Default.IpAddress;
 
             // testing
-            Plans = LoadPlans();
+            GridPlanVMs = LoadData();
             DataContext = this;
         }
 
@@ -53,13 +55,20 @@ namespace HmiExample
             btnConnect.IsEnabled = Plc.Instance.ConnectionState == ConnectionStates.Offline;
             btnDisconnect.IsEnabled = Plc.Instance.ConnectionState != ConnectionStates.Offline;
             lblConnectionState.Text = Plc.Instance.ConnectionState.ToString();
-            ledMachineInRun.Fill = Plc.Instance.Db1.BitVariable0 ? Brushes.Green : Brushes.Gray;
+
+            //ledMachineInRun.Fill = Plc.Instance.Db1.BitVariable0 ? Brushes.Green : Brushes.Gray;
+
             //lblSpeed.Content = Plc.Instance.Db1.IntVariable;
             //lblTemperature.Content = Plc.Instance.Db1.RealVariable;
             //lblAutomaticSpeed.Content = Plc.Instance.Db1.DIntVariable;
             //lblSetDwordVariable.Content = Plc.Instance.Db1.DWordVariable;
+
             // statusbar
             lblReadTime.Text = Plc.Instance.CycleReadTime.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+
+
+            // update grid
+            UpdateGridPlan();
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
@@ -98,7 +107,6 @@ namespace HmiExample
         {
             try
             {
-                Plc.Instance.Write(PlcTags.BitVariable, 1);
                 // TODO: will start many machines
                 // dgPlans.SelectedItems
             }
@@ -117,7 +125,42 @@ namespace HmiExample
         {
             try
             {
-                Plc.Instance.Write(PlcTags.BitVariable, 0);
+                // Plc.Instance.Write(PlcTags.BitVariable, 0);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
+        private void btnStartMachine_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //if (Plc.Instance.ConnectionState == ConnectionStates.Offline)
+                //{
+                //    return; // or messagebox
+                //}                
+
+                PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
+                string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
+                Plc.Instance.Write(name, true);
+                //obj.IsStarted = true;
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
+        private void btnStopMachine_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
+                string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
+                Plc.Instance.Write(name, false);
+                //obj.IsStarted = false;
             }
             catch (Exception exc)
             {
@@ -147,9 +190,47 @@ namespace HmiExample
         }
 
 
+        private void UpdateGridPlan()
+        {
+            try
+            {
+                var tags = new List<Tag>();
+                foreach (var item in GridPlanVMs.Items)
+                {
+                    // update buttons
+                    item.IsConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
 
+                    string name = string.Format(PlcTags.BitVariable1, item.DataBlockNo);
+                    var newTag = new Tag { ItemName = name };
+                    tags.Add(newTag);
+                }
 
-        private GridViewModel<PlanViewModel> LoadPlans()
+                tags = Plc.Instance.Read(tags);
+
+                // update leds
+                foreach (var item in GridPlanVMs.Items)
+                {
+                    string name = string.Format(PlcTags.BitVariable1, item.DataBlockNo);
+                    var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
+                    if (foundTag != null)
+                    {
+                        object value = foundTag.ItemValue;
+
+                        if (foundTag.ItemValue is byte)
+                        {
+                            var flag = CommonHelpers.IsBitSet((byte)value, 1);
+                            item.LedColor = flag ? Brushes.Green : Brushes.Gray;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private GridViewModel<PlanViewModel> LoadData()
         {
             // TODO: listen Plans
 
@@ -161,7 +242,8 @@ namespace HmiExample
                     Employee = "Employee A",
                     Product = "Product A",
                     ExpectedQuantity = 23,
-                    ActualQuantity = 34
+                    ActualQuantity = 34,
+                    DataBlockNo = 0
                 },
                 new PlanViewModel
                 {
@@ -169,7 +251,8 @@ namespace HmiExample
                     Employee = "Employee B",
                     Product = "Product A",
                     ExpectedQuantity = 45,
-                    ActualQuantity = 49
+                    ActualQuantity = 49,
+                    DataBlockNo = 1
                 }
             };
             plans.CollectionChanged += Plans_CollectionChanged;
