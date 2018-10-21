@@ -22,7 +22,7 @@ namespace HmiExample.Models
         public SettingsViewModel()
         {
             Machines = LoadMachines();
-            //Employees = LoadEmployees();
+            Employees = LoadEmployees();
             Products = LoadProducts();
         }
 
@@ -31,10 +31,15 @@ namespace HmiExample.Models
             var employees = new ObservableCollection<EmployeeViewModel>();
 
             // load databases
-            using (var context = new ApplicationDbContext())
+            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (mainWindow.applicationDbContext.Employees.Local != null)
             {
-                var dbEmployees = context.Employees; // define query
-                var lstEmployees = dbEmployees.ToList(); // query executed and data obtained from database
+                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.ToList();
+
+                //using (var context = new ApplicationDbContext())
+                //{
+                //var dbEmployees = context.Employees; // define query
+                //var lstEmployees = dbEmployees.ToList(); // query executed and data obtained from database
                 foreach (var employee in lstEmployees)
                 {
                     var employeeVM = new EmployeeViewModel
@@ -44,6 +49,7 @@ namespace HmiExample.Models
                     };
                     employees.Add(employeeVM);
                 }
+                //}
             }
 
             // register event
@@ -57,10 +63,15 @@ namespace HmiExample.Models
             var machines = new ObservableCollection<MachineViewModel>();
 
             // load databases
-            using (var context = new ApplicationDbContext())
+            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (mainWindow.applicationDbContext.Machines.Local != null)
             {
-                var dbMachines = context.Machines; // define query
-                var lstMachines = dbMachines.ToList(); // query executed and data obtained from database
+                var lstMachines = mainWindow.applicationDbContext.Machines.Local.ToList();
+
+                //using (var context = new ApplicationDbContext())
+                //{
+                //var dbMachines = context.Machines; // define query
+                //var lstMachines = dbMachines.ToList(); // query executed and data obtained from database
                 foreach (var machine in lstMachines)
                 {
                     var machineVM = new MachineViewModel
@@ -70,6 +81,7 @@ namespace HmiExample.Models
                     };
                     machines.Add(machineVM);
                 }
+                //}
             }
 
             // register event
@@ -83,10 +95,15 @@ namespace HmiExample.Models
             var products = new ObservableCollection<ProductViewModel>();
 
             // load databases
-            using (var context = new ApplicationDbContext())
+            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (mainWindow.applicationDbContext.Products.Local != null)
             {
-                var dbProducts = context.Products; // define query
-                var lstProducts = dbProducts.ToList(); // query executed and data obtained from database
+                var lstProducts = mainWindow.applicationDbContext.Products.Local.ToList();
+
+                //using (var context = new ApplicationDbContext())
+                //{
+                //var dbProducts = context.Products; // define query
+                //var lstProducts = dbProducts.ToList(); // query executed and data obtained from database
                 foreach (var product in lstProducts)
                 {
                     var productVM = new ProductViewModel
@@ -96,6 +113,7 @@ namespace HmiExample.Models
                     };
                     products.Add(productVM);
                 }
+                //}
             }
 
             // register event

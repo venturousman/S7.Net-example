@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HmiExample"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Loaded="Window_Loaded"
         Title="Production equipment control software" WindowState="Maximized" WindowStyle="SingleBorderWindow">
     <Grid Name="gridMain">
         <Grid.RowDefinitions>
@@ -38,7 +38,7 @@
             </Menu>
         </Grid>
         <Grid Grid.Row="1">
-            <Frame Name="mainFrame" NavigationUIVisibility="Hidden" Source="Monitoring.xaml"></Frame>
+            <Frame Name="mainFrame" NavigationUIVisibility="Hidden"></Frame>
             <materialDesign:DialogHost Identifier="RootDialog"></materialDesign:DialogHost>
         </Grid>
     </Grid>

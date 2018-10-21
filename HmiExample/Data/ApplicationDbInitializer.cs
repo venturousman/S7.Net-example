@@ -30,19 +30,79 @@ namespace HmiExample.Data
             // seed Employee
             IList<Employee> defaultEmployees = new List<Employee>();
 
-            defaultEmployees.Add(new Employee() { Id = Guid.NewGuid(), Code = "E001", Email = "employee1@gmail.com", DisplayName = "Employee 1", FirstName = "A", MidleName = "Van", LastName = "Tran" });
-            defaultEmployees.Add(new Employee() { Id = Guid.NewGuid(), Code = "E002", Email = "employee2@gmail.com", DisplayName = "Employee 2", FirstName = "B", MidleName = "Van", LastName = "Nguyen" });
+            defaultEmployees.Add(new Employee()
+            {
+                Id = Guid.NewGuid(),
+                Code = "E001",
+                Email = "employee1@gmail.com",
+                DisplayName = "Employee 1",
+                FirstName = "A",
+                MidleName = "Van",
+                LastName = "Tran",
+                CreatedOn = DateTime.UtcNow
+            });
+            defaultEmployees.Add(new Employee()
+            {
+                Id = Guid.NewGuid(),
+                Code = "E002",
+                Email = "employee2@gmail.com",
+                DisplayName = "Employee 2",
+                FirstName = "B",
+                MidleName = "Van",
+                LastName = "Nguyen",
+                CreatedOn = DateTime.UtcNow
+            });
 
             context.Employees.AddRange(defaultEmployees);
 
             // seed Plan
             IList<Plan> defaultPlans = new List<Plan>();
 
-            defaultPlans.Add(new Plan() { Id = Guid.NewGuid(), MachineId = defaultMachines[0].Id, ProductId = defaultProducts[1].Id, EmployeeId = defaultEmployees[1].Id, ExpectedQuantity = 32 });
-            defaultPlans.Add(new Plan() { Id = Guid.NewGuid(), MachineId = defaultMachines[0].Id, ProductId = defaultProducts[1].Id, EmployeeId = defaultEmployees[0].Id, ExpectedQuantity = 13 });
-            defaultPlans.Add(new Plan() { Id = Guid.NewGuid(), MachineId = defaultMachines[0].Id, ProductId = defaultProducts[0].Id, EmployeeId = defaultEmployees[0].Id, ExpectedQuantity = 17 });
-            defaultPlans.Add(new Plan() { Id = Guid.NewGuid(), MachineId = defaultMachines[1].Id, ProductId = defaultProducts[0].Id, EmployeeId = defaultEmployees[1].Id, ExpectedQuantity = 41 });
-            defaultPlans.Add(new Plan() { Id = Guid.NewGuid(), MachineId = defaultMachines[1].Id, ProductId = defaultProducts[1].Id, EmployeeId = defaultEmployees[0].Id, ExpectedQuantity = 22 });
+            defaultPlans.Add(new Plan()
+            {
+                Id = Guid.NewGuid(),
+                MachineId = defaultMachines[0].Id,
+                ProductId = defaultProducts[1].Id,
+                EmployeeId = defaultEmployees[1].Id,
+                ExpectedQuantity = 32,
+                CreatedOn = DateTime.UtcNow.AddDays(-3)
+            });
+            defaultPlans.Add(new Plan()
+            {
+                Id = Guid.NewGuid(),
+                MachineId = defaultMachines[0].Id,
+                ProductId = defaultProducts[1].Id,
+                EmployeeId = defaultEmployees[0].Id,
+                ExpectedQuantity = 13,
+                CreatedOn = DateTime.UtcNow.AddDays(-5)
+            });
+            defaultPlans.Add(new Plan()
+            {
+                Id = Guid.NewGuid(),
+                MachineId = defaultMachines[0].Id,
+                ProductId = defaultProducts[0].Id,
+                EmployeeId = defaultEmployees[0].Id,
+                ExpectedQuantity = 17,
+                CreatedOn = DateTime.UtcNow.AddDays(-1)
+            });
+            defaultPlans.Add(new Plan()
+            {
+                Id = Guid.NewGuid(),
+                MachineId = defaultMachines[1].Id,
+                ProductId = defaultProducts[0].Id,
+                EmployeeId = defaultEmployees[1].Id,
+                ExpectedQuantity = 41,
+                CreatedOn = DateTime.UtcNow.AddDays(-5)
+            });
+            defaultPlans.Add(new Plan()
+            {
+                Id = Guid.NewGuid(),
+                MachineId = defaultMachines[1].Id,
+                ProductId = defaultProducts[1].Id,
+                EmployeeId = defaultEmployees[0].Id,
+                ExpectedQuantity = 22,
+                CreatedOn = DateTime.UtcNow.AddDays(-3)
+            });
 
             context.Plans.AddRange(defaultPlans);
 

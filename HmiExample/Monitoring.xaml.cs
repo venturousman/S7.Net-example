@@ -233,29 +233,30 @@ namespace HmiExample
 
         private GridViewModel<PlanViewModel> LoadData()
         {
-            // TODO: listen Plans
+            var plans = new ObservableCollection<PlanViewModel>();
 
-            var plans = new ObservableCollection<PlanViewModel>
+            // load databases
+            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (mainWindow.applicationDbContext.Plans.Local != null)
             {
-                new PlanViewModel
+                var lstPlans = mainWindow.applicationDbContext.Plans.Local.ToList();
+
+                foreach (var plan in lstPlans)
                 {
-                    Machine = "Machine 002",
-                    Employee = "Employee A",
-                    Product = "Product A",
-                    ExpectedQuantity = 23,
-                    ActualQuantity = 34,
-                    DataBlockNo = 0
-                },
-                new PlanViewModel
-                {
-                    Machine = "Machine 001",
-                    Employee = "Employee B",
-                    Product = "Product A",
-                    ExpectedQuantity = 45,
-                    ActualQuantity = 49,
-                    DataBlockNo = 1
+                    var planVM = new PlanViewModel
+                    {
+                        Machine = plan.Machine.Name,
+                        Employee = plan.Employee.DisplayName,
+                        Product = plan.Product.Name,
+                        ExpectedQuantity = plan.ExpectedQuantity,
+                        ActualQuantity = 0,
+                        DataBlockNo = plan.Machine.TagIndex
+                    };
+                    plans.Add(planVM);
                 }
-            };
+            }
+
+            // register event
             plans.CollectionChanged += Plans_CollectionChanged;
 
             return new GridViewModel<PlanViewModel>(plans);
