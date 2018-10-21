@@ -20,7 +20,13 @@ namespace HmiExample
     public partial class Reports : Page
     {
         private readonly ObservableCollection<ChartViewModel> _chartViewModels = new ObservableCollection<ChartViewModel>();
-        public ObservableCollection<ChartViewModel> ChartViewModels { get { return _chartViewModels; } }
+        public ObservableCollection<ChartViewModel> ChartViewModels
+        {
+            get
+            {
+                return _chartViewModels;
+            }
+        }
 
         public Reports()
         {
@@ -94,12 +100,21 @@ namespace HmiExample
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
                 if (mainWindow.applicationDbContext.Plans.Local != null)
                 {
+                    // build labels
+                    var labels = new List<string>();
+                    var dates = new List<DateTime>();
+
+                    for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
+                    {
+                        dates.Add(dt);
+                        labels.Add(dt.ToShortDateString());
+                    }
+
+                    // get data
                     var lstPlans = mainWindow.applicationDbContext.Plans.Local
                         .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate).ToList();
 
-                    // build labels
-
-                    // build formatter
+                    var groupMachines = lstPlans.GroupBy(x => x.MachineId).ToList();
 
                     // build series
                     _chartViewModels.Clear();
@@ -112,7 +127,7 @@ namespace HmiExample
                             {
                                 new ColumnSeries
                                 {
-                                    Title = "2015",
+                                    Title = plan.Machine.Name,
                                     Values = new ChartValues<double> { 10, 50, 39, 50 }
                                 }
                             },

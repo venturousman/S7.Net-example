@@ -1,6 +1,4 @@
-﻿using HmiExample.Helpers;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 
 namespace HmiExample.Models
 {
@@ -11,6 +9,11 @@ namespace HmiExample.Models
 
         //public ObservableCollection<T> Items => _items;
         //public ICommand AddItemCommand => new CommandsImplementation(ExecuteAddItem);
+
+        public GridViewModel()
+        {
+            this._items = new ObservableCollection<T>();
+        }
 
         public GridViewModel(ObservableCollection<T> _items)
         {

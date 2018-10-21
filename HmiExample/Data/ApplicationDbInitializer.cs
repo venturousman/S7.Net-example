@@ -11,19 +11,24 @@ namespace HmiExample.Data
     {
         protected override void Seed(ApplicationDbContext context)
         {
+            var defaultCreatedOn = new DateTime(2018, 10, 18, 12, 0, 0);
+
             // seed Machines
             IList<Machine> defaultMachines = new List<Machine>();
 
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 1", Code = "M001", TagIndex = 0, Counts = 4590, CreatedOn = DateTime.UtcNow });
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 2", Code = "M002", TagIndex = 1, Counts = 4320, CreatedOn = DateTime.UtcNow });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 1", Code = "M001", TagIndex = 0, Counts = 4590, CreatedOn = defaultCreatedOn });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 2", Code = "M002", TagIndex = 1, Counts = 4320, CreatedOn = defaultCreatedOn });
 
             context.Machines.AddRange(defaultMachines);
 
             // seed Product
             IList<Product> defaultProducts = new List<Product>();
 
-            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 1", Code = "P001", CreatedOn = DateTime.UtcNow });
-            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 2", Code = "P002", CreatedOn = DateTime.UtcNow });
+            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 1", Code = "P001", CreatedOn = defaultCreatedOn });
+            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 2", Code = "P002", CreatedOn = defaultCreatedOn });
+            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 3", Code = "P003", CreatedOn = defaultCreatedOn });
+            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 4", Code = "P004", CreatedOn = defaultCreatedOn });
+            defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 5", Code = "P005", CreatedOn = defaultCreatedOn });
 
             context.Products.AddRange(defaultProducts);
 
@@ -39,7 +44,7 @@ namespace HmiExample.Data
                 FirstName = "A",
                 MidleName = "Van",
                 LastName = "Tran",
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = defaultCreatedOn
             });
             defaultEmployees.Add(new Employee()
             {
@@ -50,7 +55,18 @@ namespace HmiExample.Data
                 FirstName = "B",
                 MidleName = "Van",
                 LastName = "Nguyen",
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = defaultCreatedOn
+            });
+            defaultEmployees.Add(new Employee()
+            {
+                Id = Guid.NewGuid(),
+                Code = "E003",
+                Email = "employee3@gmail.com",
+                DisplayName = "Employee 3",
+                FirstName = "C",
+                MidleName = "Van",
+                LastName = "Le",
+                CreatedOn = defaultCreatedOn
             });
 
             context.Employees.AddRange(defaultEmployees);
@@ -65,7 +81,8 @@ namespace HmiExample.Data
                 ProductId = defaultProducts[1].Id,
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 32,
-                CreatedOn = DateTime.UtcNow.AddDays(-3)
+                ActualQuantity = 29,
+                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -74,7 +91,8 @@ namespace HmiExample.Data
                 ProductId = defaultProducts[1].Id,
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 13,
-                CreatedOn = DateTime.UtcNow.AddDays(-5)
+                ActualQuantity = 15,
+                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -83,7 +101,8 @@ namespace HmiExample.Data
                 ProductId = defaultProducts[0].Id,
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 17,
-                CreatedOn = DateTime.UtcNow.AddDays(-1)
+                ActualQuantity = 17,
+                CreatedOn = new DateTime(2018, 10, 20, 12, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -92,7 +111,8 @@ namespace HmiExample.Data
                 ProductId = defaultProducts[0].Id,
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 41,
-                CreatedOn = DateTime.UtcNow.AddDays(-5)
+                ActualQuantity = 41,
+                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -101,7 +121,8 @@ namespace HmiExample.Data
                 ProductId = defaultProducts[1].Id,
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 22,
-                CreatedOn = DateTime.UtcNow.AddDays(-3)
+                ActualQuantity = 22,
+                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0)
             });
 
             context.Plans.AddRange(defaultPlans);

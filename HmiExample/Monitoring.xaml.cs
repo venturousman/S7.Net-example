@@ -29,7 +29,14 @@ namespace HmiExample
         // https://www.codeproject.com/Articles/167365/All-about-NET-Timers-A-Comparison
         DispatcherTimer timer = new DispatcherTimer();
 
-        public GridViewModel<PlanViewModel> GridPlanVMs { get; }
+        private readonly GridViewModel<PlanViewModel> _gridPlanVMs = new GridViewModel<PlanViewModel>();
+        public GridViewModel<PlanViewModel> GridPlanVMs
+        {
+            get
+            {
+                return _gridPlanVMs;
+            }
+        }
 
         public ICommand AddPlanCommand => new CommandsImplementation(ExecuteAddPlanCommand);
 
@@ -45,8 +52,7 @@ namespace HmiExample
             // default values
             txtIpAddress.Text = Properties.Settings.Default.IpAddress;
 
-            // testing
-            GridPlanVMs = LoadData();
+            //LoadData(); // testing
             DataContext = this;
         }
 
@@ -231,10 +237,8 @@ namespace HmiExample
             }
         }
 
-        private GridViewModel<PlanViewModel> LoadData()
+        private void LoadData()
         {
-            var plans = new ObservableCollection<PlanViewModel>();
-
             // load databases
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Plans.Local != null)
@@ -252,14 +256,12 @@ namespace HmiExample
                         ActualQuantity = 0,
                         DataBlockNo = plan.Machine.TagIndex
                     };
-                    plans.Add(planVM);
+                    _gridPlanVMs.Items.Add(planVM);
                 }
             }
 
             // register event
-            plans.CollectionChanged += Plans_CollectionChanged;
-
-            return new GridViewModel<PlanViewModel>(plans);
+            _gridPlanVMs.Items.CollectionChanged += Plans_CollectionChanged;
         }
 
         #region Plans
