@@ -5,7 +5,9 @@ using LiveCharts.Wpf;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,85 +19,15 @@ namespace HmiExample
     /// </summary>
     public partial class Reports : Page
     {
+        private readonly ObservableCollection<ChartViewModel> _chartViewModels = new ObservableCollection<ChartViewModel>();
+        public ObservableCollection<ChartViewModel> ChartViewModels { get { return _chartViewModels; } }
+
         public Reports()
         {
             InitializeComponent();
 
-            // can be ColumnSeries or LineSeries
-            SeriesCollection = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Title = "Machine 1",
-                    Values = new ChartValues<double> { 4, 6, 5, 2, 7, 6, 7, 3, 4, 6 },
-                    Fill = Brushes.Transparent
-                },
-                new LineSeries
-                {
-                    Title = "Machine 2",
-                    Values = new ChartValues<double> { 6, 7, 3, 4, 6, 2, 8, 4, 1, 6 },
-                    Fill = Brushes.Transparent
-                },
-                new LineSeries
-                {
-                    Title = "Machine 3",
-                    Values = new ChartValues<double> { 2, 8, 4, 1, 6, 4, 6, 5, 2, 7 },
-                    Fill = Brushes.Transparent
-                },
-                new LineSeries
-                {
-                    Title = "Machine 4",
-                    Values = new ChartValues<double> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
-                    Fill = Brushes.Transparent
-                },
-                new LineSeries
-                {
-                    Title = "Machine 5",
-                    Values = new ChartValues<double> { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 },
-                    Fill = Brushes.Transparent
-                }
-            };
-
-            Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct" };
-            //Formatter = value => value.ToString("C");
-            Formatter = value => value.ToString();
-
-
-            /*
-            // sample 1
-            Machines = new List<Machine>();
-            for (int i = 0; i < 30; i++)
-            {
-                var machine = new Machine
-                {
-                    SeriesCollection = new SeriesCollection
-                    {
-                        new ColumnSeries
-                        {
-                            Title = "2015",
-                            Values = new ChartValues<double> { 10, 50, 39, 50 }
-                        },
-                        new ColumnSeries
-                        {
-                            Title = "2016",
-                            Values = new ChartValues<double> { 11, 56, 42, 48 }
-                        }
-                    },
-                    Labels = new[] { "Maria", "Susan", "Charles", "Frida" },
-                    Formatter = value => value.ToString("N"),
-                    Id = Guid.NewGuid(),
-                    Name = "machine_" + i
-                };
-                Machines.Add(machine);
-            }
-            */
-
             this.DataContext = this;
         }
-
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> Formatter { get; set; }
 
         private void btnExport_Click(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -128,8 +60,10 @@ namespace HmiExample
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Productivity list - " + currentDate.ToShortDateString());
 
                     // --------- Data and styling goes here -------------- //
-                    var imageChart = ChartHelpers.ChartToImage(chartProductivity);
-                    var picture = worksheet.Drawings.AddPicture("chart", imageChart);
+                    //var imageChart = ChartHelpers.ChartToImage(chartProductivity);
+                    //var picture = worksheet.Drawings.AddPicture("chart", imageChart);
+
+
 
                     //picture.SetPosition(rowIndex, 0, colIndex, 0);
                     //picture.SetSize(Height, Width);
@@ -149,6 +83,83 @@ namespace HmiExample
             }
         }
 
-        //public List<Machine> Machines { get; set; }
+        private void btnRunReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (dtFrom.SelectedDate.HasValue && dtTo.SelectedDate.HasValue)
+            {
+                // get date range
+                DateTime fromDate = dtFrom.SelectedDate.Value;
+                DateTime toDate = dtTo.SelectedDate.Value;
+
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                if (mainWindow.applicationDbContext.Plans.Local != null)
+                {
+                    var lstPlans = mainWindow.applicationDbContext.Plans.Local
+                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate).ToList();
+
+                    // build labels
+
+                    // build formatter
+
+                    // build series
+                    _chartViewModels.Clear();
+                    foreach (var plan in lstPlans)
+                    {
+                        var chartVM = new ChartViewModel
+                        {
+                            Machine = plan.Machine.Name,
+                            SeriesCollection = new SeriesCollection
+                            {
+                                new ColumnSeries
+                                {
+                                    Title = "2015",
+                                    Values = new ChartValues<double> { 10, 50, 39, 50 }
+                                }
+                            },
+                            Labels = new[] { "Maria", "Susan", "Charles", "Frida" },
+                            Formatter = value => value.ToString("N")
+                        };
+                        _chartViewModels.Add(chartVM);
+                    }
+
+                    // group by machine
+                }
+            }
+
+        }
+
+        private void datePickerSelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnRunReport.IsEnabled = false;
+            btnExport.IsEnabled = false;
+
+            if (dtFrom.SelectedDate.HasValue && dtTo.SelectedDate.HasValue)
+            {
+                // get date range
+                DateTime fromDate = dtFrom.SelectedDate.Value;
+                DateTime toDate = dtTo.SelectedDate.Value;
+
+                if (fromDate > toDate)
+                {
+                    MessageBox.Show("From Date must be less than To Date", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    btnRunReport.IsEnabled = false;
+                    btnExport.IsEnabled = false;
+                }
+                else
+                {
+                    btnRunReport.IsEnabled = true;
+                    btnExport.IsEnabled = true;
+                }
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            dtFrom.DisplayDateStart = Constants.DefaultStartDate;
+            dtFrom.SelectedDate = DateTime.Now;
+            dtTo.DisplayDateStart = Constants.DefaultStartDate;
+            dtTo.SelectedDate = DateTime.Now;
+        }
+
     }
 }

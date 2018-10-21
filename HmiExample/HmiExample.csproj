@@ -127,6 +127,7 @@
     <Compile Include="Models\ObservableBase.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductViewModel.cs" />
+    <Compile Include="Models\ChartViewModel.cs" />
     <Compile Include="Models\SelectableViewModel.cs" />
     <Compile Include="Models\SettingsViewModel.cs" />
     <Compile Include="Monitoring.xaml.cs">
