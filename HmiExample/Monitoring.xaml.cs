@@ -252,7 +252,7 @@ namespace HmiExample
                         Machine = plan.Machine.Name,
                         Employee = plan.Employee.DisplayName,
                         Product = plan.Product.Name,
-                        ExpectedQuantity = plan.ExpectedQuantity,
+                        ExpectedQuantity = plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0,
                         ActualQuantity = 0,
                         DataBlockNo = plan.Machine.TagIndex
                     };

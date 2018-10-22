@@ -9,6 +9,7 @@ namespace HmiExample.Models
         private SeriesCollection _seriesCollection;
         private string[] _labels;
         private Func<double, string> _formatter;
+        private int _width;
 
         public string Machine
         {
@@ -50,6 +51,17 @@ namespace HmiExample.Models
             {
                 if (_formatter == value) return;
                 _formatter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Width
+        {
+            get { return _width; }
+            set
+            {
+                if (_width == value) return;
+                _width = value;
                 OnPropertyChanged();
             }
         }

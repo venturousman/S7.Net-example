@@ -82,7 +82,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 32,
                 ActualQuantity = 29,
-                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0)
+                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 10, 18, 17, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -92,7 +94,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 13,
                 ActualQuantity = 15,
-                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0)
+                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 10, 16, 19, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -102,7 +106,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 17,
                 ActualQuantity = 17,
-                CreatedOn = new DateTime(2018, 10, 20, 12, 0, 0)
+                CreatedOn = new DateTime(2018, 10, 20, 12, 0, 0),
+                StartTime = new DateTime(2018, 10, 20, 8, 0, 0),
+                EndTime = new DateTime(2018, 10, 20, 16, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -112,7 +118,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 41,
                 ActualQuantity = 41,
-                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0)
+                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 10, 16, 19, 0, 0)
             });
             defaultPlans.Add(new Plan()
             {
@@ -122,7 +130,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 22,
                 ActualQuantity = 22,
-                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0)
+                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 10, 18, 17, 0, 0)
             });
 
             context.Plans.AddRange(defaultPlans);

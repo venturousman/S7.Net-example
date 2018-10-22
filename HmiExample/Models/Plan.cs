@@ -16,10 +16,14 @@ namespace HmiExample.Models
         [Required(ErrorMessage = "*")]
         public Guid ProductId { get; set; }
 
-        [Required(ErrorMessage = "*")]
-        public int ExpectedQuantity { get; set; }
+        //[Required(ErrorMessage = "*")]
+        public int? ExpectedQuantity { get; set; }
 
-        public int ActualQuantity { get; set; }
+        public int? ActualQuantity { get; set; }
+
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
 
         #region Relationship
         public virtual Machine Machine { get; set; }
