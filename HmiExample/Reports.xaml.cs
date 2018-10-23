@@ -97,6 +97,9 @@ namespace HmiExample
                 DateTime fromDate = dtFrom.SelectedDate.Value;
                 DateTime toDate = dtTo.SelectedDate.Value;
 
+                fromDate = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, 0, 0, 0);
+                toDate = new DateTime(toDate.Year, toDate.Month, toDate.Day, 23, 59, 59);
+
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
                 if (mainWindow.applicationDbContext.Plans.Local != null)
                 {
@@ -110,6 +113,9 @@ namespace HmiExample
                         labels.Add(dt.ToShortDateString());
                     }
 
+                    // calculate width of chart
+                    var calculatedWidth = labels.Count * 35 + 400; // px
+
                     // get data
                     var lstPlans = mainWindow.applicationDbContext.Plans.Local
                         .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate).ToList();
@@ -118,29 +124,61 @@ namespace HmiExample
 
                     // build series
                     _chartViewModels.Clear();
-                    foreach (var plan in lstPlans)
+                    foreach (var group in groupMachines)
                     {
+                        var chartName = string.Empty;
+                        var machineName = string.Empty;
+                        var seriesActualQuantity = new ChartValues<double>();
+                        var seriesExpectedQuantity = new ChartValues<double>();
+                        foreach (var label in labels)
+                        {
+                            var sumActualQuantity = 0;
+                            var sumExpectedQuantity = 0;
+                            foreach (var plan in group)
+                            {
+                                if (string.IsNullOrEmpty(machineName))
+                                {
+                                    machineName = plan.Machine.Name;
+                                }
+                                if (string.IsNullOrEmpty(chartName))
+                                {
+                                    chartName = "chart-" + plan.MachineId;
+                                }
+                                if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
+                                {
+                                    sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
+                                    sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
+                                }
+                            }
+                            seriesActualQuantity.Add(sumActualQuantity);
+                            seriesExpectedQuantity.Add(sumExpectedQuantity);
+                        }
                         var chartVM = new ChartViewModel
                         {
-                            Machine = plan.Machine.Name,
+                            ChartName = chartName,
+                            Machine = machineName,
                             SeriesCollection = new SeriesCollection
                             {
                                 new ColumnSeries
                                 {
-                                    Title = plan.Machine.Name,
-                                    Values = new ChartValues<double> { 10, 50, 39, 50 }
+                                    Title = "Actual Quantity",
+                                    Values = seriesActualQuantity,
+                                    //MaxColumnWidth = double.PositiveInfinity
+                                },
+                                new LineSeries
+                                {
+                                    Title = "Expected Quantity",
+                                    Values = seriesExpectedQuantity
                                 }
                             },
-                            Labels = new[] { "Maria", "Susan", "Charles", "Frida" },
-                            Formatter = value => value.ToString("N")
+                            Labels = labels.ToArray(),
+                            Formatter = value => value.ToString("N"),
+                            Width = calculatedWidth
                         };
                         _chartViewModels.Add(chartVM);
                     }
-
-                    // group by machine
                 }
             }
-
         }
 
         private void datePickerSelectedDateChanged(object sender, SelectionChangedEventArgs e)

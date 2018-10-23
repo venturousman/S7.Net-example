@@ -6,10 +6,12 @@ namespace HmiExample.Models
     public class ChartViewModel : ObservableBase
     {
         private string _machine;
+
         private SeriesCollection _seriesCollection;
         private string[] _labels;
         private Func<double, string> _formatter;
         private int _width;
+        private string _chartName;
 
         public string Machine
         {
@@ -62,6 +64,17 @@ namespace HmiExample.Models
             {
                 if (_width == value) return;
                 _width = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ChartName
+        {
+            get { return _chartName; }
+            set
+            {
+                if (_chartName == value) return;
+                _chartName = value;
                 OnPropertyChanged();
             }
         }
