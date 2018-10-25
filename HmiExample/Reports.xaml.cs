@@ -117,17 +117,21 @@ namespace HmiExample
                     var calculatedWidth = labels.Count * 35 + 400; // px
 
                     // get data
-                    var lstPlans = mainWindow.applicationDbContext.Plans.Local
-                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate).ToList();
-
-                    var groupMachines = lstPlans.GroupBy(x => x.MachineId).ToList();
+                    var groups = mainWindow.applicationDbContext.Plans.Local
+                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate)
+                        .GroupBy(x => new { x.EmployeeId, x.MachineId })
+                        .ToList();
 
                     // build series
                     _chartViewModels.Clear();
-                    foreach (var group in groupMachines)
+                    foreach (var group in groups)
                     {
+                        // var tmp = group.GroupBy(x => x.ProductId).ToList();
+
                         var chartName = string.Empty;
                         var machineName = string.Empty;
+                        var employeeName = string.Empty;
+
                         var seriesActualQuantity = new ChartValues<double>();
                         var seriesExpectedQuantity = new ChartValues<double>();
                         foreach (var label in labels)
@@ -139,6 +143,10 @@ namespace HmiExample
                                 if (string.IsNullOrEmpty(machineName))
                                 {
                                     machineName = plan.Machine.Name;
+                                }
+                                if (string.IsNullOrEmpty(employeeName))
+                                {
+                                    employeeName = plan.Employee.DisplayName;
                                 }
                                 if (string.IsNullOrEmpty(chartName))
                                 {
