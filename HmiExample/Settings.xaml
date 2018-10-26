@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:HmiExample"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      mc:Ignorable="d"
+      mc:Ignorable="d" Loaded="Page_Loaded"
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Settings">
 
@@ -143,10 +143,23 @@
                                     </Border>
                                 </DataGridCheckBoxColumn.Header>
                             </DataGridCheckBoxColumn>
-                            <DataGridTextColumn Binding="{Binding Code}" Header="Code" 
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding Code}" Header="Code" 
+                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                             <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name}" Header="Name" 
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete product" 
+                                                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeleteProductCommand}">
+                                            <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

@@ -2,9 +2,11 @@
 using HmiExample.Helpers;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace HmiExample.Models
@@ -14,27 +16,30 @@ namespace HmiExample.Models
         public ICommand AddMachineCommand => new CommandsImplementation(ExecuteAddMachineDialog);
         public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployeeDialog);
         public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProductDialog);
+        public ICommand DeleteProductCommand => new CommandsImplementation(ExecuteDeleteProduct);
 
-        public GridViewModel<MachineViewModel> Machines { get; }    // should be GridMachinesVM
-        public GridViewModel<EmployeeViewModel> Employees { get; }
-        public GridViewModel<ProductViewModel> Products { get; }
+        private GridViewModel<ProductViewModel> _products = new GridViewModel<ProductViewModel>();
+        private GridViewModel<EmployeeViewModel> _employees = new GridViewModel<EmployeeViewModel>();
+        private GridViewModel<MachineViewModel> _machines = new GridViewModel<MachineViewModel>();
+
+        public GridViewModel<MachineViewModel> Machines { get { return _machines; } }    // should be GridMachinesVM
+        public GridViewModel<EmployeeViewModel> Employees { get { return _employees; } }
+        public GridViewModel<ProductViewModel> Products { get { return _products; } }
 
         public SettingsViewModel()
         {
-            Machines = LoadMachines();
-            Employees = LoadEmployees();
-            Products = LoadProducts();
+            //LoadMachines();
+            //LoadEmployees();
+            //Products = LoadProducts();
         }
 
-        private GridViewModel<EmployeeViewModel> LoadEmployees()
+        public void LoadEmployees()
         {
-            var employees = new ObservableCollection<EmployeeViewModel>();
-
             // load databases
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Employees.Local != null)
             {
-                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.ToList();
+                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.OrderBy(x => x.DisplayName).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -47,26 +52,22 @@ namespace HmiExample.Models
                         Name = employee.DisplayName,
                         Code = employee.Code
                     };
-                    employees.Add(employeeVM);
+                    _employees.Items.Add(employeeVM);
                 }
                 //}
             }
 
             // register event
-            employees.CollectionChanged += Employees_CollectionChanged;
-
-            return new GridViewModel<EmployeeViewModel>(employees);
+            _employees.Items.CollectionChanged += Employees_CollectionChanged;
         }
 
-        private GridViewModel<MachineViewModel> LoadMachines()
+        public void LoadMachines()
         {
-            var machines = new ObservableCollection<MachineViewModel>();
-
             // load databases
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Machines.Local != null)
             {
-                var lstMachines = mainWindow.applicationDbContext.Machines.Local.ToList();
+                var lstMachines = mainWindow.applicationDbContext.Machines.Local.OrderBy(x => x.Name).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -79,26 +80,22 @@ namespace HmiExample.Models
                         Name = machine.Name,
                         Code = machine.Code
                     };
-                    machines.Add(machineVM);
+                    _machines.Items.Add(machineVM);
                 }
                 //}
             }
 
             // register event
-            machines.CollectionChanged += Machines_CollectionChanged;
-
-            return new GridViewModel<MachineViewModel>(machines);
+            _machines.Items.CollectionChanged += Machines_CollectionChanged;
         }
 
-        private GridViewModel<ProductViewModel> LoadProducts()
+        public void LoadProducts()
         {
-            var products = new ObservableCollection<ProductViewModel>();
-
             // load databases
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Products.Local != null)
             {
-                var lstProducts = mainWindow.applicationDbContext.Products.Local.ToList();
+                var lstProducts = mainWindow.applicationDbContext.Products.Local.OrderBy(x => x.Name).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -108,18 +105,17 @@ namespace HmiExample.Models
                 {
                     var productVM = new ProductViewModel
                     {
+                        Id = product.Id,
                         Name = product.Name,
                         Code = product.Code
                     };
-                    products.Add(productVM);
+                    _products.Items.Add(productVM);
                 }
                 //}
             }
 
             // register event
-            products.CollectionChanged += Products_CollectionChanged;
-
-            return new GridViewModel<ProductViewModel>(products);
+            _products.Items.CollectionChanged += Products_CollectionChanged;
         }
 
         #region Machines
@@ -230,15 +226,58 @@ namespace HmiExample.Models
 
         private void Products_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            try
             {
-                var tmp = e.OldItems;
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    var removeProducts = new List<Product>();
+                    foreach (ProductViewModel item in e.OldItems)
+                    {
+                        var removeProduct = new Product
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            Code = item.Code
+                        };
+                        removeProducts.Add(removeProduct);
+                    }
+                    mainWindow.applicationDbContext.Products.RemoveRange(removeProducts);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    var newProducts = new List<Product>();
+                    foreach (ProductViewModel item in e.NewItems)
+                    {
+                        var newProduct = new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = item.Name,
+                            Code = item.Code,
+                            CreatedOn = DateTime.UtcNow
+                        };
+                        newProducts.Add(newProduct);
+                    }
+                    mainWindow.applicationDbContext.Products.AddRange(newProducts);
+                }
+                // save databases
+                mainWindow.applicationDbContext.SaveChanges();
+                MessageBox.Show("Successfully created product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
+            catch (Exception ex)
             {
-                var tmp = e.NewItems;
+                var msg = ex.GetAllExceptionInfo(); // TODO: log file or db
+                var msg1 = ex.GetRootMessage();
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Cannot remove the selected products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Cannot create these products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            // TODO: save databases
         }
 
         private async void ExecuteAddProductDialog(object o)
@@ -272,6 +311,11 @@ namespace HmiExample.Models
                 var newProduct = new ProductViewModel { Name = context.Name, Code = context.Code };
                 Products.Items.Add(newProduct);
             }
+        }
+
+        private void ExecuteDeleteProduct(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

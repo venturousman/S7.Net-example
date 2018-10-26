@@ -28,7 +28,7 @@ namespace HmiExample
                 txtMaxCycleTime.Text = Properties.Settings.Default[Constants.MaxCycleTime].ToString();
             }
 
-            DataContext = new SettingsViewModel();            
+            DataContext = new SettingsViewModel();
         }
 
         private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -66,6 +66,17 @@ namespace HmiExample
             {
                 MessageBox.Show(exc.Message);
             }
-        }        
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is SettingsViewModel)
+            {
+                var context = DataContext as SettingsViewModel;
+                context.LoadProducts();
+                context.LoadMachines();
+                context.LoadEmployees();
+            }
+        }
     }
 }

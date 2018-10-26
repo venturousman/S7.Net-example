@@ -1,7 +1,10 @@
-﻿namespace HmiExample.Models
+﻿using System;
+
+namespace HmiExample.Models
 {
     public class ProductViewModel : SelectableViewModel
     {
+        private Guid _id;
         private string _name;
         private string _code;
 
@@ -23,6 +26,17 @@
             {
                 if (_code == value) return;
                 _code = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Guid Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id == value) return;
+                _id = value;
                 OnPropertyChanged();
             }
         }
