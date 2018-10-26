@@ -92,7 +92,7 @@ namespace HmiExample.Models
         public void LoadProducts()
         {
             // load databases
-            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Products.Local != null)
             {
                 var lstProducts = mainWindow.applicationDbContext.Products.Local.OrderBy(x => x.Name).ToList();
@@ -235,13 +235,11 @@ namespace HmiExample.Models
                     var removeProducts = new List<Product>();
                     foreach (ProductViewModel item in e.OldItems)
                     {
-                        var removeProduct = new Product
+                        var deletingProduct = mainWindow.applicationDbContext.Products.Local.Where(x => x.Id == item.Id).FirstOrDefault();
+                        if (deletingProduct != null)
                         {
-                            Id = item.Id,
-                            Name = item.Name,
-                            Code = item.Code
-                        };
-                        removeProducts.Add(removeProduct);
+                            removeProducts.Add(deletingProduct);
+                        }
                     }
                     mainWindow.applicationDbContext.Products.RemoveRange(removeProducts);
                 }
@@ -315,7 +313,11 @@ namespace HmiExample.Models
 
         private void ExecuteDeleteProduct(object obj)
         {
-            throw new NotImplementedException();
+            if (obj is ProductViewModel)
+            {
+                var product = obj as ProductViewModel;
+                Products.Items.Remove(product);
+            }
         }
 
         #endregion
