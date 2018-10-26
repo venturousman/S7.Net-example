@@ -39,7 +39,7 @@ namespace HmiExample.Models
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Employees.Local != null)
             {
-                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.OrderBy(x => x.DisplayName).ToList();
+                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.Where(x => !x.IsDeleted).OrderBy(x => x.DisplayName).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -67,7 +67,7 @@ namespace HmiExample.Models
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Machines.Local != null)
             {
-                var lstMachines = mainWindow.applicationDbContext.Machines.Local.OrderBy(x => x.Name).ToList();
+                var lstMachines = mainWindow.applicationDbContext.Machines.Local.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -95,7 +95,7 @@ namespace HmiExample.Models
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Products.Local != null)
             {
-                var lstProducts = mainWindow.applicationDbContext.Products.Local.OrderBy(x => x.Name).ToList();
+                var lstProducts = mainWindow.applicationDbContext.Products.Local.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
 
                 //using (var context = new ApplicationDbContext())
                 //{
@@ -232,16 +232,19 @@ namespace HmiExample.Models
 
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
-                    var removeProducts = new List<Product>();
                     foreach (ProductViewModel item in e.OldItems)
                     {
                         var deletingProduct = mainWindow.applicationDbContext.Products.Local.Where(x => x.Id == item.Id).FirstOrDefault();
                         if (deletingProduct != null)
                         {
-                            removeProducts.Add(deletingProduct);
+                            deletingProduct.IsDeleted = true; // soft delete
+                            int index = mainWindow.applicationDbContext.Products.Local.IndexOf(deletingProduct);
+                            if (index >= 0)
+                            {
+                                mainWindow.applicationDbContext.Products.Local.Insert(index, deletingProduct);
+                            }
                         }
                     }
-                    mainWindow.applicationDbContext.Products.RemoveRange(removeProducts);
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Add)
                 {
@@ -261,7 +264,14 @@ namespace HmiExample.Models
                 }
                 // save databases
                 mainWindow.applicationDbContext.SaveChanges();
-                MessageBox.Show("Successfully created product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Successfully deleted products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Successfully created products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
