@@ -1,8 +1,9 @@
 ﻿using HmiExample.Data;
+using HmiExample.Helpers;
+using System;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Windows;
-using System.Windows.Data;
 
 namespace HmiExample
 {
@@ -67,10 +68,21 @@ namespace HmiExample
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //CollectionViewSource machineViewSource = ((CollectionViewSource)(this.FindResource("machineViewSource")));
-            //CollectionViewSource productViewSource = ((CollectionViewSource)(this.FindResource("productViewSource")));
-            //CollectionViewSource employeeViewSource = ((CollectionViewSource)(this.FindResource("employeeViewSource")));
-            //CollectionViewSource planViewSource = ((CollectionViewSource)(this.FindResource("planViewSource")));
+            try
+            {
+                applicationDbContext.Database.Connection.Open();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.GetAllExceptionInfo(); // todo: save log
+
+                MessageBoxResult messageBoxResult = MessageBox.Show("Couldn't connect to database, the application will close immediately", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                if (messageBoxResult == MessageBoxResult.OK)
+                {
+                    // Application.Current.Shutdown();
+                    Environment.Exit(1);
+                }
+            }
 
             // Load is an extension method on IQueryable, defined in the System.Data.Entity namespace.
             // This method enumerates the results of the query, similar to ToList but without creating a list.
