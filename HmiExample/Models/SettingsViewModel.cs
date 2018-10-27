@@ -13,10 +13,12 @@ namespace HmiExample.Models
 {
     public class SettingsViewModel : ObservableBase
     {
-        public ICommand AddMachineCommand => new CommandsImplementation(ExecuteAddMachineDialog);
-        public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployeeDialog);
-        public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProductDialog);
+        public ICommand AddMachineCommand => new CommandsImplementation(ExecuteAddMachine);
+        public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployee);
+
+        public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProduct);
         public ICommand DeleteProductCommand => new CommandsImplementation(ExecuteDeleteProduct);
+        public ICommand EditProductCommand => new CommandsImplementation(ExecuteEditProduct);
 
         private GridViewModel<ProductViewModel> _products = new GridViewModel<ProductViewModel>();
         private GridViewModel<EmployeeViewModel> _employees = new GridViewModel<EmployeeViewModel>();
@@ -28,9 +30,6 @@ namespace HmiExample.Models
 
         public SettingsViewModel()
         {
-            //LoadMachines();
-            //LoadEmployees();
-            //Products = LoadProducts();
         }
 
         public void LoadEmployees()
@@ -133,7 +132,7 @@ namespace HmiExample.Models
             // TODO: save databases
         }
 
-        private async void ExecuteAddMachineDialog(object o)
+        private async void ExecuteAddMachine(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddMachineDialog
@@ -187,7 +186,7 @@ namespace HmiExample.Models
             // TODO: save databases
         }
 
-        private async void ExecuteAddEmployeeDialog(object o)
+        private async void ExecuteAddEmployee(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddEmployeeDialog
@@ -238,6 +237,8 @@ namespace HmiExample.Models
                         if (deletingProduct != null)
                         {
                             deletingProduct.IsDeleted = true; // soft delete
+                            deletingProduct.ModifiedOn = DateTime.UtcNow;
+
                             int index = mainWindow.applicationDbContext.Products.Local.IndexOf(deletingProduct);
                             if (index >= 0)
                             {
@@ -262,8 +263,33 @@ namespace HmiExample.Models
                     }
                     mainWindow.applicationDbContext.Products.AddRange(newProducts);
                 }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    for (int i = 0; i < e.OldItems.Count; i++)
+                    {
+                        var oldItem = (ProductViewModel)e.OldItems[i];
+                        var newItem = (ProductViewModel)e.NewItems[i];
+
+                        var editingProduct = mainWindow.applicationDbContext.Products.Local.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        if (editingProduct != null)
+                        {
+                            editingProduct.Name = newItem.Name;
+                            editingProduct.Code = newItem.Code;
+                            editingProduct.ModifiedOn = DateTime.UtcNow;
+
+                            int index = mainWindow.applicationDbContext.Products.Local.IndexOf(editingProduct);
+                            if (index >= 0)
+                            {
+                                mainWindow.applicationDbContext.Products.Local.Insert(index, editingProduct);
+                            }
+                        }
+                    }
+                }
+
                 // save databases
                 mainWindow.applicationDbContext.SaveChanges();
+
+                // notify
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
                     MessageBox.Show("Successfully deleted products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -271,6 +297,10 @@ namespace HmiExample.Models
                 else if (e.Action == NotifyCollectionChangedAction.Add)
                 {
                     MessageBox.Show("Successfully created products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Successfully updated products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
@@ -288,7 +318,7 @@ namespace HmiExample.Models
             }
         }
 
-        private async void ExecuteAddProductDialog(object o)
+        private async void ExecuteAddProduct(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddProductDialog
@@ -316,9 +346,53 @@ namespace HmiExample.Models
 
             if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
             {
-                var newProduct = new ProductViewModel { Name = context.Name, Code = context.Code };
-                Products.Items.Add(newProduct);
+                if (context.Id != Guid.Empty)
+                {
+                    var index = -1;
+                    for (int i = 0; i < Products.Items.Count; i++)
+                    {
+                        if (Products.Items[i].Id == context.Id)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1)
+                    {
+                        // Products.Items.Insert(index, context);
+                        Products.Items[index] = context;
+                    }
+                }
+                else
+                {
+                    var newProduct = new ProductViewModel { Name = context.Name, Code = context.Code };
+                    Products.Items.Add(newProduct);
+                }
             }
+        }
+
+        private async void ExecuteEditProduct(object o)
+        {
+            if (!(o is ProductViewModel)) return;
+
+            var editingProduct = o as ProductViewModel;
+
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddProductDialog
+            {
+                DataContext = new ProductViewModel()
+                {
+                    Id = editingProduct.Id,
+                    Name = editingProduct.Name,
+                    Code = editingProduct.Code
+                }
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedProductDialogEventHandler, ClosingProductDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
         }
 
         private void ExecuteDeleteProduct(object obj)
