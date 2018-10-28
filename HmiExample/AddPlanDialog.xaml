@@ -7,6 +7,7 @@
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:helper="clr-namespace:HmiExample.Helpers"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="16">
@@ -16,13 +17,40 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock>New plan:</TextBlock>
-        
-        
-        
+        <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}">Plan:</TextBlock>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0 16 0 0">
+        <ComboBox materialDesign:ComboBoxAssist.ClassicMode="True" Margin="0,26,0,0"
+                  materialDesign:HintAssist.Hint="Machine" Grid.Row="0"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  Name="cbMachine" Loaded="cbMachine_Loaded" SelectionChanged="cbMachine_SelectionChanged">
+        </ComboBox>
+
+        <ComboBox materialDesign:ComboBoxAssist.ClassicMode="True" Margin="0,16,0,0"
+                  materialDesign:HintAssist.Hint="Employee" Grid.Row="1"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  Name="cbEmployee" Loaded="cbEmployee_Loaded" SelectionChanged="cbEmployee_SelectionChanged">
+        </ComboBox>
+
+        <ComboBox materialDesign:ComboBoxAssist.ClassicMode="True" Margin="0,16,0,0"
+                  materialDesign:HintAssist.Hint="Product" Grid.Row="2"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  Name="cbProduct" Loaded="cbProduct_Loaded" SelectionChanged="cbProduct_SelectionChanged">
+        </ComboBox>
+
+        <TextBox wpf:HintAssist.Hint="Expected Quantity" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 16 0 0" FontSize="18" Grid.Row="3" PreviewTextInput="OnPreviewTextInput">
+            <TextBox.Text>
+                <Binding Path="ExpectedQuantity" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="0 16 0 0">
             <Button IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
