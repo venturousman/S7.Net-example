@@ -10,13 +10,14 @@ namespace HmiExample.Data
         public ApplicationDbContext() : base("DefaultConnection")
         {
             //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationDbContext>());
-            //Database.SetInitializer(new ApplicationDbInitializer());
+            Database.SetInitializer(new ApplicationDbInitializer());
         }
 
         public DbSet<Machine> Machines { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Plan> Plans { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
