@@ -70,7 +70,15 @@ namespace HmiExample
         {
             try
             {
-                applicationDbContext.Database.Connection.Open();
+                var isExisted = applicationDbContext.Database.Exists();
+                if (isExisted)
+                {
+                    applicationDbContext.Database.Connection.Open();
+                }
+                else
+                {
+                    applicationDbContext.Database.Initialize(true);
+                }
             }
             catch (Exception ex)
             {
