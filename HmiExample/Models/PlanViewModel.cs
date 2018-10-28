@@ -1,59 +1,71 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 
 namespace HmiExample.Models
 {
     public class PlanViewModel : SelectableViewModel
     {
-        //public Guid Id { get; set; }
-        //public string Machine { get; set; }
-        //public string Supervisor { get; set; }
-        //public string Status { get; set; }
+        private Guid _id;
+        private Guid _machineId;
+        private Guid? _employeeId;
+        private Guid _productId;
+        private int? _expectedQuantity;  // output, san luong san xuat theo plan
+        private int? _actualQuantity;  // output, san luong san xuat theo thuc te
+        private DateTime? _startTime;
+        private DateTime? _endTime;
 
-        private string _machine;
-        private string _employee;
-        private string _product;
-        private int _expectedQuantity;  // output, san luong san xuat theo plan
-        private int _actualQuantity;  // output, san luong san xuat theo thuc te
-        private int _dataBlockNo;
+        private ProductViewModel _product;
+        private MachineViewModel _machine;
+        private EmployeeViewModel _employee;
 
         private bool _isConnected;
-        //private bool _isStarted;
         private SolidColorBrush _ledColor;
 
-        public string Machine
+        public Guid Id
         {
-            get { return _machine; }
+            get { return _id; }
             set
             {
-                if (_machine == value) return;
-                _machine = value;
+                if (_id == value) return;
+                _id = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Employee
+        public Guid MachineId
         {
-            get { return _employee; }
+            get { return _machineId; }
             set
             {
-                if (_employee == value) return;
-                _employee = value;
+                if (_machineId == value) return;
+                _machineId = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Product
+        public Guid? EmployeeId
         {
-            get { return _product; }
+            get { return _employeeId; }
             set
             {
-                if (_product == value) return;
-                _product = value;
+                if (_employeeId == value) return;
+                _employeeId = value;
                 OnPropertyChanged();
             }
         }
 
-        public int ExpectedQuantity
+        public Guid ProductId
+        {
+            get { return _productId; }
+            set
+            {
+                if (_productId == value) return;
+                _productId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int? ExpectedQuantity
         {
             get { return _expectedQuantity; }
             set
@@ -64,7 +76,7 @@ namespace HmiExample.Models
             }
         }
 
-        public int ActualQuantity
+        public int? ActualQuantity
         {
             get { return _actualQuantity; }
             set
@@ -75,13 +87,57 @@ namespace HmiExample.Models
             }
         }
 
-        public int DataBlockNo
+        public DateTime? StartTime
         {
-            get { return _dataBlockNo; }
+            get { return _startTime; }
             set
             {
-                if (_dataBlockNo == value) return;
-                _dataBlockNo = value;
+                if (_startTime == value) return;
+                _startTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime? EndTime
+        {
+            get { return _endTime; }
+            set
+            {
+                if (_endTime == value) return;
+                _endTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ProductViewModel Product
+        {
+            get { return _product; }
+            set
+            {
+                if (_product == value) return;
+                _product = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MachineViewModel Machine
+        {
+            get { return _machine; }
+            set
+            {
+                if (_machine == value) return;
+                _machine = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public EmployeeViewModel Employee
+        {
+            get { return _employee; }
+            set
+            {
+                if (_employee == value) return;
+                _employee = value;
                 OnPropertyChanged();
             }
         }
@@ -96,27 +152,6 @@ namespace HmiExample.Models
                 OnPropertyChanged();
             }
         }
-
-        //public bool IsEnabledStart
-        //{
-        //    get { return _isConnected == true && _isStarted == false; }
-        //}
-
-        //public bool IsEnabledStop
-        //{
-        //    get { return _isConnected == true && _isStarted == true; }
-        //}
-
-        //public bool IsStarted
-        //{
-        //    get { return _isStarted; }
-        //    set
-        //    {
-        //        if (_isStarted == value) return;
-        //        _isStarted = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
 
         public bool IsConnected
         {

@@ -42,7 +42,7 @@ namespace HmiExample.Data
                 Email = "employee1@gmail.com",
                 DisplayName = "Employee 1",
                 FirstName = "A",
-                MidleName = "Van",
+                MiddleName = "Van",
                 LastName = "Tran",
                 CreatedOn = defaultCreatedOn
             });
@@ -53,7 +53,7 @@ namespace HmiExample.Data
                 Email = "employee2@gmail.com",
                 DisplayName = "Employee 2",
                 FirstName = "B",
-                MidleName = "Van",
+                MiddleName = "Van",
                 LastName = "Nguyen",
                 CreatedOn = defaultCreatedOn
             });
@@ -64,7 +64,7 @@ namespace HmiExample.Data
                 Email = "employee3@gmail.com",
                 DisplayName = "Employee 3",
                 FirstName = "C",
-                MidleName = "Van",
+                MiddleName = "Van",
                 LastName = "Le",
                 CreatedOn = defaultCreatedOn
             });

@@ -1,12 +1,28 @@
-﻿namespace HmiExample.Models
+﻿using System;
+
+namespace HmiExample.Models
 {
     /// <summary>
     /// MachineViewModel is a selectable view model
     /// </summary>
     public class MachineViewModel : SelectableViewModel
     {
+        private Guid _id;
         private string _name;
         private string _code;
+        private int _tagIndex;
+        private int _counts;
+
+        public Guid Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id == value) return;
+                _id = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Name
         {
@@ -31,9 +47,26 @@
             }
         }
 
-        //private Action<PropertyChangedEventArgs> RaisePropertyChanged()
-        //{
-        //    return args => PropertyChanged?.Invoke(this, args);
-        //}        
+        public int TagIndex
+        {
+            get { return _tagIndex; }
+            set
+            {
+                if (_tagIndex == value) return;
+                _tagIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Counts
+        {
+            get { return _counts; }
+            set
+            {
+                if (_counts == value) return;
+                _counts = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

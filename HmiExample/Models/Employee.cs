@@ -25,7 +25,7 @@ namespace HmiExample.Models
         public string FirstName { get; set; }
 
         [MaxLength(255)]
-        public string MidleName { get; set; }
+        public string MiddleName { get; set; }
 
         [Required(ErrorMessage = "*")]
         [MaxLength(255)]

@@ -48,7 +48,7 @@ namespace HmiExample.Models
                 {
                     var employeeVM = new EmployeeViewModel
                     {
-                        Name = employee.DisplayName,
+                        DisplayName = employee.DisplayName,
                         Code = employee.Code
                     };
                     _employees.Items.Add(employeeVM);
@@ -169,6 +169,41 @@ namespace HmiExample.Models
             Console.WriteLine("You could intercept the open and affect the dialog using eventArgs.Session.");
         }
 
+        private async void ExecuteEditMachine(object o)
+        {
+            if (!(o is MachineViewModel)) return;
+
+            var editingMachine = o as MachineViewModel;
+
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddMachineDialog
+            {
+                DataContext = new MachineViewModel()
+                {
+                    Id = editingMachine.Id,
+                    Name = editingMachine.Name,
+                    Code = editingMachine.Code,
+                    TagIndex = editingMachine.TagIndex,
+                    Counts = editingMachine.Counts
+                }
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedMachineDialogEventHandler, ClosingMachineDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+        }
+
+        private void ExecuteDeleteMachine(object obj)
+        {
+            if (obj is MachineViewModel)
+            {
+                var machine = obj as MachineViewModel;
+                Machines.Items.Remove(machine);
+            }
+        }
+
         #endregion
 
         #region Employees
@@ -212,10 +247,50 @@ namespace HmiExample.Models
 
             var context = (EmployeeViewModel)((AddEmployeeDialog)eventArgs.Session.Content).DataContext;
 
-            if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
+            //if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
+            //{
+            //    var newEmployee = new EmployeeViewModel { Name = context.Name, Code = context.Code };
+            //    Employees.Items.Add(newEmployee);
+            //}
+        }
+
+        private async void ExecuteEditEmployee(object o)
+        {
+            if (!(o is EmployeeViewModel)) return;
+
+            var editingEmployee = o as EmployeeViewModel;
+
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddEmployeeDialog
             {
-                var newEmployee = new EmployeeViewModel { Name = context.Name, Code = context.Code };
-                Employees.Items.Add(newEmployee);
+                DataContext = new EmployeeViewModel()
+                {
+                    Id = editingEmployee.Id,
+                    Code = editingEmployee.Code,
+                    DisplayName = editingEmployee.DisplayName,
+                    FirstName = editingEmployee.FirstName,
+                    MiddleName = editingEmployee.MiddleName,
+                    LastName = editingEmployee.LastName,
+                    Email = editingEmployee.Email,
+                    PhoneNumber = editingEmployee.PhoneNumber,
+                    Photo = editingEmployee.Photo,
+                    PhotoContent = editingEmployee.PhotoContent
+                }
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedEmployeeDialogEventHandler, ClosingEmployeeDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+        }
+
+        private void ExecuteDeleteEmployee(object obj)
+        {
+            if (obj is EmployeeViewModel)
+            {
+                var employee = obj as EmployeeViewModel;
+                Employees.Items.Remove(employee);
             }
         }
 
