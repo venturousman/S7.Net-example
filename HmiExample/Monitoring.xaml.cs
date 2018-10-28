@@ -2,12 +2,12 @@
 using HmiExample.Helpers;
 using HmiExample.Models;
 using HmiExample.PlcConnectivity;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
@@ -28,6 +28,8 @@ namespace HmiExample
         // http://www.abhisheksur.com/2011/03/all-about-net-timers-comparison.html
         // https://www.codeproject.com/Articles/167365/All-about-NET-Timers-A-Comparison
         DispatcherTimer timer = new DispatcherTimer();
+
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly GridViewModel<PlanViewModel> _gridPlanVMs = new GridViewModel<PlanViewModel>();
         public GridViewModel<PlanViewModel> GridPlanVMs
@@ -88,7 +90,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't connect to PLC", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -100,7 +104,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't disconnect PLC", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -119,7 +125,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't start all machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -136,7 +144,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't stop all machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -156,7 +166,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't start machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -171,7 +183,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't stop machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -233,7 +247,9 @@ namespace HmiExample
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                MessageBox.Show(Constants.ApplicationCommonErrorMessage, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -243,7 +259,7 @@ namespace HmiExample
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Plans.Local != null)
             {
-                var lstPlans = mainWindow.applicationDbContext.Plans.Local.ToList();
+                var lstPlans = mainWindow.applicationDbContext.Plans.Local.Where(x => !x.IsDeleted).ToList();
 
                 foreach (var plan in lstPlans)
                 {

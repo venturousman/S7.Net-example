@@ -10,7 +10,7 @@ namespace HmiExample.Data
         public ApplicationDbContext() : base("DefaultConnection")
         {
             //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationDbContext>());
-            Database.SetInitializer(new ApplicationDbInitializer());
+            //Database.SetInitializer(new ApplicationDbInitializer());
         }
 
         public DbSet<Machine> Machines { get; set; }
