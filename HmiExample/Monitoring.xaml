@@ -60,8 +60,9 @@
                     </StackPanel>
                 </materialDesign:ColorZone>
 
-                <DataGrid Name="dgPlans" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False"
-                          CanUserDeleteRows="False" DataContext="{Binding GridPlanVMs}" ItemsSource="{Binding Items}">
+                <DataGrid Name="dgPlans" CanUserSortColumns="True" IsReadOnly="True"
+                          CanUserAddRows="False" AutoGenerateColumns="False" CanUserDeleteRows="False" 
+                          DataContext="{Binding GridPlanVMs}" ItemsSource="{Binding Items}">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Binding="{Binding IsSelected}" 
                                                 ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" 
