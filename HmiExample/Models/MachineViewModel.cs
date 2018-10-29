@@ -68,5 +68,21 @@ namespace HmiExample.Models
                 OnPropertyChanged();
             }
         }
+
+        #region Constructors
+        public MachineViewModel()
+        {
+
+        }
+
+        public MachineViewModel(Machine machine)
+        {
+            _id = machine.Id;
+            _name = machine.Name;
+            _code = machine.Code;
+            _tagIndex = machine.TagIndex;
+            _counts = machine.Counts;
+        }
+        #endregion
     }
 }

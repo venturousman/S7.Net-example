@@ -390,6 +390,10 @@ namespace HmiExample.Models
                 {
                     MessageBox.Show("Cannot create these products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Cannot edit these products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

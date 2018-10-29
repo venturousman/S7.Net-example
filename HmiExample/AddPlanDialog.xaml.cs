@@ -52,7 +52,24 @@ namespace HmiExample
                 comboBox.DisplayMemberPath = "Name";
                 if (comboBox.SelectedIndex < 0)
                 {
-                    comboBox.SelectedIndex = 0;
+                    if (DataContext is PlanViewModel)
+                    {
+                        var context = DataContext as PlanViewModel;
+                        if (context.MachineId != Guid.Empty)
+                        {
+                            var foundMachine = lstMachines.Where(x => x.Id == context.MachineId).FirstOrDefault();
+                            if (foundMachine != null)
+                            {
+                                var index = comboBox.Items.IndexOf(foundMachine);
+                                comboBox.SelectedIndex = index;
+                            }
+                        }
+                        else
+                        {
+                            comboBox.SelectedIndex = 0;
+                        }
+
+                    }
                 }
             }
         }
@@ -117,7 +134,23 @@ namespace HmiExample
                 comboBox.DisplayMemberPath = "DisplayName";
                 if (comboBox.SelectedIndex < 0)
                 {
-                    comboBox.SelectedIndex = 0;
+                    if (DataContext is PlanViewModel)
+                    {
+                        var context = DataContext as PlanViewModel;
+                        if (context.EmployeeId != Guid.Empty)
+                        {
+                            var foundEmployee = finalEmployees.Where(x => x.Id == context.EmployeeId).FirstOrDefault();
+                            if (foundEmployee != null)
+                            {
+                                var index = comboBox.Items.IndexOf(foundEmployee);
+                                comboBox.SelectedIndex = index;
+                            }
+                        }
+                        else
+                        {
+                            comboBox.SelectedIndex = 0;
+                        }
+                    }
                 }
             }
         }
@@ -174,7 +207,23 @@ namespace HmiExample
                 comboBox.DisplayMemberPath = "Name";
                 if (comboBox.SelectedIndex < 0)
                 {
-                    comboBox.SelectedIndex = 0;
+                    if (DataContext is PlanViewModel)
+                    {
+                        var context = DataContext as PlanViewModel;
+                        if (context.ProductId != Guid.Empty)
+                        {
+                            var foundProduct = lstProducts.Where(x => x.Id == context.ProductId).FirstOrDefault();
+                            if (foundProduct != null)
+                            {
+                                var index = comboBox.Items.IndexOf(foundProduct);
+                                comboBox.SelectedIndex = index;
+                            }
+                        }
+                        else
+                        {
+                            comboBox.SelectedIndex = 0;
+                        }
+                    }
                 }
             }
         }

@@ -40,7 +40,9 @@ namespace HmiExample
             }
         }
 
-        public ICommand AddPlanCommand => new CommandsImplementation(ExecuteAddPlanCommand);
+        public ICommand AddPlanCommand => new CommandsImplementation(ExecuteAddPlan);
+        public ICommand DeletePlanCommand => new CommandsImplementation(ExecuteDeletePlan);
+        public ICommand EditPlanCommand => new CommandsImplementation(ExecuteEditPlan);
 
         public Monitoring()
         {
@@ -51,10 +53,6 @@ namespace HmiExample
             timer.Tick += timer_Tick;
             timer.IsEnabled = true;
 
-            // default values
-            txtIpAddress.Text = Properties.Settings.Default.IpAddress;
-
-            //LoadData(); // testing
             DataContext = this;
         }
 
@@ -160,9 +158,8 @@ namespace HmiExample
                 //}                
 
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
-                string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
-                Plc.Instance.Write(name, true);
-                //obj.IsStarted = true;
+                //string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
+                //Plc.Instance.Write(name, true);
             }
             catch (Exception exc)
             {
@@ -177,9 +174,8 @@ namespace HmiExample
             try
             {
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
-                string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
-                Plc.Instance.Write(name, false);
-                //obj.IsStarted = false;
+                //string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
+                //Plc.Instance.Write(name, false);
             }
             catch (Exception exc)
             {
@@ -215,6 +211,7 @@ namespace HmiExample
         {
             try
             {
+                /*
                 var tags = new List<Tag>();
                 foreach (var item in GridPlanVMs.Items)
                 {
@@ -244,6 +241,7 @@ namespace HmiExample
                         }
                     }
                 }
+                */
             }
             catch (Exception ex)
             {
@@ -253,24 +251,34 @@ namespace HmiExample
             }
         }
 
-        private void LoadData()
+        private void LoadPlanData()
         {
             // load databases
             var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (mainWindow.applicationDbContext.Plans.Local != null)
             {
-                var lstPlans = mainWindow.applicationDbContext.Plans.Local.Where(x => !x.IsDeleted).ToList();
+                var lstPlans = mainWindow.applicationDbContext.Plans.Local.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
 
                 foreach (var plan in lstPlans)
                 {
                     var planVM = new PlanViewModel
                     {
-                        Machine = plan.Machine.Name,
-                        Employee = plan.Employee.DisplayName,
-                        Product = plan.Product.Name,
-                        ExpectedQuantity = plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0,
-                        ActualQuantity = 0,
-                        DataBlockNo = plan.Machine.TagIndex
+                        Id = plan.Id,
+                        Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
+                        MachineId = plan.MachineId,
+                        //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
+                        Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
+                        EmployeeId = plan.EmployeeId,
+                        //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
+                        Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
+                        ProductId = plan.ProductId,
+                        //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
+                        ExpectedQuantity = plan.ExpectedQuantity,
+                        ActualQuantity = plan.ActualQuantity,
+                        // DataBlockNo = plan.Machine.TagIndex // TODO
+                        StartTime = plan.StartTime,
+                        EndTime = plan.EndTime,
+                        IsProcessed = plan.IsProcessed,
                     };
                     _gridPlanVMs.Items.Add(planVM);
                 }
@@ -284,23 +292,160 @@ namespace HmiExample
 
         private void Plans_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            try
             {
-                var tmp = e.OldItems;
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (PlanViewModel item in e.OldItems)
+                    {
+                        var deletingPlan = mainWindow.applicationDbContext.Plans.Local.Where(x => x.Id == item.Id).FirstOrDefault();
+                        if (deletingPlan != null)
+                        {
+                            deletingPlan.IsDeleted = true; // soft delete
+                            deletingPlan.ModifiedOn = DateTime.UtcNow;
+
+                            int index = mainWindow.applicationDbContext.Plans.Local.IndexOf(deletingPlan);
+                            if (index >= 0)
+                            {
+                                mainWindow.applicationDbContext.Plans.Local.Insert(index, deletingPlan);
+                            }
+                        }
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    var newPlans = new List<Plan>();
+                    foreach (PlanViewModel item in e.NewItems)
+                    {
+                        var newPlan = new Plan
+                        {
+                            Id = Guid.NewGuid(),
+                            MachineId = item.MachineId,
+                            EmployeeId = item.EmployeeId,
+                            ProductId = item.ProductId,
+                            ExpectedQuantity = item.ExpectedQuantity,
+                            CreatedOn = DateTime.UtcNow,
+                            IsProcessed = false
+                        };
+                        newPlans.Add(newPlan);
+                    }
+                    mainWindow.applicationDbContext.Plans.AddRange(newPlans);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    for (int i = 0; i < e.OldItems.Count; i++)
+                    {
+                        var oldItem = (PlanViewModel)e.OldItems[i];
+                        var newItem = (PlanViewModel)e.NewItems[i];
+
+                        var editingPlan = mainWindow.applicationDbContext.Plans.Local.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        if (editingPlan != null)
+                        {
+                            editingPlan.MachineId = newItem.MachineId;
+                            editingPlan.EmployeeId = newItem.EmployeeId;
+                            editingPlan.ProductId = newItem.ProductId;
+                            editingPlan.ExpectedQuantity = newItem.ExpectedQuantity;
+                            //editingPlan.ActualQuantity = newItem.ActualQuantity;
+                            //editingPlan.StartTime = newItem.StartTime;
+                            //editingPlan.EndTime = newItem.EndTime;
+                            //editingPlan.IsProcessed = newItem.IsProcessed;
+                            editingPlan.ModifiedOn = DateTime.UtcNow;
+
+                            int index = mainWindow.applicationDbContext.Plans.Local.IndexOf(editingPlan);
+                            if (index >= 0)
+                            {
+                                mainWindow.applicationDbContext.Plans.Local.Insert(index, editingPlan);
+                            }
+                        }
+                    }
+                }
+
+                // save databases
+                mainWindow.applicationDbContext.SaveChanges();
+
+                // notify
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Successfully deleted plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Successfully created plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Successfully updated plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
+            catch (Exception ex)
             {
-                var tmp = e.NewItems;
+                var msg = ex.GetAllExceptionInfo(); // TODO: log file or db
+                log.Error(msg, ex);
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Cannot remove the selected plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Cannot create these plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Cannot edit these plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            // TODO: save databases
         }
 
-        private async void ExecuteAddPlanCommand(object o)
+        private async void ExecuteAddPlan(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddPlanDialog
             {
                 DataContext = new PlanViewModel()
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", OpenedPlanDialogEventHandler, ClosingPlanDialogEventHandler);
+
+            //check the result...
+            Console.WriteLine("Dialog was closed, the CommandParameter used to close it was: " + (result ?? "NULL"));
+        }
+
+        private void ExecuteDeletePlan(object obj)
+        {
+            if (obj is PlanViewModel)
+            {
+                var plan = obj as PlanViewModel;
+                GridPlanVMs.Items.Remove(plan);
+            }
+        }
+
+        private async void ExecuteEditPlan(object o)
+        {
+            if (!(o is PlanViewModel)) return;
+
+            var editingPlan = o as PlanViewModel;
+
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddPlanDialog
+            {
+                DataContext = new PlanViewModel()
+                {
+                    Id = editingPlan.Id,
+                    MachineId = editingPlan.MachineId,
+                    EmployeeId = editingPlan.EmployeeId,
+                    ProductId = editingPlan.ProductId,
+                    ExpectedQuantity = editingPlan.ExpectedQuantity,
+                    ActualQuantity = editingPlan.ActualQuantity,
+                    StartTime = editingPlan.StartTime,
+                    EndTime = editingPlan.EndTime,
+                    IsProcessed = editingPlan.IsProcessed,
+                    //Employee = editingPlan.Employee,
+                    //Machine = editingPlan.Machine,
+                    //Product = editingPlan.Product
+                }
             };
 
             //show the dialog
@@ -316,11 +461,43 @@ namespace HmiExample
 
             var context = (PlanViewModel)((AddPlanDialog)eventArgs.Session.Content).DataContext;
 
-            //if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
-            //{
-            //    var newPlan = new PlanViewModel { Name = context.Name, Code = context.Code };
-            //    Plans.Items.Add(newPlan);
-            //}
+            if (context.MachineId != Guid.Empty && context.ProductId != Guid.Empty)
+            {
+                if (context.Id != Guid.Empty)
+                {
+                    var index = -1;
+                    for (int i = 0; i < GridPlanVMs.Items.Count; i++)
+                    {
+                        if (GridPlanVMs.Items[i].Id == context.Id)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1)
+                    {
+                        //context.LedColor = GridPlanVMs.Items[index].LedColor;
+                        //context.ActualQuantity = GridPlanVMs.Items[index].ActualQuantity;
+
+                        GridPlanVMs.Items[index] = context;
+                    }
+                }
+                else
+                {
+                    var newPlan = new PlanViewModel
+                    {
+                        EmployeeId = context.EmployeeId,
+                        MachineId = context.MachineId,
+                        ProductId = context.ProductId,
+                        ExpectedQuantity = context.ExpectedQuantity,
+                        IsProcessed = false,
+                        //Employee = context.Employee, // support elements
+                        //Machine = context.Machine,
+                        //Product = context.Product
+                    };
+                    GridPlanVMs.Items.Add(newPlan);
+                }
+            }
         }
 
         private void OpenedPlanDialogEventHandler(object sender, DialogOpenedEventArgs eventargs)
@@ -330,6 +507,13 @@ namespace HmiExample
 
         #endregion
 
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // default values
+            txtIpAddress.Text = Properties.Settings.Default.IpAddress;
 
+            // load plan
+            LoadPlanData();
+        }
     }
 }

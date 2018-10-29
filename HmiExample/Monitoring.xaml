@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:HmiExample"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" d:DesignHeight="340" d:DesignWidth="625"
-      Title="Monitoring">
+      Title="Monitoring" Loaded="Page_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -75,11 +75,11 @@
                                 </Border>
                             </DataGridCheckBoxColumn.Header>
                         </DataGridCheckBoxColumn>
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine}" Header="Machine" 
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding MachineName}" Header="Machine" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Employee}" Header="Employee" 
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding EmployeeName}" Header="Employee" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Product}" Header="Product" 
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ProductName}" Header="Product" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
                         <DataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity"
@@ -118,8 +118,21 @@
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete plan">
-                                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" />
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit plan" 
+                                            Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.EditPlanCommand}"
+                                            CommandParameter="{Binding SelectedItem, ElementName=dgPlans}">
+                                        <materialDesign:PackIcon Kind="Pencil" Height="22" Width="22" />
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete plan" 
+                                            Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeletePlanCommand}"
+                                            CommandParameter="{Binding SelectedItem, ElementName=dgPlans}">
+                                        <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

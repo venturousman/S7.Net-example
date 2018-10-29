@@ -127,5 +127,26 @@ namespace HmiExample.Models
                 OnPropertyChanged();
             }
         }
+
+        #region Constructors
+        public EmployeeViewModel()
+        {
+
+        }
+
+        public EmployeeViewModel(Employee employee)
+        {
+            _id = employee.Id;
+            _displayName = employee.DisplayName;
+            _firstName = employee.FirstName;
+            _middleName = employee.MiddleName;
+            _lastName = employee.LastName;
+            _code = employee.Code;
+            _email = employee.Email;
+            _photo = employee.Photo;
+            _photoContent = employee.PhotoContent;
+            _phoneNumber = employee.PhoneNumber;
+        }
+        #endregion
     }
 }

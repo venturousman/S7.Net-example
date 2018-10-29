@@ -19,6 +19,9 @@ namespace HmiExample.Models
         private MachineViewModel _machine;
         private EmployeeViewModel _employee;
 
+        //private string _productName;
+        //private string _machineName;
+        //private string _employeeName;
         private bool _isConnected;
         private SolidColorBrush _ledColor;
 
@@ -173,6 +176,30 @@ namespace HmiExample.Models
                 if (_isConnected == value) return;
                 _isConnected = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string ProductName
+        {
+            get
+            {
+                return _product != null ? _product.Name : string.Empty;
+            }
+        }
+
+        public string MachineName
+        {
+            get
+            {
+                return _machine != null ? _machine.Name : string.Empty;
+            }
+        }
+
+        public string EmployeeName
+        {
+            get
+            {
+                return _employee != null ? _employee.DisplayName : string.Empty;
             }
         }
     }

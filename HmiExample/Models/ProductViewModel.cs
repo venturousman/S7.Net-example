@@ -40,5 +40,19 @@ namespace HmiExample.Models
                 OnPropertyChanged();
             }
         }
+
+        #region Constructors
+        public ProductViewModel()
+        {
+
+        }
+
+        public ProductViewModel(Product product)
+        {
+            _id = product.Id;
+            _name = product.Name;
+            _code = product.Code;
+        }
+        #endregion
     }
 }
