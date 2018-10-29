@@ -25,6 +25,8 @@ namespace HmiExample.Models
 
         public DateTime? EndTime { get; set; }
 
+        public bool IsProcessed { get; set; }
+
         #region Relationship
         public virtual Machine Machine { get; set; }
         public virtual Employee Employee { get; set; }

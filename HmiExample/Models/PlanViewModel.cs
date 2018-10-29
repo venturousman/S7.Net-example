@@ -13,6 +13,7 @@ namespace HmiExample.Models
         private int? _actualQuantity;  // output, san luong san xuat theo thuc te
         private DateTime? _startTime;
         private DateTime? _endTime;
+        private bool _isProcessed;
 
         private ProductViewModel _product;
         private MachineViewModel _machine;
@@ -138,6 +139,17 @@ namespace HmiExample.Models
             {
                 if (_employee == value) return;
                 _employee = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsProcessed
+        {
+            get { return _isProcessed; }
+            set
+            {
+                if (_isProcessed == value) return;
+                _isProcessed = value;
                 OnPropertyChanged();
             }
         }

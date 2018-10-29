@@ -13,15 +13,16 @@ namespace HmiExample.Data
         {
             var defaultCreatedOn = new DateTime(2018, 10, 18, 12, 0, 0);
 
-            // seed Machines
+            #region Seed Machines
             IList<Machine> defaultMachines = new List<Machine>();
 
             defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 1", Code = "M001", TagIndex = 0, Counts = 4590, CreatedOn = defaultCreatedOn });
             defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 2", Code = "M002", TagIndex = 1, Counts = 4320, CreatedOn = defaultCreatedOn });
 
             context.Machines.AddRange(defaultMachines);
+            #endregion
 
-            // seed Product
+            #region Seed Product
             IList<Product> defaultProducts = new List<Product>();
 
             defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 1", Code = "P001", CreatedOn = defaultCreatedOn });
@@ -31,8 +32,9 @@ namespace HmiExample.Data
             defaultProducts.Add(new Product() { Id = Guid.NewGuid(), Name = "Product 5", Code = "P005", CreatedOn = defaultCreatedOn });
 
             context.Products.AddRange(defaultProducts);
+            #endregion
 
-            // seed Employee
+            #region Seed Employee
             IList<Employee> defaultEmployees = new List<Employee>();
 
             defaultEmployees.Add(new Employee()
@@ -70,8 +72,9 @@ namespace HmiExample.Data
             });
 
             context.Employees.AddRange(defaultEmployees);
+            #endregion
 
-            // seed Plan
+            #region Seed Plan
             IList<Plan> defaultPlans = new List<Plan>();
 
             defaultPlans.Add(new Plan()
@@ -84,7 +87,8 @@ namespace HmiExample.Data
                 ActualQuantity = 29,
                 CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
                 StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 18, 17, 0, 0)
+                EndTime = new DateTime(2018, 10, 18, 17, 0, 0),
+                IsProcessed = true
             });
             defaultPlans.Add(new Plan()
             {
@@ -96,7 +100,8 @@ namespace HmiExample.Data
                 ActualQuantity = 15,
                 CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
                 StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 16, 19, 0, 0)
+                EndTime = new DateTime(2018, 10, 16, 19, 0, 0),
+                IsProcessed = true
             });
             defaultPlans.Add(new Plan()
             {
@@ -108,7 +113,8 @@ namespace HmiExample.Data
                 ActualQuantity = 17,
                 CreatedOn = new DateTime(2018, 10, 20, 12, 0, 0),
                 StartTime = new DateTime(2018, 10, 20, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 20, 16, 0, 0)
+                EndTime = new DateTime(2018, 10, 20, 16, 0, 0),
+                IsProcessed = true
             });
             defaultPlans.Add(new Plan()
             {
@@ -120,7 +126,8 @@ namespace HmiExample.Data
                 ActualQuantity = 41,
                 CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
                 StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 16, 19, 0, 0)
+                EndTime = new DateTime(2018, 10, 16, 19, 0, 0),
+                IsProcessed = true
             });
             defaultPlans.Add(new Plan()
             {
@@ -132,10 +139,12 @@ namespace HmiExample.Data
                 ActualQuantity = 22,
                 CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
                 StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 18, 17, 0, 0)
+                EndTime = new DateTime(2018, 10, 18, 17, 0, 0),
+                IsProcessed = true
             });
 
             context.Plans.AddRange(defaultPlans);
+            #endregion
 
             base.Seed(context);
         }
