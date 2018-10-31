@@ -253,35 +253,35 @@ namespace HmiExample
 
         private void LoadPlanData()
         {
-            // load databases
-            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Plans.Local != null)
-            {
-                var lstPlans = mainWindow.applicationDbContext.Plans.Local.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
+            // reset & unbind event
+            _gridPlanVMs.Items.Clear();
 
-                foreach (var plan in lstPlans)
+            // load databases
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var lstPlans = mainWindow.applicationDbContext.Plans.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
+
+            foreach (var plan in lstPlans)
+            {
+                var planVM = new PlanViewModel
                 {
-                    var planVM = new PlanViewModel
-                    {
-                        Id = plan.Id,
-                        Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
-                        MachineId = plan.MachineId,
-                        //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
-                        Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
-                        EmployeeId = plan.EmployeeId,
-                        //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
-                        Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
-                        ProductId = plan.ProductId,
-                        //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
-                        ExpectedQuantity = plan.ExpectedQuantity,
-                        ActualQuantity = plan.ActualQuantity,
-                        // DataBlockNo = plan.Machine.TagIndex // TODO
-                        StartTime = plan.StartTime,
-                        EndTime = plan.EndTime,
-                        IsProcessed = plan.IsProcessed,
-                    };
-                    _gridPlanVMs.Items.Add(planVM);
-                }
+                    Id = plan.Id,
+                    Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
+                    MachineId = plan.MachineId,
+                    //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
+                    Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
+                    EmployeeId = plan.EmployeeId,
+                    //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
+                    Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
+                    ProductId = plan.ProductId,
+                    //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
+                    ExpectedQuantity = plan.ExpectedQuantity,
+                    ActualQuantity = plan.ActualQuantity,
+                    // DataBlockNo = plan.Machine.TagIndex // TODO
+                    StartTime = plan.StartTime,
+                    EndTime = plan.EndTime,
+                    IsProcessed = plan.IsProcessed,
+                };
+                _gridPlanVMs.Items.Add(planVM);
             }
 
             // register event
@@ -300,17 +300,11 @@ namespace HmiExample
                 {
                     foreach (PlanViewModel item in e.OldItems)
                     {
-                        var deletingPlan = mainWindow.applicationDbContext.Plans.Local.Where(x => x.Id == item.Id).FirstOrDefault();
+                        var deletingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == item.Id).FirstOrDefault();
                         if (deletingPlan != null)
                         {
                             deletingPlan.IsDeleted = true; // soft delete
                             deletingPlan.ModifiedOn = DateTime.UtcNow;
-
-                            int index = mainWindow.applicationDbContext.Plans.Local.IndexOf(deletingPlan);
-                            if (index >= 0)
-                            {
-                                mainWindow.applicationDbContext.Plans.Local.Insert(index, deletingPlan);
-                            }
                         }
                     }
                 }
@@ -340,7 +334,7 @@ namespace HmiExample
                         var oldItem = (PlanViewModel)e.OldItems[i];
                         var newItem = (PlanViewModel)e.NewItems[i];
 
-                        var editingPlan = mainWindow.applicationDbContext.Plans.Local.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        var editingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == oldItem.Id).FirstOrDefault();
                         if (editingPlan != null)
                         {
                             editingPlan.MachineId = newItem.MachineId;
@@ -352,12 +346,6 @@ namespace HmiExample
                             //editingPlan.EndTime = newItem.EndTime;
                             //editingPlan.IsProcessed = newItem.IsProcessed;
                             editingPlan.ModifiedOn = DateTime.UtcNow;
-
-                            int index = mainWindow.applicationDbContext.Plans.Local.IndexOf(editingPlan);
-                            if (index >= 0)
-                            {
-                                mainWindow.applicationDbContext.Plans.Local.Insert(index, editingPlan);
-                            }
                         }
                     }
                 }
@@ -491,9 +479,9 @@ namespace HmiExample
                         ProductId = context.ProductId,
                         ExpectedQuantity = context.ExpectedQuantity,
                         IsProcessed = false,
-                        //Employee = context.Employee, // support elements
-                        //Machine = context.Machine,
-                        //Product = context.Product
+                        Employee = context.Employee, // support elements
+                        Machine = context.Machine,
+                        Product = context.Product
                     };
                     GridPlanVMs.Items.Add(newPlan);
                 }
