@@ -2,6 +2,7 @@
 using HmiExample.Models;
 using LiveCharts;
 using LiveCharts.Wpf;
+using log4net;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ namespace HmiExample
     /// </summary>
     public partial class Reports : Page
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly ObservableCollection<ChartViewModel> _chartViewModels = new ObservableCollection<ChartViewModel>();
         public ObservableCollection<ChartViewModel> ChartViewModels
         {
@@ -85,7 +88,9 @@ namespace HmiExample
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                MessageBox.Show("Cannot export report", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -101,71 +106,69 @@ namespace HmiExample
                 toDate = new DateTime(toDate.Year, toDate.Month, toDate.Day, 23, 59, 59);
 
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
-                if (mainWindow.applicationDbContext.Plans.Local != null)
+                // build labels
+                var labels = new List<string>();
+                var dates = new List<DateTime>();
+
+                for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
                 {
-                    // build labels
-                    var labels = new List<string>();
-                    var dates = new List<DateTime>();
+                    dates.Add(dt);
+                    labels.Add(dt.ToShortDateString());
+                }
 
-                    for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
+                // calculate width of chart
+                var calculatedWidth = labels.Count * 35 + 400; // px
+
+                // get data
+                var groups = mainWindow.applicationDbContext.Plans
+                    .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate && x.IsProcessed == true)
+                    .GroupBy(x => new { x.EmployeeId, x.MachineId })
+                    .ToList();
+
+                // build series
+                _chartViewModels.Clear();
+                foreach (var group in groups)
+                {
+                    // var tmp = group.GroupBy(x => x.ProductId).ToList();
+
+                    var chartName = string.Empty;
+                    var machineName = string.Empty;
+                    var employeeName = string.Empty;
+
+                    var seriesActualQuantity = new ChartValues<double>();
+                    var seriesExpectedQuantity = new ChartValues<double>();
+                    foreach (var label in labels)
                     {
-                        dates.Add(dt);
-                        labels.Add(dt.ToShortDateString());
-                    }
-
-                    // calculate width of chart
-                    var calculatedWidth = labels.Count * 35 + 400; // px
-
-                    // get data
-                    var groups = mainWindow.applicationDbContext.Plans.Local
-                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate)
-                        .GroupBy(x => new { x.EmployeeId, x.MachineId })
-                        .ToList();
-
-                    // build series
-                    _chartViewModels.Clear();
-                    foreach (var group in groups)
-                    {
-                        // var tmp = group.GroupBy(x => x.ProductId).ToList();
-
-                        var chartName = string.Empty;
-                        var machineName = string.Empty;
-                        var employeeName = string.Empty;
-
-                        var seriesActualQuantity = new ChartValues<double>();
-                        var seriesExpectedQuantity = new ChartValues<double>();
-                        foreach (var label in labels)
+                        var sumActualQuantity = 0;
+                        var sumExpectedQuantity = 0;
+                        foreach (var plan in group)
                         {
-                            var sumActualQuantity = 0;
-                            var sumExpectedQuantity = 0;
-                            foreach (var plan in group)
+                            if (string.IsNullOrEmpty(machineName))
                             {
-                                if (string.IsNullOrEmpty(machineName))
-                                {
-                                    machineName = plan.Machine.Name;
-                                }
-                                if (string.IsNullOrEmpty(employeeName))
-                                {
-                                    employeeName = plan.Employee.DisplayName;
-                                }
-                                if (string.IsNullOrEmpty(chartName))
-                                {
-                                    chartName = "chart-" + plan.MachineId;
-                                }
-                                if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
-                                {
-                                    sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
-                                    sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
-                                }
+                                machineName = plan.Machine.Name;
                             }
-                            seriesActualQuantity.Add(sumActualQuantity);
-                            seriesExpectedQuantity.Add(sumExpectedQuantity);
+                            if (string.IsNullOrEmpty(employeeName))
+                            {
+                                employeeName = plan.Employee.DisplayName;
+                            }
+                            if (string.IsNullOrEmpty(chartName))
+                            {
+                                chartName = "chart-" + plan.MachineId;
+                            }
+                            if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
+                            {
+                                sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
+                                sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
+                            }
                         }
-                        var chartVM = new ChartViewModel
-                        {
-                            ChartName = chartName,
-                            Machine = machineName,
-                            SeriesCollection = new SeriesCollection
+                        seriesActualQuantity.Add(sumActualQuantity);
+                        seriesExpectedQuantity.Add(sumExpectedQuantity);
+                    }
+                    var chartVM = new ChartViewModel
+                    {
+                        ChartName = chartName,
+                        Machine = machineName,
+                        SeriesCollection = new SeriesCollection
                             {
                                 new ColumnSeries
                                 {
@@ -179,12 +182,11 @@ namespace HmiExample
                                     Values = seriesExpectedQuantity
                                 }
                             },
-                            Labels = labels.ToArray(),
-                            Formatter = value => value.ToString("N"),
-                            Width = calculatedWidth
-                        };
-                        _chartViewModels.Add(chartVM);
-                    }
+                        Labels = labels.ToArray(),
+                        Formatter = value => value.ToString("N"),
+                        Width = calculatedWidth
+                    };
+                    _chartViewModels.Add(chartVM);
                 }
             }
         }

@@ -253,7 +253,7 @@ namespace HmiExample
 
         private void LoadPlanData()
         {
-            // reset & unbind event
+            // reset
             _gridPlanVMs.Items.Clear();
 
             // load databases
@@ -369,7 +369,7 @@ namespace HmiExample
             }
             catch (Exception ex)
             {
-                var msg = ex.GetAllExceptionInfo(); // TODO: log file or db
+                var msg = ex.GetAllExceptionInfo();
                 log.Error(msg, ex);
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {

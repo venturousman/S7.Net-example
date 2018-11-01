@@ -29,9 +29,7 @@ namespace HmiExample
         {
             // load databases
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Machines.Local != null)
-            {
-                var lstMachines = mainWindow.applicationDbContext.Machines.Local
+            var lstMachines = mainWindow.applicationDbContext.Machines
                     .Where(x => !x.IsDeleted)
                     .Select(x => new MachineViewModel
                     {
@@ -44,32 +42,31 @@ namespace HmiExample
                     .OrderBy(x => x.Name)
                     .ToList();
 
-                // ... Get the ComboBox reference.
-                var comboBox = sender as ComboBox;
+            // ... Get the ComboBox reference.
+            var comboBox = sender as ComboBox;
 
-                comboBox.Items.Clear();
-                comboBox.ItemsSource = lstMachines;
-                comboBox.DisplayMemberPath = "Name";
-                if (comboBox.SelectedIndex < 0)
+            comboBox.Items.Clear();
+            comboBox.ItemsSource = lstMachines;
+            comboBox.DisplayMemberPath = "Name";
+            if (comboBox.SelectedIndex < 0)
+            {
+                if (DataContext is PlanViewModel)
                 {
-                    if (DataContext is PlanViewModel)
+                    var context = DataContext as PlanViewModel;
+                    if (context.MachineId != Guid.Empty)
                     {
-                        var context = DataContext as PlanViewModel;
-                        if (context.MachineId != Guid.Empty)
+                        var foundMachine = lstMachines.Where(x => x.Id == context.MachineId).FirstOrDefault();
+                        if (foundMachine != null)
                         {
-                            var foundMachine = lstMachines.Where(x => x.Id == context.MachineId).FirstOrDefault();
-                            if (foundMachine != null)
-                            {
-                                var index = comboBox.Items.IndexOf(foundMachine);
-                                comboBox.SelectedIndex = index;
-                            }
+                            var index = comboBox.Items.IndexOf(foundMachine);
+                            comboBox.SelectedIndex = index;
                         }
-                        else
-                        {
-                            comboBox.SelectedIndex = 0;
-                        }
-
                     }
+                    else
+                    {
+                        comboBox.SelectedIndex = 0;
+                    }
+
                 }
             }
         }
@@ -97,9 +94,7 @@ namespace HmiExample
         {
             // load databases
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Employees.Local != null)
-            {
-                var lstEmployees = mainWindow.applicationDbContext.Employees.Local
+            var lstEmployees = mainWindow.applicationDbContext.Employees
                     .Where(x => !x.IsDeleted)
                     .Select(x => new EmployeeViewModel
                     {
@@ -117,39 +112,38 @@ namespace HmiExample
                     .OrderBy(x => x.DisplayName)
                     .ToList();
 
-                var finalEmployees = new List<EmployeeViewModel> {
+            var finalEmployees = new List<EmployeeViewModel> {
                     new EmployeeViewModel
                     {
                         Id = Guid.Empty,
                         DisplayName = "-- Please Select --"
                     }
                 };
-                finalEmployees.AddRange(lstEmployees);
+            finalEmployees.AddRange(lstEmployees);
 
-                // ... Get the ComboBox reference.
-                var comboBox = sender as ComboBox;
+            // ... Get the ComboBox reference.
+            var comboBox = sender as ComboBox;
 
-                comboBox.Items.Clear();
-                comboBox.ItemsSource = finalEmployees;
-                comboBox.DisplayMemberPath = "DisplayName";
-                if (comboBox.SelectedIndex < 0)
+            comboBox.Items.Clear();
+            comboBox.ItemsSource = finalEmployees;
+            comboBox.DisplayMemberPath = "DisplayName";
+            if (comboBox.SelectedIndex < 0)
+            {
+                if (DataContext is PlanViewModel)
                 {
-                    if (DataContext is PlanViewModel)
+                    var context = DataContext as PlanViewModel;
+                    if (context.EmployeeId != Guid.Empty)
                     {
-                        var context = DataContext as PlanViewModel;
-                        if (context.EmployeeId != Guid.Empty)
+                        var foundEmployee = finalEmployees.Where(x => x.Id == context.EmployeeId).FirstOrDefault();
+                        if (foundEmployee != null)
                         {
-                            var foundEmployee = finalEmployees.Where(x => x.Id == context.EmployeeId).FirstOrDefault();
-                            if (foundEmployee != null)
-                            {
-                                var index = comboBox.Items.IndexOf(foundEmployee);
-                                comboBox.SelectedIndex = index;
-                            }
+                            var index = comboBox.Items.IndexOf(foundEmployee);
+                            comboBox.SelectedIndex = index;
                         }
-                        else
-                        {
-                            comboBox.SelectedIndex = 0;
-                        }
+                    }
+                    else
+                    {
+                        comboBox.SelectedIndex = 0;
                     }
                 }
             }
@@ -186,9 +180,7 @@ namespace HmiExample
         {
             // load databases
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Products.Local != null)
-            {
-                var lstProducts = mainWindow.applicationDbContext.Products.Local
+            var lstProducts = mainWindow.applicationDbContext.Products
                     .Where(x => !x.IsDeleted)
                     .Select(x => new ProductViewModel
                     {
@@ -199,30 +191,29 @@ namespace HmiExample
                     .OrderBy(x => x.Name)
                     .ToList();
 
-                // ... Get the ComboBox reference.
-                var comboBox = sender as ComboBox;
+            // ... Get the ComboBox reference.
+            var comboBox = sender as ComboBox;
 
-                comboBox.Items.Clear();
-                comboBox.ItemsSource = lstProducts;
-                comboBox.DisplayMemberPath = "Name";
-                if (comboBox.SelectedIndex < 0)
+            comboBox.Items.Clear();
+            comboBox.ItemsSource = lstProducts;
+            comboBox.DisplayMemberPath = "Name";
+            if (comboBox.SelectedIndex < 0)
+            {
+                if (DataContext is PlanViewModel)
                 {
-                    if (DataContext is PlanViewModel)
+                    var context = DataContext as PlanViewModel;
+                    if (context.ProductId != Guid.Empty)
                     {
-                        var context = DataContext as PlanViewModel;
-                        if (context.ProductId != Guid.Empty)
+                        var foundProduct = lstProducts.Where(x => x.Id == context.ProductId).FirstOrDefault();
+                        if (foundProduct != null)
                         {
-                            var foundProduct = lstProducts.Where(x => x.Id == context.ProductId).FirstOrDefault();
-                            if (foundProduct != null)
-                            {
-                                var index = comboBox.Items.IndexOf(foundProduct);
-                                comboBox.SelectedIndex = index;
-                            }
+                            var index = comboBox.Items.IndexOf(foundProduct);
+                            comboBox.SelectedIndex = index;
                         }
-                        else
-                        {
-                            comboBox.SelectedIndex = 0;
-                        }
+                    }
+                    else
+                    {
+                        comboBox.SelectedIndex = 0;
                     }
                 }
             }
