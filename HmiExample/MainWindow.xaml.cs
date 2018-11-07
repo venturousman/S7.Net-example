@@ -1,5 +1,6 @@
 ﻿using HmiExample.Data;
 using HmiExample.Helpers;
+using log4net;
 using System;
 using System.ComponentModel;
 using System.Data.Entity;
@@ -12,6 +13,8 @@ namespace HmiExample
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public ApplicationDbContext applicationDbContext = new ApplicationDbContext();
 
         public MainWindow()
@@ -82,7 +85,8 @@ namespace HmiExample
             }
             catch (Exception ex)
             {
-                var msg = ex.GetAllExceptionInfo(); // todo: save log
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
 
                 MessageBoxResult messageBoxResult = MessageBox.Show("Couldn't connect to database, the application will close immediately", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
                 if (messageBoxResult == MessageBoxResult.OK)

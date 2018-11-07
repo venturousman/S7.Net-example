@@ -1,5 +1,6 @@
 ﻿using HmiExample.Data;
 using HmiExample.Helpers;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,12 @@ namespace HmiExample.Models
 {
     public class SettingsViewModel : ObservableBase
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public ICommand AddMachineCommand => new CommandsImplementation(ExecuteAddMachine);
+        public ICommand DeleteMachineCommand => new CommandsImplementation(ExecuteDeleteMachine);
+        public ICommand EditMachineCommand => new CommandsImplementation(ExecuteEditMachine);
+
         public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployee);
 
         public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProduct);
@@ -34,27 +40,35 @@ namespace HmiExample.Models
 
         public void LoadEmployees()
         {
-            // load databases
-            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Employees.Local != null)
-            {
-                var lstEmployees = mainWindow.applicationDbContext.Employees.Local.Where(x => !x.IsDeleted).OrderBy(x => x.DisplayName).ToList();
+            // reset
+            _employees.Items.Clear();
 
-                //using (var context = new ApplicationDbContext())
-                //{
-                //var dbEmployees = context.Employees; // define query
-                //var lstEmployees = dbEmployees.ToList(); // query executed and data obtained from database
-                foreach (var employee in lstEmployees)
+            // load databases
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var lstEmployees = mainWindow.applicationDbContext.Employees.Where(x => !x.IsDeleted).OrderBy(x => x.DisplayName).ToList();
+
+            //using (var context = new ApplicationDbContext())
+            //{
+            //var dbEmployees = context.Employees; // define query
+            //var lstEmployees = dbEmployees.ToList(); // query executed and data obtained from database
+            foreach (var employee in lstEmployees)
+            {
+                var employeeVM = new EmployeeViewModel
                 {
-                    var employeeVM = new EmployeeViewModel
-                    {
-                        DisplayName = employee.DisplayName,
-                        Code = employee.Code
-                    };
-                    _employees.Items.Add(employeeVM);
-                }
-                //}
+                    Id = employee.Id,
+                    DisplayName = employee.DisplayName,
+                    Code = employee.Code,
+                    Email = employee.Email,
+                    FirstName = employee.FirstName,
+                    MiddleName = employee.MiddleName,
+                    LastName = employee.LastName,
+                    PhoneNumber = employee.PhoneNumber,
+                    Photo = employee.Photo,
+                    PhotoContent = employee.PhotoContent
+                };
+                _employees.Items.Add(employeeVM);
             }
+            //}
 
             // register event
             _employees.Items.CollectionChanged += Employees_CollectionChanged;
@@ -62,27 +76,30 @@ namespace HmiExample.Models
 
         public void LoadMachines()
         {
-            // load databases
-            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Machines.Local != null)
-            {
-                var lstMachines = mainWindow.applicationDbContext.Machines.Local.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+            // reset
+            _machines.Items.Clear();
 
-                //using (var context = new ApplicationDbContext())
-                //{
-                //var dbMachines = context.Machines; // define query
-                //var lstMachines = dbMachines.ToList(); // query executed and data obtained from database
-                foreach (var machine in lstMachines)
+            // load databases
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var lstMachines = mainWindow.applicationDbContext.Machines.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+
+            //using (var context = new ApplicationDbContext())
+            //{
+            //var dbMachines = context.Machines; // define query
+            //var lstMachines = dbMachines.ToList(); // query executed and data obtained from database
+            foreach (var machine in lstMachines)
+            {
+                var machineVM = new MachineViewModel
                 {
-                    var machineVM = new MachineViewModel
-                    {
-                        Name = machine.Name,
-                        Code = machine.Code
-                    };
-                    _machines.Items.Add(machineVM);
-                }
-                //}
+                    Id = machine.Id,
+                    Name = machine.Name,
+                    Code = machine.Code,
+                    TagIndex = machine.TagIndex,
+                    Counts = machine.Counts
+                };
+                _machines.Items.Add(machineVM);
             }
+            //}
 
             // register event
             _machines.Items.CollectionChanged += Machines_CollectionChanged;
@@ -90,28 +107,28 @@ namespace HmiExample.Models
 
         public void LoadProducts()
         {
+            // reset
+            _products.Items.Clear();
+
             // load databases
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            if (mainWindow.applicationDbContext.Products.Local != null)
-            {
-                var lstProducts = mainWindow.applicationDbContext.Products.Local.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+            var lstProducts = mainWindow.applicationDbContext.Products.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
 
-                //using (var context = new ApplicationDbContext())
-                //{
-                //var dbProducts = context.Products; // define query
-                //var lstProducts = dbProducts.ToList(); // query executed and data obtained from database
-                foreach (var product in lstProducts)
+            //using (var context = new ApplicationDbContext())
+            //{
+            //var dbProducts = context.Products; // define query
+            //var lstProducts = dbProducts.ToList(); // query executed and data obtained from database
+            foreach (var product in lstProducts)
+            {
+                var productVM = new ProductViewModel
                 {
-                    var productVM = new ProductViewModel
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Code = product.Code
-                    };
-                    _products.Items.Add(productVM);
-                }
-                //}
+                    Id = product.Id,
+                    Name = product.Name,
+                    Code = product.Code
+                };
+                _products.Items.Add(productVM);
             }
+            //}
 
             // register event
             _products.Items.CollectionChanged += Products_CollectionChanged;
@@ -121,15 +138,96 @@ namespace HmiExample.Models
 
         private void Machines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+            try
             {
-                var tmp = e.OldItems;
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (MachineViewModel item in e.OldItems)
+                    {
+                        var deletingMachine = mainWindow.applicationDbContext.Machines.Where(x => x.Id == item.Id).FirstOrDefault();
+                        if (deletingMachine != null)
+                        {
+                            deletingMachine.IsDeleted = true; // soft delete
+                            deletingMachine.ModifiedOn = DateTime.UtcNow;
+                        }
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    var newMachines = new List<Machine>();
+                    foreach (MachineViewModel item in e.NewItems)
+                    {
+                        var newMachine = new Machine
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = item.Name,
+                            Code = item.Code,
+                            TagIndex = item.TagIndex,
+                            Counts = 0,
+                            CreatedOn = DateTime.UtcNow,
+                        };
+                        newMachines.Add(newMachine);
+                    }
+                    mainWindow.applicationDbContext.Machines.AddRange(newMachines);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    for (int i = 0; i < e.OldItems.Count; i++)
+                    {
+                        var oldItem = (MachineViewModel)e.OldItems[i];
+                        var newItem = (MachineViewModel)e.NewItems[i];
+
+                        var editingMachine = mainWindow.applicationDbContext.Machines.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        if (editingMachine != null)
+                        {
+                            editingMachine.Name = newItem.Name;
+                            editingMachine.Code = newItem.Code;
+                            editingMachine.TagIndex = newItem.TagIndex;
+                            // editingMachine.Counts = newItem.Counts;
+                            editingMachine.ModifiedOn = DateTime.UtcNow;
+                        }
+                    }
+                }
+
+                // save databases
+                mainWindow.applicationDbContext.SaveChanges();
+
+                // notify
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Successfully deleted machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Successfully created machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Successfully updated machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
+            catch (Exception ex)
             {
-                var tmp = e.NewItems;
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Cannot remove the selected machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Cannot create these machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Cannot edit these machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            // TODO: save databases
+
+            // mainWindow.mainFrame.Navigate(new Settings());
+
         }
 
         private async void ExecuteAddMachine(object o)
@@ -155,12 +253,32 @@ namespace HmiExample.Models
 
             if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
             {
-                var newMachine = new MachineViewModel { Name = context.Name, Code = context.Code };
-
-                //var command = Machines.AddItemCommand;
-                //if (command != null && command.CanExecute(newMachine))
-                //    command.Execute(newMachine);
-                Machines.Items.Add(newMachine);
+                if (context.Id != Guid.Empty)
+                {
+                    var index = -1;
+                    for (int i = 0; i < Machines.Items.Count; i++)
+                    {
+                        if (Machines.Items[i].Id == context.Id)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1)
+                    {
+                        Machines.Items[index] = context;
+                    }
+                }
+                else
+                {
+                    var newMachine = new MachineViewModel
+                    {
+                        Name = context.Name,
+                        Code = context.Code,
+                        TagIndex = context.TagIndex
+                    };
+                    Machines.Items.Add(newMachine);
+                }
             }
         }
 
@@ -210,15 +328,103 @@ namespace HmiExample.Models
 
         private void Employees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            try
             {
-                var tmp = e.OldItems;
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    foreach (EmployeeViewModel item in e.OldItems)
+                    {
+                        var deletingEmployee = mainWindow.applicationDbContext.Employees.Where(x => x.Id == item.Id).FirstOrDefault();
+                        if (deletingEmployee != null)
+                        {
+                            deletingEmployee.IsDeleted = true; // soft delete
+                            deletingEmployee.ModifiedOn = DateTime.UtcNow;
+                        }
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    var newEmployees = new List<Employee>();
+                    foreach (EmployeeViewModel item in e.NewItems)
+                    {
+                        var newEmployee = new Employee
+                        {
+                            Id = Guid.NewGuid(),
+                            Code = item.Code,
+                            FirstName = item.FirstName,
+                            MiddleName = item.MiddleName,
+                            LastName = item.LastName,
+                            DisplayName = item.DisplayName,
+                            Email = item.Email,
+                            PhoneNumber = item.PhoneNumber,
+                            Photo = item.Photo,
+                            PhotoContent = item.PhotoContent,
+                            CreatedOn = DateTime.UtcNow,
+                        };
+                        newEmployees.Add(newEmployee);
+                    }
+                    mainWindow.applicationDbContext.Employees.AddRange(newEmployees);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    for (int i = 0; i < e.OldItems.Count; i++)
+                    {
+                        var oldItem = (EmployeeViewModel)e.OldItems[i];
+                        var newItem = (EmployeeViewModel)e.NewItems[i];
+
+                        var editingEmployee = mainWindow.applicationDbContext.Employees.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        if (editingEmployee != null)
+                        {
+                            editingEmployee.Code = newItem.Code;
+                            editingEmployee.FirstName = newItem.FirstName;
+                            editingEmployee.MiddleName = newItem.MiddleName;
+                            editingEmployee.LastName = newItem.LastName;
+                            editingEmployee.DisplayName = newItem.DisplayName;
+                            editingEmployee.Email = newItem.Email;
+                            editingEmployee.PhoneNumber = newItem.PhoneNumber;
+                            editingEmployee.Photo = newItem.Photo;
+                            editingEmployee.PhotoContent = newItem.PhotoContent;
+                            editingEmployee.ModifiedOn = DateTime.UtcNow;
+                        }
+                    }
+                }
+
+                // save databases
+                mainWindow.applicationDbContext.SaveChanges();
+
+                // notify
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Successfully deleted employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Successfully created employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Successfully updated employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
+            catch (Exception ex)
             {
-                var tmp = e.NewItems;
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    MessageBox.Show("Cannot remove the selected employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    MessageBox.Show("Cannot create these employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Replace)
+                {
+                    MessageBox.Show("Cannot edit these employees", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            // TODO: save databases
         }
 
         private async void ExecuteAddEmployee(object o)
@@ -247,11 +453,41 @@ namespace HmiExample.Models
 
             var context = (EmployeeViewModel)((AddEmployeeDialog)eventArgs.Session.Content).DataContext;
 
-            //if (!string.IsNullOrEmpty(context.Name) && !string.IsNullOrEmpty(context.Code))
-            //{
-            //    var newEmployee = new EmployeeViewModel { Name = context.Name, Code = context.Code };
-            //    Employees.Items.Add(newEmployee);
-            //}
+            if (!string.IsNullOrEmpty(context.Code) && !string.IsNullOrEmpty(context.DisplayName))
+            {
+                if (context.Id != Guid.Empty)
+                {
+                    var index = -1;
+                    for (int i = 0; i < Employees.Items.Count; i++)
+                    {
+                        if (Employees.Items[i].Id == context.Id)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1)
+                    {
+                        Employees.Items[index] = context;
+                    }
+                }
+                else
+                {
+                    var newEmployee = new EmployeeViewModel
+                    {
+                        DisplayName = context.DisplayName,
+                        Code = context.Code,
+                        FirstName = context.FirstName,
+                        MiddleName = context.MiddleName,
+                        LastName = context.LastName,
+                        Photo = context.Photo,
+                        PhotoContent = context.PhotoContent,
+                        PhoneNumber = context.PhoneNumber,
+                        Email = context.Email
+                    };
+                    Employees.Items.Add(newEmployee);
+                }
+            }
         }
 
         private async void ExecuteEditEmployee(object o)
@@ -308,17 +544,11 @@ namespace HmiExample.Models
                 {
                     foreach (ProductViewModel item in e.OldItems)
                     {
-                        var deletingProduct = mainWindow.applicationDbContext.Products.Local.Where(x => x.Id == item.Id).FirstOrDefault();
+                        var deletingProduct = mainWindow.applicationDbContext.Products.Where(x => x.Id == item.Id).FirstOrDefault();
                         if (deletingProduct != null)
                         {
                             deletingProduct.IsDeleted = true; // soft delete
                             deletingProduct.ModifiedOn = DateTime.UtcNow;
-
-                            int index = mainWindow.applicationDbContext.Products.Local.IndexOf(deletingProduct);
-                            if (index >= 0)
-                            {
-                                mainWindow.applicationDbContext.Products.Local.Insert(index, deletingProduct);
-                            }
                         }
                     }
                 }
@@ -345,18 +575,12 @@ namespace HmiExample.Models
                         var oldItem = (ProductViewModel)e.OldItems[i];
                         var newItem = (ProductViewModel)e.NewItems[i];
 
-                        var editingProduct = mainWindow.applicationDbContext.Products.Local.Where(x => x.Id == oldItem.Id).FirstOrDefault();
+                        var editingProduct = mainWindow.applicationDbContext.Products.Where(x => x.Id == oldItem.Id).FirstOrDefault();
                         if (editingProduct != null)
                         {
                             editingProduct.Name = newItem.Name;
                             editingProduct.Code = newItem.Code;
                             editingProduct.ModifiedOn = DateTime.UtcNow;
-
-                            int index = mainWindow.applicationDbContext.Products.Local.IndexOf(editingProduct);
-                            if (index >= 0)
-                            {
-                                mainWindow.applicationDbContext.Products.Local.Insert(index, editingProduct);
-                            }
                         }
                     }
                 }
@@ -380,8 +604,8 @@ namespace HmiExample.Models
             }
             catch (Exception ex)
             {
-                var msg = ex.GetAllExceptionInfo(); // TODO: log file or db
-                var msg1 = ex.GetRootMessage();
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
                 if (e.Action == NotifyCollectionChangedAction.Remove)
                 {
                     MessageBox.Show("Cannot remove the selected products", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);

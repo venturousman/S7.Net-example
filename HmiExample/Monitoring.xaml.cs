@@ -158,8 +158,11 @@ namespace HmiExample
                 //}                
 
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
-                //string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
-                //Plc.Instance.Write(name, true);
+                if (obj != null && obj.Machine != null)
+                {
+                    string name = string.Format(PlcTags.BitVariable1, obj.Machine.TagIndex);
+                    Plc.Instance.Write(name, true);
+                }
             }
             catch (Exception exc)
             {
@@ -174,8 +177,11 @@ namespace HmiExample
             try
             {
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
-                //string name = string.Format(PlcTags.BitVariable0, obj.DataBlockNo);
-                //Plc.Instance.Write(name, false);
+                if (obj != null && obj.Machine != null)
+                {
+                    string name = string.Format(PlcTags.BitVariable1, obj.Machine.TagIndex);
+                    Plc.Instance.Write(name, false);
+                }
             }
             catch (Exception exc)
             {
@@ -211,37 +217,41 @@ namespace HmiExample
         {
             try
             {
-                /*
                 var tags = new List<Tag>();
-                foreach (var item in GridPlanVMs.Items)
+                foreach (PlanViewModel item in GridPlanVMs.Items)
                 {
                     // update buttons
                     item.IsConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
 
-                    string name = string.Format(PlcTags.BitVariable1, item.DataBlockNo);
-                    var newTag = new Tag { ItemName = name };
-                    tags.Add(newTag);
+                    if (item.Machine != null)
+                    {
+                        string name = string.Format(PlcTags.BitVariable2, item.Machine.TagIndex);
+                        var newTag = new Tag { ItemName = name };
+                        tags.Add(newTag);
+                    }
                 }
 
                 tags = Plc.Instance.Read(tags);
 
                 // update leds
-                foreach (var item in GridPlanVMs.Items)
+                foreach (PlanViewModel item in GridPlanVMs.Items)
                 {
-                    string name = string.Format(PlcTags.BitVariable1, item.DataBlockNo);
-                    var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
-                    if (foundTag != null)
+                    if (item.Machine != null)
                     {
-                        object value = foundTag.ItemValue;
-
-                        if (foundTag.ItemValue is byte)
+                        string name = string.Format(PlcTags.BitVariable2, item.Machine.TagIndex);
+                        var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
+                        if (foundTag != null)
                         {
-                            var flag = CommonHelpers.IsBitSet((byte)value, 1);
-                            item.LedColor = flag ? Brushes.Green : Brushes.Gray;
+                            object value = foundTag.ItemValue;
+
+                            if (foundTag.ItemValue is byte)
+                            {
+                                var flag = CommonHelpers.IsBitSet((byte)value, 2);
+                                item.LedColor = flag ? Brushes.Green : Brushes.Gray;
+                            }
                         }
                     }
                 }
-                */
             }
             catch (Exception ex)
             {
