@@ -224,11 +224,21 @@ namespace HmiExample
                     // enable buttons
                     item.IsConnected = isConnected;
 
-                    // read led of each machine
                     if (item.Machine != null)
                     {
+                        // read start/stop state of each machine
                         string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
                         var newTag = new Tag { ItemName = name };
+                        tags.Add(newTag);
+
+                        // read expected quantity of each machine
+                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 2);
+                        newTag = new Tag { ItemName = name };
+                        tags.Add(newTag);
+
+                        // read actual quantity of each machine
+                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 4);
+                        newTag = new Tag { ItemName = name };
                         tags.Add(newTag);
                     }
                 }
@@ -241,6 +251,7 @@ namespace HmiExample
                 {
                     if (item.Machine != null)
                     {
+                        // read start/stop state of each machine
                         string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
                         var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
                         if (foundTag != null)
@@ -252,6 +263,32 @@ namespace HmiExample
                                 //var flag = CommonHelpers.IsBitSet((byte)value, 2); // bit 1 at pos 2
                                 var flag = S7.Net.Types.Boolean.GetValue((byte)value, 1); // bit 1 at pos 1
                                 item.LedColor = flag ? Brushes.Green : Brushes.Gray;
+                            }
+                        }
+
+                        // read expected quantity of each machine
+                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 2);
+                        foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
+                        if (foundTag != null)
+                        {
+                            object value = foundTag.ItemValue;
+
+                            if (foundTag.ItemValue is ushort)
+                            {
+                                item.ExpectedQuantity = (ushort)foundTag.ItemValue;
+                            }
+                        }
+
+                        // read actual quantity of each machine
+                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 4);
+                        foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
+                        if (foundTag != null)
+                        {
+                            object value = foundTag.ItemValue;
+
+                            if (foundTag.ItemValue is ushort)
+                            {
+                                item.ActualQuantity = (ushort)foundTag.ItemValue;
                             }
                         }
                     }

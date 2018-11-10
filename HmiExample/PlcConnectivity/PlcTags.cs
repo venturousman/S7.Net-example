@@ -14,8 +14,10 @@
         public const string BitVariable3 = "M2{0}.3";
         public const string BitVariable4 = "M2{0}.4";
 
-        //public const string IntVariable1 = "MW2{0}1";
-        //public const string IntVariable2 = "MW2{0}2";
+        /// <summary>
+        /// actual/expected quantity from counter
+        /// </summary>
+        public const string IntVariable = "DB1.DBW{0}";
 
         public const string DIntVariable1 = "MD2{0}1";
         public const string DIntVariable2 = "MD2{0}2";
