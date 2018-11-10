@@ -341,6 +341,9 @@ namespace HmiExample
 
         private void PlanViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            //if (e.PropertyName == "ActualQuantity")
+            //{
+            //}
             throw new NotImplementedException();
         }
 

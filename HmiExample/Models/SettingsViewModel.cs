@@ -219,6 +219,18 @@ namespace HmiExample.Models
                 else if (e.Action == NotifyCollectionChangedAction.Add)
                 {
                     MessageBox.Show("Cannot create these machines", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    //Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
+                    //{
+                    //    _machines.Items.CollectionChanged -= Machines_CollectionChanged;
+
+                    //    foreach (MachineViewModel item in e.NewItems)
+                    //    {
+                    //        Machines.Items.Remove(item);
+                    //    }
+
+                    //    _machines.Items.CollectionChanged += Machines_CollectionChanged;
+                    //}));
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Replace)
                 {
@@ -227,7 +239,20 @@ namespace HmiExample.Models
             }
 
             // mainWindow.mainFrame.Navigate(new Settings());
+            // mainWindow.mainFrame.Refresh();
 
+
+            //rollback
+            //await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+            //    CoreDispatcherPriority.Normal, () => {
+
+            //    //disable/enable event handler
+            //    Items.CollectionChanged -= ItemsChanged;
+
+            //        Items.Remove(e.NewItems[0]);
+
+            //        Items.CollectionChanged += ItemsChanged;
+            //    })).AsTask();
         }
 
         private async void ExecuteAddMachine(object o)
