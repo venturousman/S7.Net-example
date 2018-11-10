@@ -218,11 +218,13 @@ namespace HmiExample
             try
             {
                 var tags = new List<Tag>();
+                var isConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
                 foreach (PlanViewModel item in GridPlanVMs.Items)
                 {
-                    // update buttons
-                    item.IsConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
+                    // enable buttons
+                    item.IsConnected = isConnected;
 
+                    // read led of each machine
                     if (item.Machine != null)
                     {
                         string name = string.Format(PlcTags.BitVariable2, item.Machine.TagIndex);
@@ -286,7 +288,6 @@ namespace HmiExample
                     //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
                     ExpectedQuantity = plan.ExpectedQuantity,
                     ActualQuantity = plan.ActualQuantity,
-                    // DataBlockNo = plan.Machine.TagIndex // TODO
                     StartTime = plan.StartTime,
                     EndTime = plan.EndTime,
                     IsProcessed = plan.IsProcessed,
