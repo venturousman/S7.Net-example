@@ -227,12 +227,13 @@ namespace HmiExample
                     // read led of each machine
                     if (item.Machine != null)
                     {
-                        string name = string.Format(PlcTags.BitVariable2, item.Machine.TagIndex);
+                        string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
                         var newTag = new Tag { ItemName = name };
                         tags.Add(newTag);
                     }
                 }
 
+                // TODO: should be unique by tag name
                 tags = Plc.Instance.Read(tags);
 
                 // update leds
@@ -240,7 +241,7 @@ namespace HmiExample
                 {
                     if (item.Machine != null)
                     {
-                        string name = string.Format(PlcTags.BitVariable2, item.Machine.TagIndex);
+                        string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
                         var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
                         if (foundTag != null)
                         {
@@ -248,7 +249,8 @@ namespace HmiExample
 
                             if (foundTag.ItemValue is byte)
                             {
-                                var flag = CommonHelpers.IsBitSet((byte)value, 2);
+                                //var flag = CommonHelpers.IsBitSet((byte)value, 2); // bit 1 at pos 2
+                                var flag = S7.Net.Types.Boolean.GetValue((byte)value, 1); // bit 1 at pos 1
                                 item.LedColor = flag ? Brushes.Green : Brushes.Gray;
                             }
                         }
