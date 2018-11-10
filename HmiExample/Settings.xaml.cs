@@ -1,5 +1,6 @@
 ﻿using HmiExample.Helpers;
 using HmiExample.Models;
+using log4net;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -13,6 +14,8 @@ namespace HmiExample
     /// </summary>
     public partial class Settings : Page
     {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public Settings()
         {
             InitializeComponent();
@@ -64,7 +67,9 @@ namespace HmiExample
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message);
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Cannot save settings", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
