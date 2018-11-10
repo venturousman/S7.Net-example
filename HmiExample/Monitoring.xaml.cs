@@ -331,11 +331,26 @@ namespace HmiExample
                     EndTime = plan.EndTime,
                     IsProcessed = plan.IsProcessed,
                 };
+                // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
                 _gridPlanVMs.Items.Add(planVM);
             }
 
             // register event
             _gridPlanVMs.Items.CollectionChanged += Plans_CollectionChanged;
+        }
+
+        private void PlanViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // default values
+            txtIpAddress.Text = Properties.Settings.Default.IpAddress;
+
+            // load plan
+            LoadPlanData();
         }
 
         #region Plans
@@ -545,13 +560,5 @@ namespace HmiExample
 
         #endregion
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            // default values
-            txtIpAddress.Text = Properties.Settings.Default.IpAddress;
-
-            // load plan
-            LoadPlanData();
-        }
     }
 }
