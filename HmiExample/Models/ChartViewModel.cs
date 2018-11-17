@@ -12,7 +12,21 @@ namespace HmiExample.Models
         private string[] _labels;
         private Func<double, string> _formatter;
         private int _width;
+        private string _gridName;
         private string _chartName;
+        private string _chartTitle;
+
+        private GridViewModel<PlanViewModel> _gridPlanVMs = new GridViewModel<PlanViewModel>();
+        public GridViewModel<PlanViewModel> GridPlanVMs
+        {
+            get { return _gridPlanVMs; }
+            //set
+            //{
+            //    if (_gridPlanVMs == value) return;
+            //    _gridPlanVMs = value;
+            //    OnPropertyChanged();
+            //}
+        }
 
         public string Employee
         {
@@ -80,6 +94,17 @@ namespace HmiExample.Models
             }
         }
 
+        public string GridName
+        {
+            get { return _gridName; }
+            set
+            {
+                if (_gridName == value) return;
+                _gridName = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string ChartName
         {
             get { return _chartName; }
@@ -87,6 +112,17 @@ namespace HmiExample.Models
             {
                 if (_chartName == value) return;
                 _chartName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ChartTitle
+        {
+            get { return _machine + " - " + _employee; }
+            set
+            {
+                if (_chartTitle == value) return;
+                _chartTitle = value;
                 OnPropertyChanged();
             }
         }

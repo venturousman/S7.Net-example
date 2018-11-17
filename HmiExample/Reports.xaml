@@ -52,12 +52,12 @@
                     <DataTemplate>
                         <Border BorderThickness="1" BorderBrush="LightCoral">
                             <StackPanel>
-                                <TextBlock Text="{Binding Machine}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Top"
-                                            FontSize="12" FontWeight="DemiBold"
-                                            TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
+                                <TextBlock Text="{Binding ChartTitle}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Top"
+                                           FontSize="12" FontWeight="DemiBold"
+                                           TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
 
-                                <lvc:CartesianChart Series="{Binding SeriesCollection}"
+                                <lvc:CartesianChart Series="{Binding SeriesCollection}" Tag="{Binding ChartName}"
                                                     LegendLocation="Left" Height="300" Width="{Binding Width}">
                                     <lvc:CartesianChart.AxisX>
                                         <lvc:Axis Title="Period" Labels="{Binding Labels}" LabelsRotation="-15">
@@ -70,6 +70,22 @@
                                         <lvc:Axis Title="Quantity" LabelFormatter="{Binding Formatter}"></lvc:Axis>
                                     </lvc:CartesianChart.AxisY>
                                 </lvc:CartesianChart>
+
+                                <DataGrid CanUserSortColumns="True" IsReadOnly="True"
+                                          CanUserAddRows="False" AutoGenerateColumns="False" CanUserDeleteRows="False"
+                                          Tag="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.GridName}"
+                                          DataContext="{Binding GridPlanVMs}" ItemsSource="{Binding Items}">
+                                    <DataGrid.Columns>
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ProductName}" Header="Product" 
+                                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity" 
+                                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
+                                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding TotalHours}" Header="Total Hours" 
+                                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

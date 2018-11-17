@@ -202,5 +202,36 @@ namespace HmiExample.Models
                 return _employee != null ? _employee.DisplayName : string.Empty;
             }
         }
+
+        public double TotalHours
+        {
+            get
+            {
+                var timeSpan = (EndTime - StartTime);
+                return timeSpan.HasValue ? timeSpan.Value.TotalHours : 0;
+            }
+        }
+
+        #region Constructors
+        public PlanViewModel()
+        {
+        }
+
+        public PlanViewModel(Plan plan)
+        {
+            _id = plan.Id;
+            _machineId = plan.MachineId;
+            _employeeId = plan.EmployeeId;
+            _productId = plan.ProductId;
+            _expectedQuantity = plan.ExpectedQuantity;
+            _actualQuantity = plan.ActualQuantity;
+            _startTime = plan.StartTime;
+            _endTime = plan.EndTime;
+            _isProcessed = plan.IsProcessed;
+            Product = new ProductViewModel(plan.Product);
+            Machine = new MachineViewModel(plan.Machine);
+            Employee = new EmployeeViewModel(plan.Employee);
+        }
+        #endregion
     }
 }

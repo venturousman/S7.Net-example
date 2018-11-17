@@ -53,14 +53,17 @@ namespace HmiExample.Helpers
             return new Bitmap(stream);
         }
 
-        public static Bitmap ChartToImage(FrameworkElement chart, double dpiX = 96, double dpiY = 96)
+        // https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed37c024-9466-4abb-b122-6a91997e355a/how-to-get-screenshot-for-all-hidden-list-items-of-a-list-in-wpf?forum=wpf
+        // https://stackoverflow.com/questions/24934276/how-do-i-save-all-content-of-a-wpf-scrollviewer-as-an-image
+        public static Bitmap ChartToImage(FrameworkElement chart, double width, double height, double dpiX = 96, double dpiY = 96)
         {
             if (chart == null)
             {
                 return null;
             }
 
-            var rtb = new RenderTargetBitmap((int)chart.ActualWidth, (int)chart.ActualHeight, dpiX, dpiY, PixelFormats.Pbgra32);
+            //var rtb = new RenderTargetBitmap((int)chart.ActualWidth, (int)chart.ActualHeight, dpiX, dpiY, PixelFormats.Pbgra32);
+            var rtb = new RenderTargetBitmap((int)width, (int)height, dpiX, dpiY, PixelFormats.Pbgra32);
             //RenderTargetBitmap rtb = new RenderTargetBitmap((int)(chart.ActualWidth * dpiX / 96.0),
             //                                                (int)(chart.ActualHeight * dpiY / 96.0),
             //                                                dpiX,

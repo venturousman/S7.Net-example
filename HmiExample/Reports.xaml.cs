@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace HmiExample
 {
@@ -54,6 +53,8 @@ namespace HmiExample
 
             try
             {
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
                 if (!Directory.Exists(baseDirectory))
                 {
                     Directory.CreateDirectory(baseDirectory);
@@ -62,20 +63,40 @@ namespace HmiExample
                 // Create the file using the FileInfo object
                 var file = new FileInfo(filePath);
 
+                // find all charts and grids
+                var grids = CommonHelpers.FindVisualChildren<DataGrid>(mainWindow).ToList();
+                var charts = CommonHelpers.FindVisualChildren<CartesianChart>(mainWindow).ToList();
+
                 // Create the package and make sure you wrap it in a using statement
                 using (var package = new ExcelPackage(file))
                 {
                     // add a new worksheet to the empty workbook
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Productivity list - " + currentDate.ToShortDateString());
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Productivity - " + currentDate.ToShortDateString());
 
                     // --------- Data and styling goes here -------------- //
-                    //var imageChart = ChartHelpers.ChartToImage(chartProductivity);
-                    //var picture = worksheet.Drawings.AddPicture("chart", imageChart);
-
-
-
-                    //picture.SetPosition(rowIndex, 0, colIndex, 0);
-                    //picture.SetSize(Height, Width);
+                    var index = 0;
+                    var pixelTop = 0;
+                    var pixelLeft = 0;
+                    var chartHeight = 300;
+                    foreach (var chartVM in ChartViewModels)
+                    {
+                        pixelTop += index * chartHeight;
+                        var chart = charts.Where(x => x.Tag != null && x.Tag.ToString() == chartVM.ChartName).FirstOrDefault();
+                        var grid = grids.Where(x => x.Tag != null && x.Tag.ToString() == chartVM.GridName).FirstOrDefault();
+                        if (chart != null)
+                        {
+                            var imageChart = ChartHelpers.ChartToImage(chart, chart.ActualWidth, chart.ActualHeight);
+                            var picture = worksheet.Drawings.AddPicture(chartVM.ChartName, imageChart);
+                            picture.SetPosition(pixelTop, pixelLeft);
+                            //picture.SetSize(Height, Width);
+                        }
+                        if (grid != null)
+                        {
+                            //worksheet.Cells[]
+                            var tmp = grid.DataContext;
+                        }
+                        index++;
+                    }
 
                     // var img = System.Drawing.Image.FromFile(@"D:\pics\success.jpg"); // testing ok
                     // var pic = worksheet.Drawings.AddPicture("Sample", img);
@@ -131,7 +152,15 @@ namespace HmiExample
                 {
                     // var tmp = group.GroupBy(x => x.ProductId).ToList();
 
+                    var chartVM = new ChartViewModel
+                    {
+                        Labels = labels.ToArray(),
+                        Formatter = value => value.ToString("N"),
+                        Width = calculatedWidth
+                    };
+
                     var chartName = string.Empty;
+                    var gridName = string.Empty;
                     var machineName = string.Empty;
                     var employeeName = string.Empty;
 
@@ -153,7 +182,11 @@ namespace HmiExample
                             }
                             if (string.IsNullOrEmpty(chartName))
                             {
-                                chartName = "chart-" + plan.MachineId;
+                                chartName = "chart-" + plan.Id;
+                            }
+                            if (string.IsNullOrEmpty(gridName))
+                            {
+                                gridName = "grid-" + plan.Id;
                             }
                             if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
                             {
@@ -164,11 +197,13 @@ namespace HmiExample
                         seriesActualQuantity.Add(sumActualQuantity);
                         seriesExpectedQuantity.Add(sumExpectedQuantity);
                     }
-                    var chartVM = new ChartViewModel
-                    {
-                        ChartName = chartName,
-                        Machine = machineName,
-                        SeriesCollection = new SeriesCollection
+
+                    // update chartVM
+                    chartVM.GridName = gridName;
+                    chartVM.ChartName = chartName;
+                    chartVM.Machine = machineName;
+                    chartVM.Employee = employeeName;
+                    chartVM.SeriesCollection = new SeriesCollection
                             {
                                 new ColumnSeries
                                 {
@@ -181,11 +216,13 @@ namespace HmiExample
                                     Title = "Expected Quantity",
                                     Values = seriesExpectedQuantity
                                 }
-                            },
-                        Labels = labels.ToArray(),
-                        Formatter = value => value.ToString("N"),
-                        Width = calculatedWidth
-                    };
+                            };
+                    foreach (var plan in group)
+                    {
+                        var planVM = new PlanViewModel(plan);
+                        chartVM.GridPlanVMs.Items.Add(planVM);
+                    }
+
                     _chartViewModels.Add(chartVM);
                 }
             }
@@ -223,6 +260,5 @@ namespace HmiExample
             dtTo.DisplayDateStart = Constants.DefaultStartDate;
             dtTo.SelectedDate = DateTime.Now;
         }
-
     }
 }
