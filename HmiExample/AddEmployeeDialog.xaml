@@ -7,7 +7,7 @@
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:helper="clr-namespace:HmiExample.Helpers"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Width="500"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="16">
 
@@ -16,21 +16,16 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}" Grid.Row="0">Employee:</TextBlock>
-        <TextBox wpf:HintAssist.Hint="Name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
-                 Margin="0 20 0 0" FontSize="18" Grid.Row="1">
-            <TextBox.Text>
-                <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
 
         <TextBox wpf:HintAssist.Hint="Code" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
-                 Margin="0 20 0 0" FontSize="18" Grid.Row="2">
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="1">
             <TextBox.Text>
                 <Binding Path="Code" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
@@ -40,7 +35,54 @@
             </TextBox.Text>
         </TextBox>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0 20 0 0">
+        <TextBox wpf:HintAssist.Hint="Email" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="2">
+            <TextBox.Text>
+                <Binding Path="Email" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <TextBox wpf:HintAssist.Hint="First name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="3">
+            <TextBox.Text>
+                <Binding Path="FirstName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <TextBox wpf:HintAssist.Hint="Middle name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="4" Text="{Binding MiddleName}"></TextBox>
+
+        <TextBox wpf:HintAssist.Hint="Last name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="5">
+            <TextBox.Text>
+                <Binding Path="LastName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <TextBox wpf:HintAssist.Hint="Phone number" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="6" Text="{Binding PhoneNumber}"></TextBox>
+
+        <StackPanel Orientation="Horizontal" Margin="0 20 0 0" Grid.Row="7">
+            <TextBox wpf:HintAssist.Hint="Photo" Margin="0,0,5,0" FontSize="18" Text="{Binding Photo}" Width="350"
+                     Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Name="txtPhotoPath" />
+            <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click"></Button>
+        </StackPanel>
+
+        <!--<Image Source="Resources/ProfilePic.jpg" />-->
+
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Margin="0 20 0 0">
             <Button IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
                     Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>

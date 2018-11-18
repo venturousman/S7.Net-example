@@ -1,10 +1,8 @@
-﻿using HmiExample.Data;
-using HmiExample.Helpers;
+﻿using HmiExample.Helpers;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -478,7 +476,8 @@ namespace HmiExample.Models
 
             var context = (EmployeeViewModel)((AddEmployeeDialog)eventArgs.Session.Content).DataContext;
 
-            if (!string.IsNullOrEmpty(context.Code) && !string.IsNullOrEmpty(context.DisplayName))
+            if (!string.IsNullOrEmpty(context.Code) && !string.IsNullOrEmpty(context.FirstName)
+                && !string.IsNullOrEmpty(context.LastName) && !string.IsNullOrEmpty(context.Email))
             {
                 if (context.Id != Guid.Empty)
                 {

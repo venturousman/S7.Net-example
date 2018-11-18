@@ -212,7 +212,6 @@ namespace HmiExample
             MessageBox.Show("Plans were imported successfully.", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-
         private void UpdateGridPlan()
         {
             try
