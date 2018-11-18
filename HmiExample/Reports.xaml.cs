@@ -74,28 +74,64 @@ namespace HmiExample
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Productivity - " + currentDate.ToShortDateString());
 
                     // --------- Data and styling goes here -------------- //
-                    var index = 0;
-                    var pixelTop = 0;
+                    var rowIndex = 1;
+                    var pixelTop = 0d;
                     var pixelLeft = 0;
                     var chartHeight = 300;
+                    var rowHeight = 39;
+                    var calculatedChartHeight = CommonHelpers.GetHeight(chartHeight);
+                    var calculatedRowHeight = CommonHelpers.GetHeight(rowHeight);
                     foreach (var chartVM in ChartViewModels)
                     {
-                        pixelTop += index * chartHeight;
                         var chart = charts.Where(x => x.Tag != null && x.Tag.ToString() == chartVM.ChartName).FirstOrDefault();
-                        var grid = grids.Where(x => x.Tag != null && x.Tag.ToString() == chartVM.GridName).FirstOrDefault();
                         if (chart != null)
                         {
+                            worksheet.Row(rowIndex).Height = calculatedChartHeight;
+
                             var imageChart = ChartHelpers.ChartToImage(chart, chart.ActualWidth, chart.ActualHeight);
                             var picture = worksheet.Drawings.AddPicture(chartVM.ChartName, imageChart);
-                            picture.SetPosition(pixelTop, pixelLeft);
+
+                            int intPixelTop = (int)pixelTop;
+                            picture.SetPosition(intPixelTop, pixelLeft);
                             //picture.SetSize(Height, Width);
+
+                            pixelTop += calculatedChartHeight;
+                            rowIndex++;
                         }
+
+                        var grid = grids.Where(x => x.Tag != null && x.Tag.ToString() == chartVM.GridName).FirstOrDefault();
                         if (grid != null)
                         {
-                            //worksheet.Cells[]
-                            var tmp = grid.DataContext;
+                            for (int i = 0; i < grid.Columns.Count; i++)
+                            {
+                                var header = grid.Columns[i].Header != null ? grid.Columns[i].Header.ToString() : string.Empty;
+                                worksheet.Cells[rowIndex, i + 1].Value = header;
+                            }
+
+                            //worksheet.Row(rowIndex).Height = calculatedRowHeight;
+                            pixelTop += rowHeight;
+                            rowIndex++;
+
+                            for (int i = 0; i < grid.Items.Count; i++)
+                            {
+                                for (int j = 0; j < grid.Columns.Count; j++)
+                                {
+                                    //loop throught cell
+                                    DataGridCell cell = CommonHelpers.GetCell(grid, i, j);
+                                    if (cell != null)
+                                    {
+                                        if (cell.Content is TextBlock)
+                                        {
+                                            TextBlock tb = cell.Content as TextBlock;
+                                            worksheet.Cells[rowIndex, j + 1].Value = tb.Text;
+                                        }
+                                    }
+                                }
+                                //worksheet.Row(rowIndex).Height = calculatedRowHeight;
+                                pixelTop += rowHeight;
+                                rowIndex++;
+                            }
                         }
-                        index++;
                     }
 
                     // var img = System.Drawing.Image.FromFile(@"D:\pics\success.jpg"); // testing ok
