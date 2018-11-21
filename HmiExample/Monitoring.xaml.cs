@@ -5,11 +5,14 @@ using HmiExample.PlcConnectivity;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -210,6 +213,135 @@ namespace HmiExample
                 return;
             }
             MessageBox.Show("Plans were imported successfully.", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void btnDownload_Click(object sender, RoutedEventArgs e)
+        {
+            // Set the file name and get the output directory
+            var fileName = "ProductPlanImportTemplate" + ".xlsx";
+            var baseDirectory = @"C:\" + Constants.ApplicationName + @"\templates\";
+            var filePath = Path.Combine(baseDirectory, fileName);
+
+            try
+            {
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                if (!Directory.Exists(baseDirectory))
+                {
+                    Directory.CreateDirectory(baseDirectory);
+                }
+
+                // Create the file using the FileInfo object
+                var file = new FileInfo(filePath);
+
+                using (var package = new ExcelPackage(file))
+                {
+                    // add a new worksheet to the empty workbook
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Plans");
+
+                    var properties = new string[] { "Machine", "Employee", "Product", "Expected Quantity" };
+                    for (var i = 0; i < properties.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = properties[i];
+                        worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                        worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                    }
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    // --------- DataValidations goes here -------------- //
+                    //https://social.msdn.microsoft.com/Forums/vstudio/en-US/cdaf187c-df21-4cd9-9c05-7e94abb03f04/create-excel-sheet-with-drop-down-list-using-epplus?forum=exceldev
+
+                    #region Machine Validation
+                    // int FromRow, int FromCol, int ToRow, int ToCol
+                    var ddMachines = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 1, 10000, 1].Address);
+                    ddMachines.AllowBlank = false; //Set to true if blank value is accepted
+
+                    var lstMachines = mainWindow.applicationDbContext.Machines
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new MachineViewModel
+                                        {
+                                            Id = x.Id,
+                                            Name = x.Name,
+                                            Code = x.Code,
+                                        })
+                                        .OrderBy(x => x.Name)
+                                        .ToList();
+
+                    foreach (var machine in lstMachines)
+                    {
+                        ddMachines.Formula.Values.Add(machine.Name + " - " + machine.Code);
+                    }
+
+                    // Or load from another sheet
+                    //package.Workbook.Worksheets.Add("OtherSheet");
+                    //list1.Formula.ExcelFormula = "OtherSheet!A1:A4";
+                    #endregion
+
+                    #region Employee Validation
+                    var ddEmployees = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 2, 10000, 2].Address);
+                    ddEmployees.AllowBlank = true; //Set to true if blank value is accepted
+
+                    var lstEmployees = mainWindow.applicationDbContext.Employees
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new EmployeeViewModel
+                                        {
+                                            Id = x.Id,
+                                            Code = x.Code,
+                                            DisplayName = x.DisplayName,
+                                            FirstName = x.FirstName,
+                                            MiddleName = x.MiddleName,
+                                            LastName = x.LastName,
+                                        })
+                                        .OrderBy(x => x.DisplayName)
+                                        .ToList();
+
+                    foreach (var employee in lstEmployees)
+                    {
+                        ddEmployees.Formula.Values.Add(employee.DisplayName);
+                    }
+
+                    #endregion
+
+                    #region Product Validation
+                    var ddProducts = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 3, 10000, 3].Address);
+                    ddProducts.AllowBlank = false; //Set to true if blank value is accepted
+
+                    var lstProducts = mainWindow.applicationDbContext.Products
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new ProductViewModel
+                                        {
+                                            Id = x.Id,
+                                            Name = x.Name,
+                                            Code = x.Code,
+                                        })
+                                        .OrderBy(x => x.Name)
+                                        .ToList();
+
+                    foreach (var product in lstProducts)
+                    {
+                        ddProducts.Formula.Values.Add(product.Name + " - " + product.Code);
+                    }
+
+                    #endregion
+
+                    #region Expected Quantity Validation
+                    //var ivExpectedQuantity = worksheet.DataValidations.AddIntegerValidation(worksheet.Cells[2, 4, 10000, 4].Address);
+                    //ivExpectedQuantity.AllowBlank = true;
+                    #endregion
+
+                    // end
+                    package.Save();
+                }
+
+                MessageBox.Show("Successfully download template at " + filePath, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                MessageBox.Show("Cannot download template file", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void UpdateGridPlan()

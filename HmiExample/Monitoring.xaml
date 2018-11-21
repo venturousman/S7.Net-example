@@ -36,7 +36,7 @@
                      Name="txtFilePath" />
                     <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click" Margin="0,0,5,0"></Button>
                     <Button x:Name="btnImport" Content="Import" Click="btnImport_Click" Margin="0,0,5,0"></Button>
-                    <Button x:Name="btnDownload" Content="Download sample file"></Button>
+                    <Button x:Name="btnDownload" Content="Download template file" Click="btnDownload_Click"></Button>
                 </StackPanel>
             </GroupBox>
         </Grid>
