@@ -11,7 +11,7 @@ namespace HmiExample.Data
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            var defaultCreatedOn = new DateTime(2018, 10, 18, 12, 0, 0);
+            var defaultCreatedOn = new DateTime(2018, 11, 18, 12, 0, 0);
 
             #region Seed Machines
             IList<Machine> defaultMachines = new List<Machine>();
@@ -88,9 +88,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 17,
                 ActualQuantity = 17,
-                CreatedOn = new DateTime(2018, 10, 20, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 20, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 20, 16, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 20, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 20, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 20, 16, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -101,9 +101,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 25,
                 ActualQuantity = 26,
-                CreatedOn = new DateTime(2018, 10, 21, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 21, 9, 0, 0),
-                EndTime = new DateTime(2018, 10, 21, 16, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 21, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 21, 9, 0, 0),
+                EndTime = new DateTime(2018, 11, 21, 16, 0, 0),
                 IsProcessed = true
             });
 
@@ -116,9 +116,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 13,
                 ActualQuantity = 15,
-                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 16, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -129,9 +129,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 19,
                 ActualQuantity = 17,
-                CreatedOn = new DateTime(2018, 10, 22, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 22, 7, 30, 0),
-                EndTime = new DateTime(2018, 10, 22, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 22, 7, 30, 0),
+                EndTime = new DateTime(2018, 11, 22, 19, 0, 0),
                 IsProcessed = true
             });
 
@@ -144,9 +144,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 34,
                 ActualQuantity = 31,
-                CreatedOn = new DateTime(2018, 10, 19, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 19, 6, 0, 0),
-                EndTime = new DateTime(2018, 10, 19, 15, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 19, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 19, 6, 0, 0),
+                EndTime = new DateTime(2018, 11, 19, 15, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -157,9 +157,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 34,
                 ActualQuantity = 31,
-                CreatedOn = new DateTime(2018, 10, 22, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 22, 9, 0, 0),
-                EndTime = new DateTime(2018, 10, 22, 16, 30, 0),
+                CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 22, 9, 0, 0),
+                EndTime = new DateTime(2018, 11, 22, 16, 30, 0),
                 IsProcessed = true
             });
 
@@ -172,9 +172,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[0].Id,
                 ExpectedQuantity = 22,
                 ActualQuantity = 22,
-                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 18, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
                 IsProcessed = true
             });
 
@@ -187,9 +187,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 32,
                 ActualQuantity = 29,
-                CreatedOn = new DateTime(2018, 10, 18, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 18, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
                 IsProcessed = true
             });
 
@@ -202,9 +202,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 23,
                 ActualQuantity = 28,
-                CreatedOn = new DateTime(2018, 10, 23, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 23, 10, 0, 0),
-                EndTime = new DateTime(2018, 10, 23, 18, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 23, 10, 0, 0),
+                EndTime = new DateTime(2018, 11, 23, 18, 0, 0),
                 IsProcessed = true
             });
 
@@ -217,9 +217,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 41,
                 ActualQuantity = 41,
-                CreatedOn = new DateTime(2018, 10, 16, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 16, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -230,9 +230,9 @@ namespace HmiExample.Data
                 EmployeeId = defaultEmployees[1].Id,
                 ExpectedQuantity = 64,
                 ActualQuantity = 45,
-                CreatedOn = new DateTime(2018, 10, 23, 12, 0, 0),
-                StartTime = new DateTime(2018, 10, 23, 8, 0, 0),
-                EndTime = new DateTime(2018, 10, 23, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
+                StartTime = new DateTime(2018, 11, 23, 8, 0, 0),
+                EndTime = new DateTime(2018, 11, 23, 17, 0, 0),
                 IsProcessed = true
             });
 
