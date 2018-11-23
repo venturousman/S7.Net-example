@@ -94,7 +94,10 @@ namespace HmiExample
                 // Set Image.Source 
                 imgPhoto.Source = context.PhotoImage;
 
-                txtPhotoPath.Text = context.Photo.Trim();
+                if (!string.IsNullOrEmpty(context.Photo))
+                {
+                    txtPhotoPath.Text = context.Photo.Trim();
+                }
 
                 /*
                 if (context.PhotoContent != null && context.PhotoContent.Length > 0)
