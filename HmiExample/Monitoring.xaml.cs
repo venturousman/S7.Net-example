@@ -10,7 +10,6 @@ using OfficeOpenXml.Style;
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -620,9 +619,6 @@ namespace HmiExample
                 // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
                 _gridPlanVMs.Items.Add(planVM);
             }
-
-            // register event
-            _gridPlanVMs.Items.CollectionChanged += Plans_CollectionChanged;
         }
 
         private void PlanViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -644,102 +640,6 @@ namespace HmiExample
 
         #region Plans
 
-        private void Plans_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            try
-            {
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    foreach (PlanViewModel item in e.OldItems)
-                    {
-                        var deletingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == item.Id).FirstOrDefault();
-                        if (deletingPlan != null)
-                        {
-                            deletingPlan.IsDeleted = true; // soft delete
-                            deletingPlan.ModifiedOn = DateTime.UtcNow;
-                        }
-                    }
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    var newPlans = new List<Plan>();
-                    foreach (PlanViewModel item in e.NewItems)
-                    {
-                        var newPlan = new Plan
-                        {
-                            Id = Guid.NewGuid(),
-                            MachineId = item.MachineId,
-                            EmployeeId = item.EmployeeId,
-                            ProductId = item.ProductId,
-                            ExpectedQuantity = item.ExpectedQuantity,
-                            CreatedOn = DateTime.UtcNow,
-                            IsProcessed = false
-                        };
-                        newPlans.Add(newPlan);
-                    }
-                    mainWindow.applicationDbContext.Plans.AddRange(newPlans);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Replace)
-                {
-                    for (int i = 0; i < e.OldItems.Count; i++)
-                    {
-                        var oldItem = (PlanViewModel)e.OldItems[i];
-                        var newItem = (PlanViewModel)e.NewItems[i];
-
-                        var editingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == oldItem.Id).FirstOrDefault();
-                        if (editingPlan != null)
-                        {
-                            editingPlan.MachineId = newItem.MachineId;
-                            editingPlan.EmployeeId = newItem.EmployeeId;
-                            editingPlan.ProductId = newItem.ProductId;
-                            editingPlan.ExpectedQuantity = newItem.ExpectedQuantity;
-                            //editingPlan.ActualQuantity = newItem.ActualQuantity;
-                            //editingPlan.StartTime = newItem.StartTime;
-                            //editingPlan.EndTime = newItem.EndTime;
-                            //editingPlan.IsProcessed = newItem.IsProcessed;
-                            editingPlan.ModifiedOn = DateTime.UtcNow;
-                        }
-                    }
-                }
-
-                // save databases
-                mainWindow.applicationDbContext.SaveChanges();
-
-                // notify
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    MessageBox.Show("Successfully deleted plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    MessageBox.Show("Successfully created plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Replace)
-                {
-                    MessageBox.Show("Successfully updated plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.GetAllExceptionInfo();
-                log.Error(msg, ex);
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    MessageBox.Show("Cannot remove the selected plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    MessageBox.Show("Cannot create these plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Replace)
-                {
-                    MessageBox.Show("Cannot edit these plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
         private async void ExecuteAddPlan(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
@@ -759,8 +659,33 @@ namespace HmiExample
         {
             if (obj is PlanViewModel)
             {
-                var plan = obj as PlanViewModel;
-                GridPlanVMs.Items.Remove(plan);
+                try
+                {
+                    var plan = obj as PlanViewModel;
+                    var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                    var deletingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
+                    if (deletingPlan != null)
+                    {
+                        deletingPlan.IsDeleted = true; // soft delete
+                        deletingPlan.ModifiedOn = DateTime.UtcNow;
+                    }
+
+                    // save databases
+                    mainWindow.applicationDbContext.SaveChanges();
+
+                    // notify
+                    MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // update UI
+                    GridPlanVMs.Items.Remove(plan);
+                }
+                catch (Exception ex)
+                {
+                    var msg = ex.GetAllExceptionInfo();
+                    log.Error(msg, ex);
+                    MessageBox.Show("Cannot remove the selected plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -803,41 +728,91 @@ namespace HmiExample
 
             var context = (PlanViewModel)((AddPlanDialog)eventArgs.Session.Content).DataContext;
 
-            if (context.MachineId != Guid.Empty && context.ProductId != Guid.Empty)
+            try
             {
-                if (context.Id != Guid.Empty)
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                if (context.MachineId != Guid.Empty && context.ProductId != Guid.Empty)
                 {
-                    var index = -1;
-                    for (int i = 0; i < GridPlanVMs.Items.Count; i++)
+                    if (context.Id != Guid.Empty)
                     {
-                        if (GridPlanVMs.Items[i].Id == context.Id)
+                        // update existing plan
+                        var editingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == context.Id).FirstOrDefault();
+                        if (editingPlan != null)
                         {
-                            index = i;
-                            break;
+                            editingPlan.MachineId = context.MachineId;
+                            editingPlan.EmployeeId = context.EmployeeId;
+                            editingPlan.ProductId = context.ProductId;
+                            editingPlan.ExpectedQuantity = context.ExpectedQuantity;
+                            //editingPlan.ActualQuantity = newItem.ActualQuantity;
+                            //editingPlan.StartTime = newItem.StartTime;
+                            //editingPlan.EndTime = newItem.EndTime;
+                            //editingPlan.IsProcessed = newItem.IsProcessed;
+                            editingPlan.ModifiedOn = DateTime.UtcNow;
+                        }
+
+                        // save databases
+                        mainWindow.applicationDbContext.SaveChanges();
+
+                        // notify
+                        MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // update UI
+                        var index = -1;
+                        for (int i = 0; i < GridPlanVMs.Items.Count; i++)
+                        {
+                            if (GridPlanVMs.Items[i].Id == context.Id)
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+                        if (index != -1)
+                        {
+                            GridPlanVMs.Items[index] = context;
                         }
                     }
-                    if (index != -1)
+                    else
                     {
-                        //context.LedColor = GridPlanVMs.Items[index].LedColor;
-                        //context.ActualQuantity = GridPlanVMs.Items[index].ActualQuantity;
+                        // create new plan
+                        var newPlan = new Plan
+                        {
+                            Id = Guid.NewGuid(),
+                            MachineId = context.MachineId,
+                            EmployeeId = context.EmployeeId,
+                            ProductId = context.ProductId,
+                            ExpectedQuantity = context.ExpectedQuantity,
+                            CreatedOn = DateTime.UtcNow,
+                            IsProcessed = false
+                        };
+                        mainWindow.applicationDbContext.Plans.Add(newPlan);
 
-                        GridPlanVMs.Items[index] = context;
+                        // save databases
+                        mainWindow.applicationDbContext.SaveChanges();
+
+                        // notify
+                        MessageBox.Show("Successfully created plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // update UI
+                        var newPlanVM = new PlanViewModel(newPlan);
+                        GridPlanVMs.Items.Add(newPlanVM);
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+
+                if (context.Id != Guid.Empty)
+                {
+                    // update
+                    MessageBox.Show("Cannot edit plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    var newPlan = new PlanViewModel
-                    {
-                        EmployeeId = context.EmployeeId,
-                        MachineId = context.MachineId,
-                        ProductId = context.ProductId,
-                        ExpectedQuantity = context.ExpectedQuantity,
-                        IsProcessed = false,
-                        Employee = context.Employee, // support elements
-                        Machine = context.Machine,
-                        Product = context.Product
-                    };
-                    GridPlanVMs.Items.Add(newPlan);
+                    // create
+                    MessageBox.Show("Cannot create plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
