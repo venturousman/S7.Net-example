@@ -212,7 +212,162 @@ namespace HmiExample
                 MessageBox.Show("No file selected. Please select a valid import file!", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            MessageBox.Show("Plans were imported successfully.", "Import Plan List", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    throw new FileNotFoundException("Cannot find your file: ", filePath);
+                }
+
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+                // Create the file using the FileInfo object
+                var file = new FileInfo(filePath);
+
+                //var sheetIndex = 1; // only read sheet 1 in this application
+                var sheetName = "Plans";
+
+                using (var package = new ExcelPackage(file))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
+                    //if (worksheet == null) worksheet = package.Workbook.Worksheets[sheetIndex];
+
+                    if (worksheet == null)
+                    {
+                        throw new Exception("Cannot find sheet: " + sheetName);
+                    }
+
+                    if (worksheet.Dimension == null)
+                    {
+                        throw new Exception("There is no data in this file");
+                    }
+
+                    #region load data from db
+                    var lstMachines = mainWindow.applicationDbContext.Machines
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new MachineViewModel
+                                        {
+                                            Id = x.Id,
+                                            Name = x.Name,
+                                            Code = x.Code,
+                                        })
+                                        .OrderBy(x => x.Name)
+                                        .ToList();
+
+                    var lstEmployees = mainWindow.applicationDbContext.Employees
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new EmployeeViewModel
+                                        {
+                                            Id = x.Id,
+                                            Code = x.Code,
+                                            DisplayName = x.DisplayName,
+                                            FirstName = x.FirstName,
+                                            MiddleName = x.MiddleName,
+                                            LastName = x.LastName,
+                                        })
+                                        .OrderBy(x => x.DisplayName)
+                                        .ToList();
+
+                    var lstProducts = mainWindow.applicationDbContext.Products
+                                        .Where(x => !x.IsDeleted)
+                                        .Select(x => new ProductViewModel
+                                        {
+                                            Id = x.Id,
+                                            Name = x.Name,
+                                            Code = x.Code,
+                                        })
+                                        .OrderBy(x => x.Name)
+                                        .ToList();
+                    #endregion
+
+                    var succeededPlans = new List<PlanViewModel>();
+                    var failedRows = new List<int>();
+
+                    var start = worksheet.Dimension.Start;
+                    var end = worksheet.Dimension.End;
+
+                    for (int r = start.Row + 1; r <= end.Row; r++) // ignore header at row 1
+                    {
+                        var newPlan = new PlanViewModel { IsProcessed = false };
+                        for (int c = start.Column; c <= end.Column; c++)
+                        {
+                            var columnName = worksheet.Cells[1, c].Text.Trim();    // header at row 1
+                            var value = worksheet.Cells[r, c].Text.Trim();
+
+                            switch (columnName)
+                            {
+                                case "Machine":
+                                    var foundMachine = lstMachines.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
+                                    if (foundMachine == null)
+                                    {
+                                        failedRows.Add(r);
+                                        break;
+                                    }
+                                    newPlan.MachineId = foundMachine.Id;
+                                    newPlan.Machine = foundMachine; // support element
+                                    break;
+                                case "Employee":
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        var foundEmployee = lstEmployees.Where(x => x.DisplayName == value).FirstOrDefault();
+                                        if (foundEmployee == null)
+                                        {
+                                            failedRows.Add(r);
+                                            break;
+                                        }
+                                        newPlan.EmployeeId = foundEmployee.Id;
+                                        newPlan.Employee = foundEmployee; // support element
+                                    }
+                                    break;
+                                case "Product":
+                                    var foundProduct = lstProducts.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
+                                    if (foundProduct == null)
+                                    {
+                                        failedRows.Add(r);
+                                        break;
+                                    }
+                                    newPlan.ProductId = foundProduct.Id;
+                                    newPlan.Product = foundProduct; // support element
+                                    break;
+                                case "Expected Quantity":
+                                    int expectedQuantity = 0;
+                                    if (int.TryParse(value, out expectedQuantity))
+                                    {
+                                        newPlan.ExpectedQuantity = expectedQuantity;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        succeededPlans.Add(newPlan);
+                    }
+
+                    if (failedRows.Count > 0)
+                    {
+                        var strRows = string.Join(",", failedRows);
+                        MessageBoxResult messageBoxResult = MessageBox.Show("There is(are) error(s) at row(s) " + strRows + ". " +
+                            "Do you really want to continue?", Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        if (messageBoxResult == MessageBoxResult.No)
+                        {
+                            return;
+                        }
+                    }
+
+                    foreach (var plan in succeededPlans)
+                    {
+                        GridPlanVMs.Items.Add(plan);
+                    }
+                }
+                MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                MessageBox.Show("Cannot import some plans", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnDownload_Click(object sender, RoutedEventArgs e)
