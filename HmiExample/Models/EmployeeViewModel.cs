@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace HmiExample.Models
 {
@@ -125,6 +127,53 @@ namespace HmiExample.Models
                 if (_phoneNumber == value) return;
                 _phoneNumber = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public BitmapImage PhotoImage
+        {
+            get
+            {
+                if (PhotoContent != null && PhotoContent.Length > 0)
+                {
+                    //Initialize a memory stream from bytes
+                    MemoryStream ms = new MemoryStream(PhotoContent);
+
+                    // Create a BitmapSource
+                    BitmapImage imgsrc = new BitmapImage();
+                    imgsrc.BeginInit();
+                    imgsrc.CacheOption = BitmapCacheOption.OnLoad;
+                    imgsrc.StreamSource = ms;
+                    imgsrc.EndInit();
+
+                    //Close a memory stream
+                    ms.Close();
+
+                    return imgsrc;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(Photo) && File.Exists(Photo.Trim()))
+                    {
+                        var filePath = Photo.Trim();
+
+                        //Initialize a file stream to read the image file
+                        FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create a BitmapSource
+                        BitmapImage imgsrc = new BitmapImage();
+                        imgsrc.BeginInit();
+                        imgsrc.CacheOption = BitmapCacheOption.OnLoad;
+                        imgsrc.StreamSource = fs;
+                        imgsrc.EndInit();
+
+                        //Close a file stream
+                        fs.Close();
+
+                        return imgsrc;
+                    }
+                }
+                return null;
             }
         }
 

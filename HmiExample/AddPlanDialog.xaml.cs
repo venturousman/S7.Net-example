@@ -66,7 +66,6 @@ namespace HmiExample
                     {
                         comboBox.SelectedIndex = 0;
                     }
-
                 }
             }
         }

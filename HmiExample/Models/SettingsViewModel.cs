@@ -19,6 +19,8 @@ namespace HmiExample.Models
         public ICommand EditMachineCommand => new CommandsImplementation(ExecuteEditMachine);
 
         public ICommand AddEmployeeCommand => new CommandsImplementation(ExecuteAddEmployee);
+        public ICommand DeleteEmployeeCommand => new CommandsImplementation(ExecuteDeleteEmployee);
+        public ICommand EditEmployeeCommand => new CommandsImplementation(ExecuteEditEmployee);
 
         public ICommand AddProductCommand => new CommandsImplementation(ExecuteAddProduct);
         public ICommand DeleteProductCommand => new CommandsImplementation(ExecuteDeleteProduct);
