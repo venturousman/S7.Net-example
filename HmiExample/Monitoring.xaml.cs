@@ -409,7 +409,8 @@ namespace HmiExample
                 }
 
                 // Create the file using the FileInfo object
-                var file = new FileInfo(filePath);
+                //var file = new FileInfo(filePath);
+                var file = CommonHelpers.GetUniqueFile(filePath);
 
                 using (var package = new ExcelPackage(file))
                 {
@@ -511,7 +512,7 @@ namespace HmiExample
                     package.Save();
                 }
 
-                MessageBox.Show("Successfully download template at " + filePath, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Successfully download template at " + baseDirectory, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

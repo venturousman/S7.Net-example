@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -145,6 +146,21 @@ namespace HmiExample.Helpers
         public static double GetHeight(int pix)
         {
             return pix * 72 / 96d;
+        }
+
+        public static FileInfo GetUniqueFile(string path)
+        {
+            string dir = Path.GetDirectoryName(path);
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            string fileExt = Path.GetExtension(path);
+
+            for (int i = 1; ; i++)
+            {
+                if (!File.Exists(path))
+                    return new FileInfo(path);
+
+                path = Path.Combine(dir, fileName + "(" + i + ")" + fileExt);
+            }
         }
     }
 }
