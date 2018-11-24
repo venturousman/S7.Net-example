@@ -143,6 +143,8 @@
                                         <Button Content="Start" Margin="0,0,5,0" ToolTip="Start machine" Click="btnStartMachine_Click" IsEnabled="{Binding CanStart}"></Button>
                                         <Button Content="Stop" ToolTip="Stop machine" Click="btnStopMachine_Click" IsEnabled="{Binding CanStop}"></Button>
                                     </StackPanel>
+                                    <!--<ToggleButton Style="{StaticResource MaterialDesignSwitchDarkToggleButton}" 
+                                                  ToolTip="Start/Stop machine" IsChecked="True" />-->
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
