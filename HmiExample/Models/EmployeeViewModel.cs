@@ -185,6 +185,7 @@ namespace HmiExample.Models
 
         public EmployeeViewModel(Employee employee)
         {
+            if (employee == null) return;
             _id = employee.Id;
             _displayName = employee.DisplayName;
             _firstName = employee.FirstName;

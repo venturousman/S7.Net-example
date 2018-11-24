@@ -77,6 +77,7 @@ namespace HmiExample.Models
 
         public MachineViewModel(Machine machine)
         {
+            if (machine == null) return;
             _id = machine.Id;
             _name = machine.Name;
             _code = machine.Code;

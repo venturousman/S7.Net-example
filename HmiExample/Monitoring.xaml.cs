@@ -280,17 +280,27 @@ namespace HmiExample
                                         .ToList();
                     #endregion
 
-                    var succeededPlans = new List<PlanViewModel>();
+                    var succeededPlans = new List<Plan>();
                     var failedRows = new List<int>();
+                    var failedRow = false;
 
                     var start = worksheet.Dimension.Start;
                     var end = worksheet.Dimension.End;
 
                     for (int r = start.Row + 1; r <= end.Row; r++) // ignore header at row 1
                     {
-                        var newPlan = new PlanViewModel { IsProcessed = false };
+                        var newPlan = new Plan
+                        {
+                            Id = Guid.NewGuid(),
+                            IsProcessed = false,
+                            CreatedOn = DateTime.UtcNow
+                        };
+                        failedRow = false; // reset
+
                         for (int c = start.Column; c <= end.Column; c++)
                         {
+                            if (failedRow == true) break; // for loop
+
                             var columnName = worksheet.Cells[1, c].Text.Trim();    // header at row 1
                             var value = worksheet.Cells[r, c].Text.Trim();
 
@@ -300,34 +310,31 @@ namespace HmiExample
                                     var foundMachine = lstMachines.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
                                     if (foundMachine == null)
                                     {
-                                        failedRows.Add(r);
-                                        break;
+                                        failedRow = true;
+                                        break;  // break switch
                                     }
                                     newPlan.MachineId = foundMachine.Id;
-                                    newPlan.Machine = foundMachine; // support element
                                     break;
                                 case "Employee":
                                     if (!string.IsNullOrEmpty(value))
                                     {
-                                        var foundEmployee = lstEmployees.Where(x => x.DisplayName == value).FirstOrDefault();
+                                        var foundEmployee = lstEmployees.Where(x => (x.DisplayName + " - " + x.Code) == value).FirstOrDefault();
                                         if (foundEmployee == null)
                                         {
-                                            failedRows.Add(r);
-                                            break;
+                                            failedRow = true;
+                                            break;  // break switch
                                         }
                                         newPlan.EmployeeId = foundEmployee.Id;
-                                        newPlan.Employee = foundEmployee; // support element
                                     }
                                     break;
                                 case "Product":
                                     var foundProduct = lstProducts.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
                                     if (foundProduct == null)
                                     {
-                                        failedRows.Add(r);
-                                        break;
+                                        failedRow = true;
+                                        break;  // break switch
                                     }
                                     newPlan.ProductId = foundProduct.Id;
-                                    newPlan.Product = foundProduct; // support element
                                     break;
                                 case "Expected Quantity":
                                     int expectedQuantity = 0;
@@ -340,7 +347,15 @@ namespace HmiExample
                                     break;
                             }
                         }
-                        succeededPlans.Add(newPlan);
+
+                        if (failedRow == true)
+                        {
+                            failedRows.Add(r);
+                        }
+                        else
+                        {
+                            succeededPlans.Add(newPlan);
+                        }
                     }
 
                     if (failedRows.Count > 0)
@@ -354,12 +369,20 @@ namespace HmiExample
                         }
                     }
 
+                    // save databases
+                    mainWindow.applicationDbContext.Plans.AddRange(succeededPlans);
+                    mainWindow.applicationDbContext.SaveChanges();
+
+                    // notify
+                    MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // update UI
                     foreach (var plan in succeededPlans)
                     {
-                        GridPlanVMs.Items.Add(plan);
+                        var planVM = new PlanViewModel(plan);
+                        GridPlanVMs.Items.Add(planVM);
                     }
                 }
-                MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -452,7 +475,7 @@ namespace HmiExample
 
                     foreach (var employee in lstEmployees)
                     {
-                        ddEmployees.Formula.Values.Add(employee.DisplayName);
+                        ddEmployees.Formula.Values.Add(employee.DisplayName + " - " + employee.Code);
                     }
 
                     #endregion

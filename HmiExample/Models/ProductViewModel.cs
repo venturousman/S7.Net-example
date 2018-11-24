@@ -49,6 +49,7 @@ namespace HmiExample.Models
 
         public ProductViewModel(Product product)
         {
+            if (product == null) return;
             _id = product.Id;
             _name = product.Name;
             _code = product.Code;
