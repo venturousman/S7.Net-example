@@ -129,14 +129,14 @@
                         </DataGridTemplateColumn>-->
 
                         <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
+                            <!--<DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Name="btnStart" Content="Start" Click="btnStart_Click" Margin="0,0,5,0"></Button>
                                         <Button Name="btnStop" Content="Stop" Click="btnStop_Click"></Button>
                                     </StackPanel>
                                 </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>-->
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

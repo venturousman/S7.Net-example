@@ -121,7 +121,6 @@ namespace HmiExample
             {
                 // TODO: will start many machines
                 // dgPlans.SelectedItems
-                MessageBox.Show("start all");
             }
             catch (Exception exc)
             {
