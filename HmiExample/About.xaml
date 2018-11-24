@@ -21,7 +21,7 @@
             <Setter Property="Margin" Value="10,10,10,5" />
         </Style>
         <Style x:Key="BackgroundStyle" TargetType="{x:Type StackPanel}">
-            <Setter Property="Background">
+            <!--<Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush EndPoint="0,1">
                         <GradientStop Offset="0" Color="LightBlue" />
@@ -30,26 +30,30 @@
                         <GradientStop Offset="1" Color="LightBlue" />
                     </LinearGradientBrush>
                 </Setter.Value>
-            </Setter>
+            </Setter>-->
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignLightBackground}"></Setter>
         </Style>
         <Style TargetType="Label">
             <Setter Property="Padding" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignLightForeground}"></Setter>
         </Style>
         <Style x:Key="ParagraphSeparator" TargetType="{x:Type Label}">
             <Setter Property="Padding" Value="0,10,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignLightForeground}"></Setter>
+            <Setter Property="Margin" Value="0,0,0,5"></Setter>
         </Style>
         <Style x:Key="LinkLabelStyle">
             <Setter Property="Control.Padding" Value="0" />
             <Setter Property="Control.VerticalAlignment" Value="Center" />
         </Style>
-        <Style x:Key="ReadOnlyDescStyle" TargetType="{x:Type TextBox}">
+        <Style x:Key="ReadOnlyDescStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextAreaTextBox}">
             <Setter Property="MinLines" Value="6" />
             <Setter Property="MaxLines" Value="6" />
             <Setter Property="IsReadOnly" Value="True" />
-            <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-            <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         </Style>
-        <Style x:Key="OkButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="OkButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="MinWidth" Value="75" />
             <Setter Property="Margin" Value="0,5" />
             <Setter Property="DockPanel.Dock" Value="Right" />
@@ -66,17 +70,15 @@
                 <Label x:Name="versionLabel" x:Uid="VersionLabel" Content="Version " />
                 <Label x:Name="version" x:Uid="version" Content="{Binding Mode=OneTime, Path=Version}" />
             </StackPanel>
-            <Label x:Name="copyright" x:Uid="copyright" Content="{Binding Mode=OneTime, Path=Copyright}"  />
+            <Label x:Name="copyright" x:Uid="copyright" Content="{Binding Mode=OneTime, Path=Copyright}" />
             <Label x:Name="company" x:Uid="company" Content="{Binding Mode=OneTime, Path=Company}" />
             <Label x:Name="reserved" x:Uid="reserved" Content="All rights reserved." />
-            <Label x:Name="info" x:Uid="info" Style="{StaticResource ParagraphSeparator}" 
-                   Content="Product details:" />
+            <Label x:Name="info" x:Uid="info" Style="{StaticResource ParagraphSeparator}" Content="Product details:" />
             <TextBox x:Name="description" x:Uid="description" Text="{Binding Mode=OneTime, Path=Description}"
                      Style="{StaticResource ReadOnlyDescStyle}" />
             <DockPanel x:Uid="buttonArea">
-                <Button x:Name="okButton" x:Uid="okButton" Style="{StaticResource OkButtonStyle}" 
-                        Content="OK" />
-                <Label x:Name="productLink" x:Uid="productLink" Style="{StaticResource LinkLabelStyle}" >
+                <Button x:Name="okButton" x:Uid="okButton" Style="{StaticResource OkButtonStyle}" Content="OK" />
+                <Label x:Name="productLink" x:Uid="productLink" Style="{StaticResource LinkLabelStyle}">
                     <Hyperlink x:Name="hyperlink" x:Uid="hyperlink" NavigateUri="{Binding Mode=OneTime, Path=LinkUri}"  Style="{StaticResource LinkLabelStyle}"
                                Hyperlink.RequestNavigate="hyperlink_RequestNavigate">
                         <TextBlock Text="{Binding Mode=OneTime, Path=LinkText}" />
