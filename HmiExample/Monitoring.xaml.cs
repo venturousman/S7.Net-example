@@ -528,13 +528,28 @@ namespace HmiExample
             {
                 var tags = new List<Tag>();
                 var isConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
+
+                int? intMoldLife = SettingHelpers.hasSetting(Constants.MoldLife) == true ?
+                        (int)Properties.Settings.Default[Constants.MoldLife] : (int?)null;
+
                 foreach (PlanViewModel item in GridPlanVMs.Items)
                 {
                     // enable buttons
-                    item.IsConnected = isConnected;
+                    item.CanStart = isConnected;
+                    item.CanStop = isConnected;
+                    item.LedStatusColor = Brushes.Gray;
+                    item.TriggerAnimation = false;
 
                     if (item.Machine != null)
                     {
+                        // warning - need to be replace machine's mold
+                        if (intMoldLife.HasValue && item.Machine.Counts >= intMoldLife.Value)
+                        {
+                            //item.CanStart = false; // temporarily comment
+                            item.LedStatusColor = Brushes.Red;
+                            item.TriggerAnimation = true;
+                        }
+
                         // read start/stop state of each machine
                         string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
                         var newTag = new Tag { ItemName = name };

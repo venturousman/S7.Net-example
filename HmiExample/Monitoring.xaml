@@ -96,6 +96,38 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
+                        <!--<DataGridTemplateColumn Header="Status">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="20" Height="20" Stroke="Black">
+                                        <Ellipse.Style>
+                                            <Style TargetType="{x:Type Ellipse}">
+                                                <Setter Property="Fill" Value="{Binding LedStatusColor}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding TriggerAnimation}" Value="True">
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimationUsingKeyFrames 
+                                                                        Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
+                                                                        Duration="0:0:2" FillBehavior="HoldEnd" RepeatBehavior="Forever">
+                                                                        <ColorAnimationUsingKeyFrames.KeyFrames>
+                                                                            <DiscreteColorKeyFrame KeyTime="0:0:0" Value="Red"/>
+                                                                            <DiscreteColorKeyFrame KeyTime="0:0:1" Value="Gray"/>
+                                                                        </ColorAnimationUsingKeyFrames.KeyFrames>
+                                                                    </ColorAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>-->
+
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -108,8 +140,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="Start" Margin="0,0,5,0" ToolTip="Start machine" Click="btnStartMachine_Click" IsEnabled="{Binding IsConnected}"></Button>
-                                        <Button Content="Stop" ToolTip="Stop machine" Click="btnStopMachine_Click" IsEnabled="{Binding IsConnected}"></Button>
+                                        <Button Content="Start" Margin="0,0,5,0" ToolTip="Start machine" Click="btnStartMachine_Click" IsEnabled="{Binding CanStart}"></Button>
+                                        <Button Content="Stop" ToolTip="Stop machine" Click="btnStopMachine_Click" IsEnabled="{Binding CanStop}"></Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

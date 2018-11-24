@@ -22,8 +22,11 @@ namespace HmiExample.Models
         //private string _productName;
         //private string _machineName;
         //private string _employeeName;
-        private bool _isConnected;
+        private bool _canStart;
+        private bool _canStop;
+        private bool _triggerAnimation;
         private SolidColorBrush _ledColor;
+        private SolidColorBrush _ledStatusColor;
 
         public Guid Id
         {
@@ -168,13 +171,46 @@ namespace HmiExample.Models
             }
         }
 
-        public bool IsConnected
+        public SolidColorBrush LedStatusColor
         {
-            get { return _isConnected; }
+            get { return _ledStatusColor; }
             set
             {
-                if (_isConnected == value) return;
-                _isConnected = value;
+                if (_ledStatusColor == value) return;
+                _ledStatusColor = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool CanStart
+        {
+            get { return _canStart; }
+            set
+            {
+                if (_canStart == value) return;
+                _canStart = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool CanStop
+        {
+            get { return _canStop; }
+            set
+            {
+                if (_canStop == value) return;
+                _canStop = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool TriggerAnimation
+        {
+            get { return _triggerAnimation; }
+            set
+            {
+                if (_triggerAnimation == value) return;
+                _triggerAnimation = value;
                 OnPropertyChanged();
             }
         }
