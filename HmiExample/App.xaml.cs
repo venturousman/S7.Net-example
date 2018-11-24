@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HmiExample.Helpers;
+using log4net;
+using System;
 using System.IO;
 using System.Windows;
 
@@ -25,6 +27,24 @@ namespace HmiExample
 
             log4net.GlobalContext.Properties["LogFileName"] = filePath; //log file path
             log4net.Config.XmlConfigurator.Configure();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            // Process unhandled exception
+            var msg = e.Exception.GetAllExceptionInfo();
+            log.Error(msg, e.Exception);
+
+            // Prevent default unhandled exception processing
+            e.Handled = true;
+
+            MessageBoxResult messageBoxResult =
+                MessageBox.Show(Constants.ApplicationCommonErrorMessage + ", the application will close immediately", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+            if (messageBoxResult == MessageBoxResult.OK)
+            {
+                Environment.Exit(1);
+            }
         }
     }
 }
