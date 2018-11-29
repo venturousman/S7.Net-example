@@ -208,11 +208,11 @@ namespace HmiExample
                         var sumExpectedQuantity = 0;
                         foreach (var plan in group)
                         {
-                            if (string.IsNullOrEmpty(machineName))
+                            if (string.IsNullOrEmpty(machineName) && plan.Machine != null)
                             {
                                 machineName = plan.Machine.Name;
                             }
-                            if (string.IsNullOrEmpty(employeeName))
+                            if (string.IsNullOrEmpty(employeeName) && plan.Employee != null)
                             {
                                 employeeName = plan.Employee.DisplayName;
                             }
