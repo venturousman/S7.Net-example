@@ -310,9 +310,11 @@ namespace HmiExample
                                     if (foundMachine == null)
                                     {
                                         failedRow = true;
-                                        break;  // break switch
                                     }
-                                    newPlan.MachineId = foundMachine.Id;
+                                    else
+                                    {
+                                        newPlan.MachineId = foundMachine.Id;
+                                    }
                                     break;
                                 case "Employee":
                                     if (!string.IsNullOrEmpty(value))
@@ -321,9 +323,11 @@ namespace HmiExample
                                         if (foundEmployee == null)
                                         {
                                             failedRow = true;
-                                            break;  // break switch
                                         }
-                                        newPlan.EmployeeId = foundEmployee.Id;
+                                        else
+                                        {
+                                            newPlan.EmployeeId = foundEmployee.Id;
+                                        }
                                     }
                                     break;
                                 case "Product":
@@ -331,9 +335,11 @@ namespace HmiExample
                                     if (foundProduct == null)
                                     {
                                         failedRow = true;
-                                        break;  // break switch
                                     }
-                                    newPlan.ProductId = foundProduct.Id;
+                                    else
+                                    {
+                                        newPlan.ProductId = foundProduct.Id;
+                                    }
                                     break;
                                 case "Expected Quantity":
                                     int expectedQuantity = 0;
