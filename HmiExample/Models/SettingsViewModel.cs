@@ -90,7 +90,8 @@ namespace HmiExample.Models
                     Name = machine.Name,
                     Code = machine.Code,
                     TagIndex = machine.TagIndex,
-                    Counts = machine.Counts
+                    Count = machine.Count,
+                    CumulativeCount = machine.CumulativeCount
                 };
                 _machines.Items.Add(machineVM);
             }
@@ -195,7 +196,8 @@ namespace HmiExample.Models
                             Name = context.Name,
                             Code = context.Code,
                             TagIndex = context.TagIndex,
-                            Counts = 0,
+                            Count = 0,
+                            CumulativeCount = 0,
                             CreatedOn = DateTime.UtcNow,
                         };
                         mainWindow.applicationDbContext.Machines.Add(newMachine);
@@ -250,7 +252,8 @@ namespace HmiExample.Models
                     Name = editingMachine.Name,
                     Code = editingMachine.Code,
                     TagIndex = editingMachine.TagIndex,
-                    Counts = editingMachine.Counts
+                    Count = editingMachine.Count,
+                    CumulativeCount = editingMachine.CumulativeCount
                 }
             };
 

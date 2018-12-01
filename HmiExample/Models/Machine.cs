@@ -18,7 +18,9 @@ namespace HmiExample.Models
         [Index(IsUnique = true)]
         public string Code { get; set; }    // unique
 
-        public int Counts { get; set; } // so lan dap khuon tich luy
+        public int Count { get; set; } // so lan dap khuon tich luy
+
+        public int CumulativeCount { get; set; }
 
         [DefaultValue(-1)]
         public int TagIndex { get; set; } // vd: M2{1}.0

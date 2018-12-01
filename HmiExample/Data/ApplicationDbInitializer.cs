@@ -16,10 +16,10 @@ namespace HmiExample.Data
             #region Seed Machines
             IList<Machine> defaultMachines = new List<Machine>();
 
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 1", Code = "M001", TagIndex = 1, Counts = 4590, CreatedOn = defaultCreatedOn });
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 2", Code = "M002", TagIndex = 2, Counts = 523, CreatedOn = defaultCreatedOn });
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 3", Code = "M003", TagIndex = 3, Counts = 9, CreatedOn = defaultCreatedOn });
-            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 4", Code = "M004", TagIndex = 4, Counts = 34, CreatedOn = defaultCreatedOn });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 1", Code = "M001", TagIndex = 1, Count = 4590, CumulativeCount = 1203, CreatedOn = defaultCreatedOn });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 2", Code = "M002", TagIndex = 2, Count = 523, CumulativeCount = 123, CreatedOn = defaultCreatedOn });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 3", Code = "M003", TagIndex = 3, Count = 9, CumulativeCount = 31, CreatedOn = defaultCreatedOn });
+            defaultMachines.Add(new Machine() { Id = Guid.NewGuid(), Name = "Machine 4", Code = "M004", TagIndex = 4, Count = 34, CumulativeCount = 29, CreatedOn = defaultCreatedOn });
 
             context.Machines.AddRange(defaultMachines);
             #endregion

@@ -542,7 +542,7 @@ namespace HmiExample
                     if (item.Machine != null)
                     {
                         // warning - need to be replace machine's mold
-                        if (intMoldLife.HasValue && item.Machine.Counts >= intMoldLife.Value)
+                        if (intMoldLife.HasValue && item.Machine.Count >= intMoldLife.Value)
                         {
                             //item.CanStart = false; // temporarily comment
                             item.LedStatusColor = Brushes.Red;

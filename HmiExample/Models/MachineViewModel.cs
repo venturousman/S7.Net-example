@@ -11,7 +11,8 @@ namespace HmiExample.Models
         private string _name;
         private string _code;
         private int _tagIndex;
-        private int _counts;
+        private int _count;
+        private int _cumulativeCount;
 
         public Guid Id
         {
@@ -58,13 +59,24 @@ namespace HmiExample.Models
             }
         }
 
-        public int Counts
+        public int Count
         {
-            get { return _counts; }
+            get { return _count; }
             set
             {
-                if (_counts == value) return;
-                _counts = value;
+                if (_count == value) return;
+                _count = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CumulativeCount
+        {
+            get { return _cumulativeCount; }
+            set
+            {
+                if (_cumulativeCount == value) return;
+                _cumulativeCount = value;
                 OnPropertyChanged();
             }
         }
@@ -82,7 +94,8 @@ namespace HmiExample.Models
             _name = machine.Name;
             _code = machine.Code;
             _tagIndex = machine.TagIndex;
-            _counts = machine.Counts;
+            _count = machine.Count;
+            _cumulativeCount = machine.CumulativeCount;
         }
         #endregion
     }

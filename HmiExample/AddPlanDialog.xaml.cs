@@ -36,7 +36,8 @@ namespace HmiExample
                         Id = x.Id,
                         Name = x.Name,
                         Code = x.Code,
-                        Counts = x.Counts,
+                        Count = x.Count,
+                        CumulativeCount = x.CumulativeCount,
                         TagIndex = x.TagIndex
                     })
                     .OrderBy(x => x.Name)
