@@ -21,6 +21,8 @@ namespace HmiExample.Models
 
         public int? ActualQuantity { get; set; }
 
+        public int? NotGoodQuantity { get; set; }
+
         public DateTime? StartTime { get; set; }
 
         public DateTime? EndTime { get; set; }

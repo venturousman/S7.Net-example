@@ -11,6 +11,7 @@ namespace HmiExample.Models
         private Guid _productId;
         private int? _expectedQuantity;  // output, san luong san xuat theo plan
         private int? _actualQuantity;  // output, san luong san xuat theo thuc te
+        private int? _notGoodQuantity; // output, san luong san xuat k dat chuan
         private DateTime? _startTime;
         private DateTime? _endTime;
         private bool _isProcessed;
@@ -90,6 +91,17 @@ namespace HmiExample.Models
             {
                 if (_actualQuantity == value) return;
                 _actualQuantity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int? NotGoodQuantity
+        {
+            get { return _notGoodQuantity; }
+            set
+            {
+                if (_notGoodQuantity == value) return;
+                _notGoodQuantity = value;
                 OnPropertyChanged();
             }
         }
