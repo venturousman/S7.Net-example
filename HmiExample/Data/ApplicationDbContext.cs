@@ -9,6 +9,7 @@ namespace HmiExample.Data
     {
         public ApplicationDbContext() : base("DefaultConnection")
         {
+            //this.Configuration.LazyLoadingEnabled = false;
             //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ApplicationDbContext>());
             //Database.SetInitializer(new ApplicationDbInitializer());
         }

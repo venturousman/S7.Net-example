@@ -115,6 +115,7 @@
     <Compile Include="Helpers\ChartHelpers.cs" />
     <Compile Include="Helpers\CommandsImplementation.cs" />
     <Compile Include="Helpers\CommonHelpers.cs" />
+    <Compile Include="Helpers\DbContextExtensions.cs" />
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\NotEmptyValidationRule.cs" />
     <Compile Include="Helpers\NotifyPropertyChangedExtension.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Monitoring.xaml.cs">
       <DependentUpon>Monitoring.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlcConnectivity\Plc.DB.cs" />
     <Compile Include="Reports.xaml.cs">
       <DependentUpon>Reports.xaml</DependentUpon>
     </Compile>

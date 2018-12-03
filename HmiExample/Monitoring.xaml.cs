@@ -1,4 +1,5 @@
 ﻿#region Using
+using HmiExample.Data;
 using HmiExample.Helpers;
 using HmiExample.Models;
 using HmiExample.PlcConnectivity;
@@ -73,7 +74,6 @@ namespace HmiExample
 
             // statusbar
             lblReadTime.Text = Plc.Instance.CycleReadTime.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
-
 
             // update grid
             UpdateGridPlan();
@@ -161,8 +161,8 @@ namespace HmiExample
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
                 if (obj != null && obj.Machine != null)
                 {
-                    string name = string.Format(PlcTags.BitVariable1, obj.Machine.TagIndex);
-                    Plc.Instance.Write(name, true);
+                    string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
+                    Plc.Instance.Write(name, 1);
                 }
             }
             catch (Exception exc)
@@ -180,8 +180,8 @@ namespace HmiExample
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
                 if (obj != null && obj.Machine != null)
                 {
-                    string name = string.Format(PlcTags.BitVariable1, obj.Machine.TagIndex);
-                    Plc.Instance.Write(name, false);
+                    string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
+                    Plc.Instance.Write(name, 0);
                 }
             }
             catch (Exception exc)
@@ -218,176 +218,175 @@ namespace HmiExample
                     throw new FileNotFoundException("Cannot find your file: ", filePath);
                 }
 
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-
                 // Create the file using the FileInfo object
                 var file = new FileInfo(filePath);
 
                 //var sheetIndex = 1; // only read sheet 1 in this application
                 var sheetName = "Plans";
 
-                using (var package = new ExcelPackage(file))
+                using (var applicationDbContext = new ApplicationDbContext())
                 {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
-                    //if (worksheet == null) worksheet = package.Workbook.Worksheets[sheetIndex];
-
-                    if (worksheet == null)
+                    using (var package = new ExcelPackage(file))
                     {
-                        throw new Exception("Cannot find sheet: " + sheetName);
-                    }
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
+                        //if (worksheet == null) worksheet = package.Workbook.Worksheets[sheetIndex];
 
-                    if (worksheet.Dimension == null)
-                    {
-                        throw new Exception("There is no data in this file");
-                    }
-
-                    #region load data from db
-                    var lstMachines = mainWindow.applicationDbContext.Machines
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new MachineViewModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Code = x.Code,
-                                        })
-                                        .OrderBy(x => x.Name)
-                                        .ToList();
-
-                    var lstEmployees = mainWindow.applicationDbContext.Employees
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new EmployeeViewModel
-                                        {
-                                            Id = x.Id,
-                                            Code = x.Code,
-                                            DisplayName = x.DisplayName,
-                                            FirstName = x.FirstName,
-                                            MiddleName = x.MiddleName,
-                                            LastName = x.LastName,
-                                        })
-                                        .OrderBy(x => x.DisplayName)
-                                        .ToList();
-
-                    var lstProducts = mainWindow.applicationDbContext.Products
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new ProductViewModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Code = x.Code,
-                                        })
-                                        .OrderBy(x => x.Name)
-                                        .ToList();
-                    #endregion
-
-                    var succeededPlans = new List<Plan>();
-                    var failedRows = new List<int>();
-                    var failedRow = false;
-
-                    var start = worksheet.Dimension.Start;
-                    var end = worksheet.Dimension.End;
-
-                    for (int r = start.Row + 1; r <= end.Row; r++) // ignore header at row 1
-                    {
-                        var newPlan = new Plan
+                        if (worksheet == null)
                         {
-                            Id = Guid.NewGuid(),
-                            IsProcessed = false,
-                            CreatedOn = DateTime.UtcNow
-                        };
-                        failedRow = false; // reset
+                            throw new Exception("Cannot find sheet: " + sheetName);
+                        }
 
-                        for (int c = start.Column; c <= end.Column; c++)
+                        if (worksheet.Dimension == null)
                         {
-                            if (failedRow == true) break; // for loop
+                            throw new Exception("There is no data in this file");
+                        }
 
-                            var columnName = worksheet.Cells[1, c].Text.Trim();    // header at row 1
-                            var value = worksheet.Cells[r, c].Text.Trim();
+                        #region load data from db
+                        var lstMachines = applicationDbContext.Machines
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new MachineViewModel
+                                            {
+                                                Id = x.Id,
+                                                Name = x.Name,
+                                                Code = x.Code,
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .ToList();
 
-                            switch (columnName)
+                        var lstEmployees = applicationDbContext.Employees
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new EmployeeViewModel
+                                            {
+                                                Id = x.Id,
+                                                Code = x.Code,
+                                                DisplayName = x.DisplayName,
+                                                FirstName = x.FirstName,
+                                                MiddleName = x.MiddleName,
+                                                LastName = x.LastName,
+                                            })
+                                            .OrderBy(x => x.DisplayName)
+                                            .ToList();
+
+                        var lstProducts = applicationDbContext.Products
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new ProductViewModel
+                                            {
+                                                Id = x.Id,
+                                                Name = x.Name,
+                                                Code = x.Code,
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .ToList();
+                        #endregion
+
+                        var succeededPlans = new List<Plan>();
+                        var failedRows = new List<int>();
+                        var failedRow = false;
+
+                        var start = worksheet.Dimension.Start;
+                        var end = worksheet.Dimension.End;
+
+                        for (int r = start.Row + 1; r <= end.Row; r++) // ignore header at row 1
+                        {
+                            var newPlan = new Plan
                             {
-                                case "Machine":
-                                    var foundMachine = lstMachines.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
-                                    if (foundMachine == null)
-                                    {
-                                        failedRow = true;
-                                    }
-                                    else
-                                    {
-                                        newPlan.MachineId = foundMachine.Id;
-                                    }
-                                    break;
-                                case "Employee":
-                                    if (!string.IsNullOrEmpty(value))
-                                    {
-                                        var foundEmployee = lstEmployees.Where(x => (x.DisplayName + " - " + x.Code) == value).FirstOrDefault();
-                                        if (foundEmployee == null)
+                                Id = Guid.NewGuid(),
+                                IsProcessed = false,
+                                CreatedOn = DateTime.UtcNow
+                            };
+                            failedRow = false; // reset
+
+                            for (int c = start.Column; c <= end.Column; c++)
+                            {
+                                if (failedRow == true) break; // for loop
+
+                                var columnName = worksheet.Cells[1, c].Text.Trim();    // header at row 1
+                                var value = worksheet.Cells[r, c].Text.Trim();
+
+                                switch (columnName)
+                                {
+                                    case "Machine":
+                                        var foundMachine = lstMachines.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
+                                        if (foundMachine == null)
                                         {
                                             failedRow = true;
                                         }
                                         else
                                         {
-                                            newPlan.EmployeeId = foundEmployee.Id;
+                                            newPlan.MachineId = foundMachine.Id;
                                         }
-                                    }
-                                    break;
-                                case "Product":
-                                    var foundProduct = lstProducts.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
-                                    if (foundProduct == null)
-                                    {
-                                        failedRow = true;
-                                    }
-                                    else
-                                    {
-                                        newPlan.ProductId = foundProduct.Id;
-                                    }
-                                    break;
-                                case "Expected Quantity":
-                                    int expectedQuantity = 0;
-                                    if (int.TryParse(value, out expectedQuantity))
-                                    {
-                                        newPlan.ExpectedQuantity = expectedQuantity;
-                                    }
-                                    break;
-                                default:
-                                    break;
+                                        break;
+                                    case "Employee":
+                                        if (!string.IsNullOrEmpty(value))
+                                        {
+                                            var foundEmployee = lstEmployees.Where(x => (x.DisplayName + " - " + x.Code) == value).FirstOrDefault();
+                                            if (foundEmployee == null)
+                                            {
+                                                failedRow = true;
+                                            }
+                                            else
+                                            {
+                                                newPlan.EmployeeId = foundEmployee.Id;
+                                            }
+                                        }
+                                        break;
+                                    case "Product":
+                                        var foundProduct = lstProducts.Where(x => (x.Name + " - " + x.Code) == value).FirstOrDefault();
+                                        if (foundProduct == null)
+                                        {
+                                            failedRow = true;
+                                        }
+                                        else
+                                        {
+                                            newPlan.ProductId = foundProduct.Id;
+                                        }
+                                        break;
+                                    case "Expected Quantity":
+                                        int expectedQuantity = 0;
+                                        if (int.TryParse(value, out expectedQuantity))
+                                        {
+                                            newPlan.ExpectedQuantity = expectedQuantity;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                            if (failedRow == true)
+                            {
+                                failedRows.Add(r);
+                            }
+                            else
+                            {
+                                succeededPlans.Add(newPlan);
                             }
                         }
 
-                        if (failedRow == true)
+                        if (failedRows.Count > 0)
                         {
-                            failedRows.Add(r);
+                            var strRows = string.Join(",", failedRows);
+                            MessageBoxResult messageBoxResult = MessageBox.Show("There is(are) error(s) at row(s) " + strRows + ". " +
+                                "Do you really want to continue?", Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                            if (messageBoxResult == MessageBoxResult.No)
+                            {
+                                return;
+                            }
                         }
-                        else
-                        {
-                            succeededPlans.Add(newPlan);
-                        }
-                    }
 
-                    if (failedRows.Count > 0)
-                    {
-                        var strRows = string.Join(",", failedRows);
-                        MessageBoxResult messageBoxResult = MessageBox.Show("There is(are) error(s) at row(s) " + strRows + ". " +
-                            "Do you really want to continue?", Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                        if (messageBoxResult == MessageBoxResult.No)
-                        {
-                            return;
-                        }
-                    }
+                        // save databases
+                        applicationDbContext.Plans.AddRange(succeededPlans);
+                        applicationDbContext.SaveChanges();
 
-                    // save databases
-                    mainWindow.applicationDbContext.Plans.AddRange(succeededPlans);
-                    mainWindow.applicationDbContext.SaveChanges();
+                        // update UI
+                        LoadPlanData();
 
-                    // notify
-                    MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    // update UI
-                    foreach (var plan in succeededPlans)
-                    {
-                        var planVM = new PlanViewModel(plan);
-                        GridPlanVMs.Items.Add(planVM);
+                        // notify
+                        MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
+
+
             }
             catch (Exception ex)
             {
@@ -406,8 +405,6 @@ namespace HmiExample
 
             try
             {
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-
                 if (!Directory.Exists(baseDirectory))
                 {
                     Directory.CreateDirectory(baseDirectory);
@@ -417,104 +414,107 @@ namespace HmiExample
                 //var file = new FileInfo(filePath);
                 var file = CommonHelpers.GetUniqueFile(filePath);
 
-                using (var package = new ExcelPackage(file))
+                using (var applicationDbContext = new ApplicationDbContext())
                 {
-                    // add a new worksheet to the empty workbook
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Plans");
-
-                    var properties = new string[] { "Machine", "Employee", "Product", "Expected Quantity" };
-                    for (var i = 0; i < properties.Length; i++)
+                    using (var package = new ExcelPackage(file))
                     {
-                        worksheet.Cells[1, i + 1].Value = properties[i];
-                        worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
-                        worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                        // add a new worksheet to the empty workbook
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Plans");
+
+                        var properties = new string[] { "Machine", "Employee", "Product", "Expected Quantity" };
+                        for (var i = 0; i < properties.Length; i++)
+                        {
+                            worksheet.Cells[1, i + 1].Value = properties[i];
+                            worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                            worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                        }
+                        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                        // --------- DataValidations goes here -------------- //
+                        //https://social.msdn.microsoft.com/Forums/vstudio/en-US/cdaf187c-df21-4cd9-9c05-7e94abb03f04/create-excel-sheet-with-drop-down-list-using-epplus?forum=exceldev
+
+                        #region Machine Validation
+                        // int FromRow, int FromCol, int ToRow, int ToCol
+                        var ddMachines = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 1, 10000, 1].Address);
+                        ddMachines.AllowBlank = false; //Set to true if blank value is accepted
+
+                        var lstMachines = applicationDbContext.Machines
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new MachineViewModel
+                                            {
+                                                Id = x.Id,
+                                                Name = x.Name,
+                                                Code = x.Code,
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .ToList();
+
+                        foreach (var machine in lstMachines)
+                        {
+                            ddMachines.Formula.Values.Add(machine.Name + " - " + machine.Code);
+                        }
+
+                        // Or load from another sheet
+                        //package.Workbook.Worksheets.Add("OtherSheet");
+                        //list1.Formula.ExcelFormula = "OtherSheet!A1:A4";
+                        #endregion
+
+                        #region Employee Validation
+                        var ddEmployees = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 2, 10000, 2].Address);
+                        ddEmployees.AllowBlank = true; //Set to true if blank value is accepted
+
+                        var lstEmployees = applicationDbContext.Employees
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new EmployeeViewModel
+                                            {
+                                                Id = x.Id,
+                                                Code = x.Code,
+                                                DisplayName = x.DisplayName,
+                                                FirstName = x.FirstName,
+                                                MiddleName = x.MiddleName,
+                                                LastName = x.LastName,
+                                            })
+                                            .OrderBy(x => x.DisplayName)
+                                            .ToList();
+
+                        foreach (var employee in lstEmployees)
+                        {
+                            ddEmployees.Formula.Values.Add(employee.DisplayName + " - " + employee.Code);
+                        }
+
+                        #endregion
+
+                        #region Product Validation
+                        var ddProducts = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 3, 10000, 3].Address);
+                        ddProducts.AllowBlank = false; //Set to true if blank value is accepted
+
+                        var lstProducts = applicationDbContext.Products
+                                            .Where(x => !x.IsDeleted)
+                                            .Select(x => new ProductViewModel
+                                            {
+                                                Id = x.Id,
+                                                Name = x.Name,
+                                                Code = x.Code,
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .ToList();
+
+                        foreach (var product in lstProducts)
+                        {
+                            ddProducts.Formula.Values.Add(product.Name + " - " + product.Code);
+                        }
+
+                        #endregion
+
+                        #region Expected Quantity Validation
+                        //var ivExpectedQuantity = worksheet.DataValidations.AddIntegerValidation(worksheet.Cells[2, 4, 10000, 4].Address);
+                        //ivExpectedQuantity.AllowBlank = true;
+                        #endregion
+
+                        // end
+                        package.Save();
                     }
-                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
-                    // --------- DataValidations goes here -------------- //
-                    //https://social.msdn.microsoft.com/Forums/vstudio/en-US/cdaf187c-df21-4cd9-9c05-7e94abb03f04/create-excel-sheet-with-drop-down-list-using-epplus?forum=exceldev
-
-                    #region Machine Validation
-                    // int FromRow, int FromCol, int ToRow, int ToCol
-                    var ddMachines = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 1, 10000, 1].Address);
-                    ddMachines.AllowBlank = false; //Set to true if blank value is accepted
-
-                    var lstMachines = mainWindow.applicationDbContext.Machines
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new MachineViewModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Code = x.Code,
-                                        })
-                                        .OrderBy(x => x.Name)
-                                        .ToList();
-
-                    foreach (var machine in lstMachines)
-                    {
-                        ddMachines.Formula.Values.Add(machine.Name + " - " + machine.Code);
-                    }
-
-                    // Or load from another sheet
-                    //package.Workbook.Worksheets.Add("OtherSheet");
-                    //list1.Formula.ExcelFormula = "OtherSheet!A1:A4";
-                    #endregion
-
-                    #region Employee Validation
-                    var ddEmployees = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 2, 10000, 2].Address);
-                    ddEmployees.AllowBlank = true; //Set to true if blank value is accepted
-
-                    var lstEmployees = mainWindow.applicationDbContext.Employees
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new EmployeeViewModel
-                                        {
-                                            Id = x.Id,
-                                            Code = x.Code,
-                                            DisplayName = x.DisplayName,
-                                            FirstName = x.FirstName,
-                                            MiddleName = x.MiddleName,
-                                            LastName = x.LastName,
-                                        })
-                                        .OrderBy(x => x.DisplayName)
-                                        .ToList();
-
-                    foreach (var employee in lstEmployees)
-                    {
-                        ddEmployees.Formula.Values.Add(employee.DisplayName + " - " + employee.Code);
-                    }
-
-                    #endregion
-
-                    #region Product Validation
-                    var ddProducts = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 3, 10000, 3].Address);
-                    ddProducts.AllowBlank = false; //Set to true if blank value is accepted
-
-                    var lstProducts = mainWindow.applicationDbContext.Products
-                                        .Where(x => !x.IsDeleted)
-                                        .Select(x => new ProductViewModel
-                                        {
-                                            Id = x.Id,
-                                            Name = x.Name,
-                                            Code = x.Code,
-                                        })
-                                        .OrderBy(x => x.Name)
-                                        .ToList();
-
-                    foreach (var product in lstProducts)
-                    {
-                        ddProducts.Formula.Values.Add(product.Name + " - " + product.Code);
-                    }
-
-                    #endregion
-
-                    #region Expected Quantity Validation
-                    //var ivExpectedQuantity = worksheet.DataValidations.AddIntegerValidation(worksheet.Cells[2, 4, 10000, 4].Address);
-                    //ivExpectedQuantity.AllowBlank = true;
-                    #endregion
-
-                    // end
-                    package.Save();
                 }
 
                 MessageBox.Show("Successfully download template at " + baseDirectory, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -531,19 +531,18 @@ namespace HmiExample
         {
             try
             {
-                var tags = new List<Tag>();
                 var isConnected = Plc.Instance.ConnectionState == ConnectionStates.Online;
 
                 int? intMoldLife = SettingHelpers.hasSetting(Constants.MoldLife) == true ?
-                        (int)Properties.Settings.Default[Constants.MoldLife] : (int?)null;
+                    (int)Properties.Settings.Default[Constants.MoldLife] : (int?)null;
 
                 foreach (PlanViewModel item in GridPlanVMs.Items)
                 {
                     // enable buttons
                     item.CanStart = isConnected;
                     item.CanStop = isConnected;
-                    item.LedStatusColor = Brushes.Gray;
-                    item.TriggerAnimation = false;
+                    //item.LedStatusColor = Brushes.Gray;
+                    //item.TriggerAnimation = false;
 
                     if (item.Machine != null)
                     {
@@ -551,75 +550,21 @@ namespace HmiExample
                         if (intMoldLife.HasValue && item.Machine.Count >= intMoldLife.Value)
                         {
                             //item.CanStart = false; // temporarily comment
-                            item.LedStatusColor = Brushes.Red;
-                            item.TriggerAnimation = true;
+                            //item.LedStatusColor = Brushes.Red;
+                            //item.TriggerAnimation = true;
                         }
+
+                        // Read class
+                        Plc.Instance.ReadClass(item.Db, item.Machine.TagIndex);
 
                         // read start/stop state of each machine
-                        string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
-                        var newTag = new Tag { ItemName = name };
-                        tags.Add(newTag);
+                        item.LedColor = item.Db.BitVariable0 ? Brushes.Green : Brushes.Gray;
 
                         // read expected quantity of each machine
-                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 2);
-                        newTag = new Tag { ItemName = name };
-                        tags.Add(newTag);
+                        item.ExpectedQuantity = item.Db.IntVariable0;
 
                         // read actual quantity of each machine
-                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 4);
-                        newTag = new Tag { ItemName = name };
-                        tags.Add(newTag);
-                    }
-                }
-
-                // TODO: should be unique by tag name
-                tags = Plc.Instance.Read(tags);
-
-                // update leds
-                foreach (PlanViewModel item in GridPlanVMs.Items)
-                {
-                    if (item.Machine != null)
-                    {
-                        // read start/stop state of each machine
-                        string name = string.Format(PlcTags.BitVariable1, item.Machine.TagIndex);
-                        var foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
-                        if (foundTag != null)
-                        {
-                            object value = foundTag.ItemValue;
-
-                            if (foundTag.ItemValue is byte)
-                            {
-                                //var flag = CommonHelpers.IsBitSet((byte)value, 2); // bit 1 at pos 2
-                                var flag = S7.Net.Types.Boolean.GetValue((byte)value, 1); // bit 1 at pos 1
-                                item.LedColor = flag ? Brushes.Green : Brushes.Gray;
-                            }
-                        }
-
-                        // read expected quantity of each machine
-                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 2);
-                        foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
-                        if (foundTag != null)
-                        {
-                            object value = foundTag.ItemValue;
-
-                            if (foundTag.ItemValue is ushort)
-                            {
-                                item.ExpectedQuantity = (ushort)foundTag.ItemValue;
-                            }
-                        }
-
-                        // read actual quantity of each machine
-                        name = string.Format(PlcTags.IntVariable, (item.Machine.TagIndex - 1) * 6 + 4);
-                        foundTag = tags.Where(x => x.ItemName == name).FirstOrDefault();
-                        if (foundTag != null)
-                        {
-                            object value = foundTag.ItemValue;
-
-                            if (foundTag.ItemValue is ushort)
-                            {
-                                item.ActualQuantity = (ushort)foundTag.ItemValue;
-                            }
-                        }
+                        item.ActualQuantity = item.Db.IntVariable1;
                     }
                 }
             }
@@ -633,35 +578,37 @@ namespace HmiExample
 
         private void LoadPlanData()
         {
-            // reset
-            _gridPlanVMs.Items.Clear();
-
-            // load databases
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            var lstPlans = mainWindow.applicationDbContext.Plans.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
-
-            foreach (var plan in lstPlans)
+            using (var applicationDbContext = new ApplicationDbContext())
             {
-                var planVM = new PlanViewModel
+                // reset
+                GridPlanVMs.Items.Clear();
+
+                // load databases
+                var lstPlans = applicationDbContext.Plans.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
+
+                foreach (var plan in lstPlans)
                 {
-                    Id = plan.Id,
-                    Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
-                    MachineId = plan.MachineId,
-                    //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
-                    Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
-                    EmployeeId = plan.EmployeeId,
-                    //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
-                    Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
-                    ProductId = plan.ProductId,
-                    //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
-                    ExpectedQuantity = plan.ExpectedQuantity,
-                    ActualQuantity = plan.ActualQuantity,
-                    StartTime = plan.StartTime,
-                    EndTime = plan.EndTime,
-                    IsProcessed = plan.IsProcessed,
-                };
-                // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
-                _gridPlanVMs.Items.Add(planVM);
+                    var planVM = new PlanViewModel
+                    {
+                        Id = plan.Id,
+                        Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
+                        MachineId = plan.MachineId,
+                        //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
+                        Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
+                        EmployeeId = plan.EmployeeId,
+                        //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
+                        Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
+                        ProductId = plan.ProductId,
+                        //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
+                        ExpectedQuantity = plan.ExpectedQuantity,
+                        ActualQuantity = plan.ActualQuantity,
+                        StartTime = plan.StartTime,
+                        EndTime = plan.EndTime,
+                        IsProcessed = plan.IsProcessed,
+                    };
+                    // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
+                    GridPlanVMs.Items.Add(planVM);
+                }
             }
         }
 
@@ -705,24 +652,26 @@ namespace HmiExample
             {
                 try
                 {
-                    var plan = obj as PlanViewModel;
-                    var mainWindow = (MainWindow)Application.Current.MainWindow;
-
-                    var deletingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
-                    if (deletingPlan != null)
+                    using (var applicationDbContext = new ApplicationDbContext())
                     {
-                        deletingPlan.IsDeleted = true; // soft delete
-                        deletingPlan.ModifiedOn = DateTime.UtcNow;
+                        var plan = obj as PlanViewModel;
+
+                        var deletingPlan = applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
+                        if (deletingPlan != null)
+                        {
+                            deletingPlan.IsDeleted = true; // soft delete
+                            deletingPlan.ModifiedOn = DateTime.UtcNow;
+                        }
+
+                        // save databases
+                        applicationDbContext.SaveChanges();
+
+                        // notify
+                        MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // update UI
+                        GridPlanVMs.Items.Remove(plan);
                     }
-
-                    // save databases
-                    mainWindow.applicationDbContext.SaveChanges();
-
-                    // notify
-                    MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    // update UI
-                    GridPlanVMs.Items.Remove(plan);
                 }
                 catch (Exception ex)
                 {
@@ -774,72 +723,73 @@ namespace HmiExample
 
             try
             {
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-
-                if (context.MachineId != Guid.Empty && context.ProductId != Guid.Empty)
+                using (var applicationDbContext = new ApplicationDbContext())
                 {
-                    if (context.Id != Guid.Empty)
+                    if (context.MachineId != Guid.Empty && context.ProductId != Guid.Empty)
                     {
-                        // update existing plan
-                        var editingPlan = mainWindow.applicationDbContext.Plans.Where(x => x.Id == context.Id).FirstOrDefault();
-                        if (editingPlan != null)
+                        if (context.Id != Guid.Empty)
                         {
-                            editingPlan.MachineId = context.MachineId;
-                            editingPlan.EmployeeId = context.EmployeeId;
-                            editingPlan.ProductId = context.ProductId;
-                            editingPlan.ExpectedQuantity = context.ExpectedQuantity;
-                            //editingPlan.ActualQuantity = newItem.ActualQuantity;
-                            //editingPlan.StartTime = newItem.StartTime;
-                            //editingPlan.EndTime = newItem.EndTime;
-                            //editingPlan.IsProcessed = newItem.IsProcessed;
-                            editingPlan.ModifiedOn = DateTime.UtcNow;
-                        }
-
-                        // save databases
-                        mainWindow.applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        var index = -1;
-                        for (int i = 0; i < GridPlanVMs.Items.Count; i++)
-                        {
-                            if (GridPlanVMs.Items[i].Id == context.Id)
+                            // update existing plan
+                            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == context.Id).FirstOrDefault();
+                            if (editingPlan != null)
                             {
-                                index = i;
-                                break;
+                                editingPlan.MachineId = context.MachineId;
+                                editingPlan.EmployeeId = context.EmployeeId;
+                                editingPlan.ProductId = context.ProductId;
+                                editingPlan.ExpectedQuantity = context.ExpectedQuantity;
+                                //editingPlan.ActualQuantity = newItem.ActualQuantity;
+                                //editingPlan.StartTime = newItem.StartTime;
+                                //editingPlan.EndTime = newItem.EndTime;
+                                //editingPlan.IsProcessed = newItem.IsProcessed;
+                                editingPlan.ModifiedOn = DateTime.UtcNow;
+                            }
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            // update UI
+                            var index = -1;
+                            for (int i = 0; i < GridPlanVMs.Items.Count; i++)
+                            {
+                                if (GridPlanVMs.Items[i].Id == context.Id)
+                                {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (index != -1)
+                            {
+                                GridPlanVMs.Items[index] = context;
                             }
                         }
-                        if (index != -1)
+                        else
                         {
-                            GridPlanVMs.Items[index] = context;
+                            // create new plan
+                            var newPlan = new Plan
+                            {
+                                Id = Guid.NewGuid(),
+                                MachineId = context.MachineId,
+                                EmployeeId = context.EmployeeId,
+                                ProductId = context.ProductId,
+                                ExpectedQuantity = context.ExpectedQuantity,
+                                CreatedOn = DateTime.UtcNow,
+                                IsProcessed = false
+                            };
+                            applicationDbContext.Plans.Add(newPlan);
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully created plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            // update UI
+                            var newPlanVM = new PlanViewModel(newPlan);
+                            GridPlanVMs.Items.Add(newPlanVM);
                         }
-                    }
-                    else
-                    {
-                        // create new plan
-                        var newPlan = new Plan
-                        {
-                            Id = Guid.NewGuid(),
-                            MachineId = context.MachineId,
-                            EmployeeId = context.EmployeeId,
-                            ProductId = context.ProductId,
-                            ExpectedQuantity = context.ExpectedQuantity,
-                            CreatedOn = DateTime.UtcNow,
-                            IsProcessed = false
-                        };
-                        mainWindow.applicationDbContext.Plans.Add(newPlan);
-
-                        // save databases
-                        mainWindow.applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully created plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        var newPlanVM = new PlanViewModel(newPlan);
-                        GridPlanVMs.Items.Add(newPlanVM);
                     }
                 }
             }

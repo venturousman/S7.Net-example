@@ -88,6 +88,9 @@
                         <DataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity"
                                             EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
 
+                        <DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
+                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+
                         <DataGridTemplateColumn Header="Online/Offline">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -168,6 +171,13 @@
                                             CommandParameter="{Binding SelectedItem, ElementName=dgPlans}">
                                         <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />
                                     </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Complete" ToolTip="Complete plan"></Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HmiExample.PlcConnectivity;
+using System;
 using System.Windows.Media;
 
 namespace HmiExample.Models
@@ -260,9 +261,12 @@ namespace HmiExample.Models
             }
         }
 
+        public DBX Db { get; set; }
+
         #region Constructors
         public PlanViewModel()
         {
+            Db = new DBX();
         }
 
         public PlanViewModel(Plan plan)
@@ -279,6 +283,7 @@ namespace HmiExample.Models
             Product = new ProductViewModel(plan.Product);
             Machine = new MachineViewModel(plan.Machine);
             Employee = new EmployeeViewModel(plan.Employee);
+            Db = new DBX();
         }
         #endregion
     }
