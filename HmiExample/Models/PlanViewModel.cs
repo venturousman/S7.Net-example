@@ -15,6 +15,7 @@ namespace HmiExample.Models
         private int? _notGoodQuantity; // output, san luong san xuat k dat chuan
         private DateTime? _startTime;
         private DateTime? _endTime;
+        private DateTime? _createdOn;
         private bool _isProcessed;
 
         private ProductViewModel _product;
@@ -263,6 +264,17 @@ namespace HmiExample.Models
 
         public DBX Db { get; set; }
 
+        public DateTime? CreatedOn
+        {
+            get { return _createdOn; }
+            set
+            {
+                if (_createdOn == value) return;
+                _createdOn = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Constructors
         public PlanViewModel()
         {
@@ -280,6 +292,7 @@ namespace HmiExample.Models
             _startTime = plan.StartTime;
             _endTime = plan.EndTime;
             _isProcessed = plan.IsProcessed;
+            _createdOn = plan.CreatedOn;
             Product = new ProductViewModel(plan.Product);
             Machine = new MachineViewModel(plan.Machine);
             Employee = new EmployeeViewModel(plan.Employee);

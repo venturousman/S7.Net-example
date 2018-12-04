@@ -180,7 +180,7 @@ namespace HmiExample
 
                     // get data
                     var groups = applicationDbContext.Plans
-                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate && x.IsProcessed == true)
+                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate)// && x.IsProcessed == true)
                         .GroupBy(x => new { x.EmployeeId, x.MachineId })
                         .ToList();
 
@@ -255,6 +255,8 @@ namespace HmiExample
                                     Values = seriesExpectedQuantity
                                 }
                             };
+
+                        // grid info
                         foreach (var plan in group)
                         {
                             var planVM = new PlanViewModel(plan);
