@@ -256,6 +256,13 @@ namespace HmiExample.Models
             {
                 try
                 {
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to delete this machine?",
+                    Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (messageBoxResult == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                     using (var applicationDbContext = new ApplicationDbContext())
                     {
                         var machine = obj as MachineViewModel;
@@ -436,6 +443,13 @@ namespace HmiExample.Models
             {
                 try
                 {
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to delete this employee?",
+                    Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (messageBoxResult == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                     using (var applicationDbContext = new ApplicationDbContext())
                     {
                         var employee = obj as EmployeeViewModel;
@@ -594,6 +608,13 @@ namespace HmiExample.Models
             {
                 try
                 {
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to delete this product?",
+                    Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (messageBoxResult == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                     using (var applicationDbContext = new ApplicationDbContext())
                     {
                         var product = obj as ProductViewModel;

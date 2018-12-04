@@ -177,7 +177,7 @@
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Complete" ToolTip="Complete plan"></Button>
+                                    <Button Content="Complete" ToolTip="Complete plan" Click="btnCompletePlan_Click"></Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

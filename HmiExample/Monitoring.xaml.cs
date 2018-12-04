@@ -149,6 +149,48 @@ namespace HmiExample
             }
         }
 
+        private void btnCompletePlan_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to complete this plan?",
+                    Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (messageBoxResult == MessageBoxResult.No)
+                {
+                    return;
+                }
+
+                PlanViewModel plan = ((FrameworkElement)sender).DataContext as PlanViewModel;
+                if (plan != null)
+                {
+                    using (var applicationDbContext = new ApplicationDbContext())
+                    {
+                        var editingPlan = applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
+                        if (editingPlan != null)
+                        {
+                            editingPlan.IsProcessed = true;
+                            editingPlan.ModifiedOn = DateTime.UtcNow;
+                        }
+
+                        // save databases
+                        applicationDbContext.SaveChanges();
+
+                        // notify
+                        MessageBox.Show("Successfully completed plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // update UI
+                        LoadPlanData();
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                var msg = exc.GetAllExceptionInfo();
+                log.Error(msg, exc);
+                MessageBox.Show("Couldn't complete plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void btnStartMachine_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -652,6 +694,13 @@ namespace HmiExample
             {
                 try
                 {
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Do you really want to delete this plan?",
+                    Constants.ApplicationName, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (messageBoxResult == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                     using (var applicationDbContext = new ApplicationDbContext())
                     {
                         var plan = obj as PlanViewModel;
