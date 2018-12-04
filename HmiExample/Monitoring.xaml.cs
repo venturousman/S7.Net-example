@@ -561,10 +561,10 @@ namespace HmiExample
                         item.LedColor = item.Db.BitVariable0 ? Brushes.Green : Brushes.Gray;
 
                         // read expected quantity of each machine
-                        item.ExpectedQuantity = item.Db.IntVariable0;
+                        //item.ExpectedQuantity = item.Db.IntVariable0; // TODO
 
                         // read actual quantity of each machine
-                        item.ActualQuantity = item.Db.IntVariable1;
+                        //item.ActualQuantity = item.Db.IntVariable1; // TODO
                     }
                 }
             }
@@ -670,7 +670,7 @@ namespace HmiExample
                         MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
 
                         // update UI
-                        GridPlanVMs.Items.Remove(plan);
+                        LoadPlanData();
                     }
                 }
                 catch (Exception ex)
@@ -751,19 +751,7 @@ namespace HmiExample
                             MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
 
                             // update UI
-                            var index = -1;
-                            for (int i = 0; i < GridPlanVMs.Items.Count; i++)
-                            {
-                                if (GridPlanVMs.Items[i].Id == context.Id)
-                                {
-                                    index = i;
-                                    break;
-                                }
-                            }
-                            if (index != -1)
-                            {
-                                GridPlanVMs.Items[index] = context;
-                            }
+                            LoadPlanData();
                         }
                         else
                         {
@@ -787,8 +775,7 @@ namespace HmiExample
                             MessageBox.Show("Successfully created plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
 
                             // update UI
-                            var newPlanVM = new PlanViewModel(newPlan);
-                            GridPlanVMs.Items.Add(newPlanVM);
+                            LoadPlanData();
                         }
                     }
                 }

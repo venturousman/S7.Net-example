@@ -15,8 +15,6 @@ namespace HmiExample
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public ApplicationDbContext applicationDbContext = new ApplicationDbContext();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -73,14 +71,17 @@ namespace HmiExample
         {
             try
             {
-                var isExisted = applicationDbContext.Database.Exists();
-                if (isExisted)
+                using (var applicationDbContext = new ApplicationDbContext())
                 {
-                    applicationDbContext.Database.Connection.Open();
-                }
-                else
-                {
-                    applicationDbContext.Database.Initialize(true);
+                    var isExisted = applicationDbContext.Database.Exists();
+                    if (isExisted)
+                    {
+                        applicationDbContext.Database.Connection.Open();
+                    }
+                    else
+                    {
+                        applicationDbContext.Database.Initialize(true);
+                    }
                 }
             }
             catch (Exception ex)

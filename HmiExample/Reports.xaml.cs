@@ -1,4 +1,5 @@
-﻿using HmiExample.Helpers;
+﻿using HmiExample.Data;
+using HmiExample.Helpers;
 using HmiExample.Models;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -153,93 +154,94 @@ namespace HmiExample
 
         private void btnRunReport_Click(object sender, RoutedEventArgs e)
         {
-            if (dtFrom.SelectedDate.HasValue && dtTo.SelectedDate.HasValue)
+            using (var applicationDbContext = new ApplicationDbContext())
             {
-                // get date range
-                DateTime fromDate = dtFrom.SelectedDate.Value;
-                DateTime toDate = dtTo.SelectedDate.Value;
-
-                fromDate = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, 0, 0, 0);
-                toDate = new DateTime(toDate.Year, toDate.Month, toDate.Day, 23, 59, 59);
-
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-                // build labels
-                var labels = new List<string>();
-                var dates = new List<DateTime>();
-
-                for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
+                if (dtFrom.SelectedDate.HasValue && dtTo.SelectedDate.HasValue)
                 {
-                    dates.Add(dt);
-                    labels.Add(dt.ToShortDateString());
-                }
+                    // get date range
+                    DateTime fromDate = dtFrom.SelectedDate.Value;
+                    DateTime toDate = dtTo.SelectedDate.Value;
 
-                // calculate width of chart
-                var calculatedWidth = labels.Count * 35 + 400; // px
+                    fromDate = new DateTime(fromDate.Year, fromDate.Month, fromDate.Day, 0, 0, 0);
+                    toDate = new DateTime(toDate.Year, toDate.Month, toDate.Day, 23, 59, 59);
 
-                // get data
-                var groups = mainWindow.applicationDbContext.Plans
-                    .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate && x.IsProcessed == true)
-                    .GroupBy(x => new { x.EmployeeId, x.MachineId })
-                    .ToList();
+                    // build labels
+                    var labels = new List<string>();
+                    var dates = new List<DateTime>();
 
-                // build series
-                _chartViewModels.Clear();
-                foreach (var group in groups)
-                {
-                    // var tmp = group.GroupBy(x => x.ProductId).ToList();
-
-                    var chartVM = new ChartViewModel
+                    for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
                     {
-                        Labels = labels.ToArray(),
-                        Formatter = value => value.ToString("N"),
-                        Width = calculatedWidth
-                    };
-
-                    var chartName = string.Empty;
-                    var gridName = string.Empty;
-                    var machineName = string.Empty;
-                    var employeeName = string.Empty;
-
-                    var seriesActualQuantity = new ChartValues<double>();
-                    var seriesExpectedQuantity = new ChartValues<double>();
-                    foreach (var label in labels)
-                    {
-                        var sumActualQuantity = 0;
-                        var sumExpectedQuantity = 0;
-                        foreach (var plan in group)
-                        {
-                            if (string.IsNullOrEmpty(machineName) && plan.Machine != null)
-                            {
-                                machineName = plan.Machine.Name;
-                            }
-                            if (string.IsNullOrEmpty(employeeName) && plan.Employee != null)
-                            {
-                                employeeName = plan.Employee.DisplayName;
-                            }
-                            if (string.IsNullOrEmpty(chartName))
-                            {
-                                chartName = "chart-" + plan.Id;
-                            }
-                            if (string.IsNullOrEmpty(gridName))
-                            {
-                                gridName = "grid-" + plan.Id;
-                            }
-                            if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
-                            {
-                                sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
-                                sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
-                            }
-                        }
-                        seriesActualQuantity.Add(sumActualQuantity);
-                        seriesExpectedQuantity.Add(sumExpectedQuantity);
+                        dates.Add(dt);
+                        labels.Add(dt.ToShortDateString());
                     }
 
-                    // update chartVM
-                    chartVM.GridName = gridName;
-                    chartVM.ChartName = chartName;
-                    chartVM.Machine = machineName;
-                    chartVM.Employee = employeeName;
-                    chartVM.SeriesCollection = new SeriesCollection
+                    // calculate width of chart
+                    var calculatedWidth = labels.Count * 35 + 400; // px
+
+                    // get data
+                    var groups = applicationDbContext.Plans
+                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate && x.IsProcessed == true)
+                        .GroupBy(x => new { x.EmployeeId, x.MachineId })
+                        .ToList();
+
+                    // build series
+                    _chartViewModels.Clear();
+                    foreach (var group in groups)
+                    {
+                        // var tmp = group.GroupBy(x => x.ProductId).ToList();
+
+                        var chartVM = new ChartViewModel
+                        {
+                            Labels = labels.ToArray(),
+                            Formatter = value => value.ToString("N"),
+                            Width = calculatedWidth
+                        };
+
+                        var chartName = string.Empty;
+                        var gridName = string.Empty;
+                        var machineName = string.Empty;
+                        var employeeName = string.Empty;
+
+                        var seriesActualQuantity = new ChartValues<double>();
+                        var seriesExpectedQuantity = new ChartValues<double>();
+                        foreach (var label in labels)
+                        {
+                            var sumActualQuantity = 0;
+                            var sumExpectedQuantity = 0;
+                            foreach (var plan in group)
+                            {
+                                if (string.IsNullOrEmpty(machineName) && plan.Machine != null)
+                                {
+                                    machineName = plan.Machine.Name;
+                                }
+                                if (string.IsNullOrEmpty(employeeName) && plan.Employee != null)
+                                {
+                                    employeeName = plan.Employee.DisplayName;
+                                }
+                                if (string.IsNullOrEmpty(chartName))
+                                {
+                                    chartName = "chart-" + plan.Id;
+                                }
+                                if (string.IsNullOrEmpty(gridName))
+                                {
+                                    gridName = "grid-" + plan.Id;
+                                }
+                                if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
+                                {
+                                    sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
+                                    sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
+                                }
+                            }
+                            seriesActualQuantity.Add(sumActualQuantity);
+                            seriesExpectedQuantity.Add(sumExpectedQuantity);
+                        }
+
+                        // update chartVM
+                        chartVM.GridName = gridName;
+                        chartVM.ChartName = chartName;
+                        chartVM.Machine = machineName;
+                        chartVM.Employee = employeeName;
+                        chartVM.SeriesCollection = new SeriesCollection
                             {
                                 new ColumnSeries
                                 {
@@ -253,13 +255,14 @@ namespace HmiExample
                                     Values = seriesExpectedQuantity
                                 }
                             };
-                    foreach (var plan in group)
-                    {
-                        var planVM = new PlanViewModel(plan);
-                        chartVM.GridPlanVMs.Items.Add(planVM);
-                    }
+                        foreach (var plan in group)
+                        {
+                            var planVM = new PlanViewModel(plan);
+                            chartVM.GridPlanVMs.Items.Add(planVM);
+                        }
 
-                    _chartViewModels.Add(chartVM);
+                        _chartViewModels.Add(chartVM);
+                    }
                 }
             }
         }
