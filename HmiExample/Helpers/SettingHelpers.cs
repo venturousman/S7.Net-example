@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace HmiExample.Helpers
+namespace ProductionEquipmentControlSoftware.Helpers
 {
     public class SettingHelpers
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class Plan : BaseModel
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HmiExample.PlcConnectivity
+namespace ProductionEquipmentControlSoftware.PlcConnectivity
 {
     public class DBX
     {

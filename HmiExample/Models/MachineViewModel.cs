@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     /// <summary>
     /// MachineViewModel is a selectable view model

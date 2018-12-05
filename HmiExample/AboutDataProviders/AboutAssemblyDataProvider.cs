@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Data;
 using System.Xml;
 
-namespace HmiExample.AboutDataProviders
+namespace ProductionEquipmentControlSoftware.AboutDataProviders
 {
     /// <summary>
     /// This DataProvider retrieves the application's About information from

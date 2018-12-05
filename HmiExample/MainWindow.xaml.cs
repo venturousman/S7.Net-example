@@ -1,12 +1,11 @@
-﻿using HmiExample.Data;
-using HmiExample.Helpers;
-using log4net;
+﻿using log4net;
+using ProductionEquipmentControlSoftware.Data;
+using ProductionEquipmentControlSoftware.Helpers;
 using System;
 using System.ComponentModel;
-using System.Data.Entity;
 using System.Windows;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

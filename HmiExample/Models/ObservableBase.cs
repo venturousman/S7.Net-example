@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public abstract class ObservableBase : INotifyPropertyChanged
     {

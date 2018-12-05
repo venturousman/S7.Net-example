@@ -1,13 +1,13 @@
-﻿using HmiExample.Data;
-using HmiExample.Helpers;
-using log4net;
+﻿using log4net;
 using MaterialDesignThemes.Wpf;
+using ProductionEquipmentControlSoftware.Data;
+using ProductionEquipmentControlSoftware.Helpers;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class SettingsViewModel : ObservableBase
     {

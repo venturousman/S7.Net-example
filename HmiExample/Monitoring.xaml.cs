@@ -1,13 +1,13 @@
 ﻿#region Using
-using HmiExample.Data;
-using HmiExample.Helpers;
-using HmiExample.Models;
-using HmiExample.PlcConnectivity;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using ProductionEquipmentControlSoftware.Data;
+using ProductionEquipmentControlSoftware.Helpers;
+using ProductionEquipmentControlSoftware.Models;
+using ProductionEquipmentControlSoftware.PlcConnectivity;
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 #endregion
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for Monitoring.xaml

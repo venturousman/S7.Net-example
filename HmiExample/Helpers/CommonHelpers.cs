@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
-namespace HmiExample.Helpers
+namespace ProductionEquipmentControlSoftware.Helpers
 {
     public static class CommonHelpers
     {

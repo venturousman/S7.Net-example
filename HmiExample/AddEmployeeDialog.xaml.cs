@@ -1,15 +1,14 @@
-﻿using HmiExample.Helpers;
-using HmiExample.Models;
-using log4net;
+﻿using log4net;
 using Microsoft.Win32;
+using ProductionEquipmentControlSoftware.Helpers;
+using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for AddEmployeeDialog.xaml

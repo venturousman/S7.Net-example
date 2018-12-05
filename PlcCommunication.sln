@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HmiExample", "HmiExample\HmiExample.csproj", "{607F367C-ECEA-4398-A751-118C10143D32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductionEquipmentControlSoftware", "HmiExample\ProductionEquipmentControlSoftware.csproj", "{607F367C-ECEA-4398-A751-118C10143D32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S7NetWrapper", "S7NetWrapper\S7NetWrapper.csproj", "{2D06C9D1-69BC-4E29-977A-2D2ADB09CD7F}"
 EndProject

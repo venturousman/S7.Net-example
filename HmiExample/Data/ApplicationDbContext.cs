@@ -1,9 +1,9 @@
-﻿using HmiExample.Models;
+﻿using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace HmiExample.Data
+namespace ProductionEquipmentControlSoftware.Data
 {
     public class ApplicationDbContext : DbContext
     {

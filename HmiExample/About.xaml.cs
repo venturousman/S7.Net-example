@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for About.xaml

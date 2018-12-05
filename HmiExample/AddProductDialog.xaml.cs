@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for AddProductDialog.xaml

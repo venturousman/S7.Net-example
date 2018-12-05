@@ -1,9 +1,9 @@
-﻿using HmiExample.Models;
+﻿using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 
-namespace HmiExample.Data
+namespace ProductionEquipmentControlSoftware.Data
 {
     // DropCreateDatabaseIfModelChanges
     // DropCreateDatabaseAlways

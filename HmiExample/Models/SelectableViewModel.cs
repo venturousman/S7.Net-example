@@ -1,4 +1,4 @@
-﻿namespace HmiExample.Models
+﻿namespace ProductionEquipmentControlSoftware.Models
 {
     public class SelectableViewModel : ObservableBase
     {

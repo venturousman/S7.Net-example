@@ -1,8 +1,8 @@
-﻿using HmiExample.PlcConnectivity;
+﻿using ProductionEquipmentControlSoftware.PlcConnectivity;
 using System;
 using System.Windows.Media;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class PlanViewModel : SelectableViewModel
     {

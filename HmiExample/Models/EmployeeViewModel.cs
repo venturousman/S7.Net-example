@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     /// <summary>
     /// EmployeeViewModel is a selectable view model

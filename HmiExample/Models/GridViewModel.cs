@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class GridViewModel<T> : ObservableBase where T : SelectableViewModel
     {

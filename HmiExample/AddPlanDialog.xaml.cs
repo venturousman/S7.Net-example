@@ -1,5 +1,5 @@
-﻿using HmiExample.Data;
-using HmiExample.Models;
+﻿using ProductionEquipmentControlSoftware.Data;
+using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for AddPlanDialog.xaml

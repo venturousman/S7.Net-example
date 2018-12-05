@@ -4,7 +4,7 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 
-namespace HmiExample.Helpers
+namespace ProductionEquipmentControlSoftware.Helpers
 {
     public static class DbContextExtensions
     {

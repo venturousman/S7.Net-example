@@ -1,4 +1,4 @@
-﻿namespace HmiExample.AboutDataProviders
+﻿namespace ProductionEquipmentControlSoftware.AboutDataProviders
 {
     /// <summary>
     /// This interface describes the data that's used to populate the WpfAboutBox.

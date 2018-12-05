@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace HmiExample.Helpers
+namespace ProductionEquipmentControlSoftware.Helpers
 {
     public static class ExceptionHelper
     {

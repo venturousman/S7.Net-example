@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Controls;
 
-namespace HmiExample.Helpers
+namespace ProductionEquipmentControlSoftware.Helpers
 {
     public class NotEmptyValidationRule : ValidationRule
     {

@@ -1,10 +1,10 @@
-﻿using HmiExample.Data;
-using HmiExample.Helpers;
-using HmiExample.Models;
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
 using log4net;
 using OfficeOpenXml;
+using ProductionEquipmentControlSoftware.Data;
+using ProductionEquipmentControlSoftware.Helpers;
+using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for Reports.xaml

@@ -1,10 +1,10 @@
-﻿using HmiExample.Helpers;
-using log4net;
+﻿using log4net;
+using ProductionEquipmentControlSoftware.Helpers;
 using System;
 using System.IO;
 using System.Windows;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for App.xaml

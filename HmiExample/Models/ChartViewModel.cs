@@ -1,7 +1,7 @@
 ﻿using LiveCharts;
 using System;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class ChartViewModel : ObservableBase
     {

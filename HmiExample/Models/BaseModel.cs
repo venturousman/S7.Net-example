@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HmiExample.Models
+namespace ProductionEquipmentControlSoftware.Models
 {
     public class BaseModel
     {

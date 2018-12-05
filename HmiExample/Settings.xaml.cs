@@ -1,13 +1,13 @@
-﻿using HmiExample.Helpers;
-using HmiExample.Models;
-using log4net;
+﻿using log4net;
+using ProductionEquipmentControlSoftware.Helpers;
+using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     /// <summary>
     /// Interaction logic for Settings.xaml

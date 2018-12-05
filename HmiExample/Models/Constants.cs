@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HmiExample
+namespace ProductionEquipmentControlSoftware
 {
     public sealed class Constants
     {
