@@ -119,8 +119,16 @@ namespace ProductionEquipmentControlSoftware
         {
             try
             {
-                // TODO: will start many machines
-                // dgPlans.SelectedItems
+                // start many machines
+                foreach (PlanViewModel item in GridPlanVMs.Items)
+                {
+                    // checked
+                    if (item.IsSelected == true && item.Machine != null)
+                    {
+                        string name = string.Format(PlcTags.BitVariable0, item.Machine.TagIndex);
+                        Plc.Instance.Write(name, 1);
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -139,7 +147,16 @@ namespace ProductionEquipmentControlSoftware
         {
             try
             {
-                // Plc.Instance.Write(PlcTags.BitVariable, 0);
+                // stop many machines
+                foreach (PlanViewModel item in GridPlanVMs.Items)
+                {
+                    // checked
+                    if (item.IsSelected == true && item.Machine != null)
+                    {
+                        string name = string.Format(PlcTags.BitVariable0, item.Machine.TagIndex);
+                        Plc.Instance.Write(name, 0);
+                    }
+                }
             }
             catch (Exception exc)
             {
@@ -180,6 +197,22 @@ namespace ProductionEquipmentControlSoftware
 
                         // update UI
                         LoadPlanData();
+
+                        // reset counter, reset act qty, reset qty plan
+                        if (plan.Machine != null)
+                        {
+                            // reset counter
+                            string name = string.Format(PlcTags.BitVariable1, plan.Machine.TagIndex);
+                            Plc.Instance.Write(name, 1);
+
+                            // reset expected qty
+                            name = string.Format(PlcTags.IntVariable0, plan.Machine.TagIndex);
+                            Plc.Instance.Write(name, 0);
+
+                            // reset actual qty
+                            name = string.Format(PlcTags.IntVariable1, plan.Machine.TagIndex);
+                            Plc.Instance.Write(name, 0);
+                        }
                     }
                 }
             }
@@ -427,8 +460,6 @@ namespace ProductionEquipmentControlSoftware
                         MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -603,10 +634,10 @@ namespace ProductionEquipmentControlSoftware
                         item.LedColor = item.Db.BitVariable0 ? Brushes.Green : Brushes.Gray;
 
                         // read expected quantity of each machine
-                        //item.ExpectedQuantity = item.Db.IntVariable0; // TODO
+                        //item.ExpectedQuantity = item.Db.IntVariable0;
 
                         // read actual quantity of each machine
-                        //item.ActualQuantity = item.Db.IntVariable1; // TODO
+                        item.ActualQuantity = item.Db.IntVariable1; // TODO
                     }
                 }
             }

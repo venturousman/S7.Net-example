@@ -88,8 +88,8 @@
                         <DataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity"
                                             EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
 
-                        <DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
-                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                        <!--<DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
+                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />-->
 
                         <DataGridTemplateColumn Header="Online/Offline">
                             <DataGridTemplateColumn.CellTemplate>
