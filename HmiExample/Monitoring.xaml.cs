@@ -508,9 +508,6 @@ namespace ProductionEquipmentControlSoftware
                         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/cdaf187c-df21-4cd9-9c05-7e94abb03f04/create-excel-sheet-with-drop-down-list-using-epplus?forum=exceldev
 
                         #region Machine Validation
-                        // int FromRow, int FromCol, int ToRow, int ToCol
-                        var ddMachines = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 1, 10000, 1].Address);
-                        ddMachines.AllowBlank = false; //Set to true if blank value is accepted
 
                         var lstMachines = applicationDbContext.Machines
                                             .Where(x => !x.IsDeleted)
@@ -523,9 +520,16 @@ namespace ProductionEquipmentControlSoftware
                                             .OrderBy(x => x.Name)
                                             .ToList();
 
-                        foreach (var machine in lstMachines)
+                        if (lstMachines.Count > 0)
                         {
-                            ddMachines.Formula.Values.Add(machine.Name + " - " + machine.Code);
+                            // int FromRow, int FromCol, int ToRow, int ToCol
+                            var ddMachines = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 1, 10000, 1].Address);
+                            ddMachines.AllowBlank = false; //Set to true if blank value is accepted
+
+                            foreach (var machine in lstMachines)
+                            {
+                                ddMachines.Formula.Values.Add(machine.Name + " - " + machine.Code);
+                            }
                         }
 
                         // Or load from another sheet
@@ -534,8 +538,6 @@ namespace ProductionEquipmentControlSoftware
                         #endregion
 
                         #region Employee Validation
-                        var ddEmployees = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 2, 10000, 2].Address);
-                        ddEmployees.AllowBlank = true; //Set to true if blank value is accepted
 
                         var lstEmployees = applicationDbContext.Employees
                                             .Where(x => !x.IsDeleted)
@@ -551,16 +553,21 @@ namespace ProductionEquipmentControlSoftware
                                             .OrderBy(x => x.DisplayName)
                                             .ToList();
 
-                        foreach (var employee in lstEmployees)
+                        if (lstEmployees.Count > 0)
                         {
-                            ddEmployees.Formula.Values.Add(employee.DisplayName + " - " + employee.Code);
+                            // int FromRow, int FromCol, int ToRow, int ToCol
+                            var ddEmployees = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 2, 10000, 2].Address);
+                            ddEmployees.AllowBlank = true; //Set to true if blank value is accepted
+
+                            foreach (var employee in lstEmployees)
+                            {
+                                ddEmployees.Formula.Values.Add(employee.DisplayName + " - " + employee.Code);
+                            }
                         }
 
                         #endregion
 
                         #region Product Validation
-                        var ddProducts = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 3, 10000, 3].Address);
-                        ddProducts.AllowBlank = false; //Set to true if blank value is accepted
 
                         var lstProducts = applicationDbContext.Products
                                             .Where(x => !x.IsDeleted)
@@ -573,9 +580,16 @@ namespace ProductionEquipmentControlSoftware
                                             .OrderBy(x => x.Name)
                                             .ToList();
 
-                        foreach (var product in lstProducts)
+                        if (lstProducts.Count > 0)
                         {
-                            ddProducts.Formula.Values.Add(product.Name + " - " + product.Code);
+                            // int FromRow, int FromCol, int ToRow, int ToCol
+                            var ddProducts = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, 3, 10000, 3].Address);
+                            ddProducts.AllowBlank = false; //Set to true if blank value is accepted
+
+                            foreach (var product in lstProducts)
+                            {
+                                ddProducts.Formula.Values.Add(product.Name + " - " + product.Code);
+                            }
                         }
 
                         #endregion
