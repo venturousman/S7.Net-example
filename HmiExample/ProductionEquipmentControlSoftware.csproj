@@ -248,7 +248,9 @@
     <Content Include="Log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Document\Huong dan su dung.docx" />
+    <Content Include="Document\Huong dan su dung.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="HmiExample_TemporaryKey.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
