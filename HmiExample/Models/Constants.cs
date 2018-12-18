@@ -11,5 +11,6 @@ namespace ProductionEquipmentControlSoftware
         public static readonly string MaxCycleTime = "MaxCycleTime"; // cycletime toi da
 
         public static readonly DateTime DefaultStartDate = new DateTime(2018, 10, 10, 0, 0, 0);
+        public static readonly string DefaultDateFormat = "dd/MM/yyyy";
     }
 }

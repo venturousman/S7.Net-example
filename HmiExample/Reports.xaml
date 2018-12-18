@@ -84,7 +84,7 @@
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding TotalHours}" Header="Total Hours" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat=d}" Header="Date" 
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat='dd/MM/yyyy'}" Header="Date" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                     </DataGrid.Columns>
                                 </DataGrid>

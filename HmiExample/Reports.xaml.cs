@@ -8,8 +8,10 @@ using ProductionEquipmentControlSoftware.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -296,8 +298,13 @@ namespace ProductionEquipmentControlSoftware
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
+            ci.DateTimeFormat.ShortDatePattern = Constants.DefaultDateFormat;
+            Thread.CurrentThread.CurrentCulture = ci;
+
             dtFrom.DisplayDateStart = Constants.DefaultStartDate;
             dtFrom.SelectedDate = DateTime.Now;
+
             dtTo.DisplayDateStart = Constants.DefaultStartDate;
             dtTo.SelectedDate = DateTime.Now;
         }
