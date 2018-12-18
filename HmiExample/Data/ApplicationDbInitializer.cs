@@ -11,7 +11,7 @@ namespace ProductionEquipmentControlSoftware.Data
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            var defaultCreatedOn = new DateTime(2018, 11, 18, 12, 0, 0);
+            var defaultCreatedOn = new DateTime(2018, 12, 18, 12, 0, 0);
 
             #region Seed Machines
             IList<Machine> defaultMachines = new List<Machine>();
@@ -89,9 +89,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 17,
                 ActualQuantity = 17,
                 NotGoodQuantity = 2,
-                CreatedOn = new DateTime(2018, 11, 20, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 20, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 20, 16, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 20, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 20, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 20, 16, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -103,9 +103,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 25,
                 ActualQuantity = 26,
                 NotGoodQuantity = 5,
-                CreatedOn = new DateTime(2018, 11, 21, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 21, 9, 0, 0),
-                EndTime = new DateTime(2018, 11, 21, 16, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 21, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 21, 9, 0, 0),
+                EndTime = new DateTime(2018, 12, 21, 16, 0, 0),
                 IsProcessed = true
             });
 
@@ -119,9 +119,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 13,
                 ActualQuantity = 15,
                 NotGoodQuantity = 4,
-                CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 16, 19, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -133,9 +133,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 19,
                 ActualQuantity = 17,
                 NotGoodQuantity = 0,
-                CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 22, 7, 30, 0),
-                EndTime = new DateTime(2018, 11, 22, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 22, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 22, 7, 30, 0),
+                EndTime = new DateTime(2018, 12, 22, 19, 0, 0),
                 IsProcessed = true
             });
 
@@ -149,9 +149,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 34,
                 ActualQuantity = 31,
                 NotGoodQuantity = 11,
-                CreatedOn = new DateTime(2018, 11, 19, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 19, 6, 0, 0),
-                EndTime = new DateTime(2018, 11, 19, 15, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 19, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 19, 6, 0, 0),
+                EndTime = new DateTime(2018, 12, 19, 15, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -163,9 +163,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 34,
                 ActualQuantity = 31,
                 NotGoodQuantity = 0,
-                CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 22, 9, 0, 0),
-                EndTime = new DateTime(2018, 11, 22, 16, 30, 0),
+                CreatedOn = new DateTime(2018, 12, 22, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 22, 9, 0, 0),
+                EndTime = new DateTime(2018, 12, 22, 16, 30, 0),
                 IsProcessed = true
             });
 
@@ -179,9 +179,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 22,
                 ActualQuantity = 22,
                 NotGoodQuantity = 2,
-                CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 18, 17, 0, 0),
                 IsProcessed = true
             });
 
@@ -195,9 +195,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 32,
                 ActualQuantity = 29,
                 NotGoodQuantity = 0,
-                CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 18, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 18, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 18, 17, 0, 0),
                 IsProcessed = true
             });
 
@@ -211,9 +211,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 23,
                 ActualQuantity = 28,
                 NotGoodQuantity = 2,
-                CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 23, 10, 0, 0),
-                EndTime = new DateTime(2018, 11, 23, 18, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 23, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 23, 10, 0, 0),
+                EndTime = new DateTime(2018, 12, 23, 18, 0, 0),
                 IsProcessed = true
             });
 
@@ -227,9 +227,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 41,
                 ActualQuantity = 41,
                 NotGoodQuantity = 12,
-                CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 16, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 16, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 16, 19, 0, 0),
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -241,9 +241,9 @@ namespace ProductionEquipmentControlSoftware.Data
                 ExpectedQuantity = 64,
                 ActualQuantity = 45,
                 NotGoodQuantity = 0,
-                CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
-                StartTime = new DateTime(2018, 11, 23, 8, 0, 0),
-                EndTime = new DateTime(2018, 11, 23, 17, 0, 0),
+                CreatedOn = new DateTime(2018, 12, 23, 12, 0, 0),
+                StartTime = new DateTime(2018, 12, 23, 8, 0, 0),
+                EndTime = new DateTime(2018, 12, 23, 17, 0, 0),
                 IsProcessed = true
             });
 

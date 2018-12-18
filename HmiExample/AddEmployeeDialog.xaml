@@ -48,15 +48,7 @@
         </TextBox>
 
         <TextBox wpf:HintAssist.Hint="Email" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
-                 Margin="0 20 0 0" FontSize="18" Grid.Row="3">
-            <TextBox.Text>
-                <Binding Path="Email" UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <helper:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
-        </TextBox>
+                 Margin="0 20 0 0" FontSize="18" Grid.Row="3" Text="{Binding Email}"></TextBox>
 
         <TextBox wpf:HintAssist.Hint="First name" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
                  Margin="0 20 0 0" FontSize="18" Grid.Row="4">

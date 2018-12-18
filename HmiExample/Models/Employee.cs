@@ -13,7 +13,6 @@ namespace ProductionEquipmentControlSoftware.Models
         [Index(IsUnique = true)]
         public string Code { get; set; }    // unique
 
-        [Required(ErrorMessage = "*")]
         [MaxLength(255)]
         public string Email { get; set; }
 
