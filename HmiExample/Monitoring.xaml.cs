@@ -692,6 +692,7 @@ namespace ProductionEquipmentControlSoftware
                         StartTime = plan.StartTime,
                         EndTime = plan.EndTime,
                         IsProcessed = plan.IsProcessed,
+                        CreatedOn = plan.CreatedOn
                     };
                     // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
                     GridPlanVMs.Items.Add(planVM);

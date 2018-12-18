@@ -75,21 +75,25 @@
                                 </Border>
                             </DataGridCheckBoxColumn.Header>
                         </DataGridCheckBoxColumn>
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding MachineName}" Header="Machine" 
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding MachineName}" Header="Machine" FontWeight="Bold"
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding EmployeeName}" Header="Employee" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ProductName}" Header="Product" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
-                        <DataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity"
-                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
-
-                        <DataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity"
-                                            EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding CumulativeCount}" Header="Cumulative Count"
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
                         <!--<DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
                                             EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />-->
+
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat='dd/MM/yyyy'}" Header="Created Date" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
                         <DataGridTemplateColumn Header="Online/Offline">
                             <DataGridTemplateColumn.CellTemplate>
