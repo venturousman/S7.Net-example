@@ -168,33 +168,32 @@ namespace ProductionEquipmentControlSoftware
                     toDate = new DateTime(toDate.Year, toDate.Month, toDate.Day, 23, 59, 59);
 
                     // build labels
-                    var labels = new List<string>();
-                    var dates = new List<DateTime>();
+                    var dictActualQuantity = new Dictionary<string, double>();
+                    var dictExpectedQuantity = new Dictionary<string, double>();
 
                     for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
                     {
-                        dates.Add(dt);
-                        labels.Add(dt.ToShortDateString());
+                        var key = dt.ToShortDateString();
+                        dictActualQuantity[key] = 0;
+                        dictExpectedQuantity[key] = 0;
                     }
 
                     // calculate width of chart
-                    var calculatedWidth = labels.Count * 35 + 400; // px
+                    var calculatedWidth = dictExpectedQuantity.Count * 35 + 400; // px
 
                     // get data
                     var groups = applicationDbContext.Plans
-                        .Where(x => x.CreatedOn.HasValue && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate)// && x.IsProcessed == true)
-                        .GroupBy(x => new { x.EmployeeId, x.MachineId })
+                        .Where(x => !x.IsDeleted && x.CreatedOn.HasValue
+                                && x.CreatedOn.Value >= fromDate && x.CreatedOn.Value <= toDate)// && x.IsProcessed == true)
+                        .GroupBy(x => new { x.MachineId }) //.GroupBy(x => new { x.EmployeeId, x.MachineId })
                         .ToList();
 
-                    // build series
                     _chartViewModels.Clear();
                     foreach (var group in groups)
                     {
-                        // var tmp = group.GroupBy(x => x.ProductId).ToList();
-
                         var chartVM = new ChartViewModel
                         {
-                            Labels = labels.ToArray(),
+                            Labels = dictExpectedQuantity.Keys.ToArray(),
                             Formatter = value => value.ToString("N"),
                             Width = calculatedWidth
                         };
@@ -202,47 +201,48 @@ namespace ProductionEquipmentControlSoftware
                         var chartName = string.Empty;
                         var gridName = string.Empty;
                         var machineName = string.Empty;
-                        var employeeName = string.Empty;
 
-                        var seriesActualQuantity = new ChartValues<double>();
-                        var seriesExpectedQuantity = new ChartValues<double>();
-                        foreach (var label in labels)
+                        // grid info
+                        var orderedGroup = group.OrderBy(x => x.CreatedOn);
+                        foreach (var plan in orderedGroup)
                         {
-                            var sumActualQuantity = 0;
-                            var sumExpectedQuantity = 0;
-                            foreach (var plan in group)
+                            var planVM = new PlanViewModel(plan);
+                            chartVM.GridPlanVMs.Items.Add(planVM);
+
+                            if (string.IsNullOrEmpty(machineName) && plan.Machine != null)
                             {
-                                if (string.IsNullOrEmpty(machineName) && plan.Machine != null)
+                                machineName = plan.Machine.Name;
+                            }
+                            if (string.IsNullOrEmpty(chartName))
+                            {
+                                chartName = "chart-" + plan.Id;
+                            }
+                            if (string.IsNullOrEmpty(gridName))
+                            {
+                                gridName = "grid-" + plan.Id;
+                            }
+
+                            // build series
+                            if (plan.CreatedOn.HasValue)
+                            {
+                                var key = plan.CreatedOn.Value.ToShortDateString();
+                                if (dictExpectedQuantity.ContainsKey(key))
                                 {
-                                    machineName = plan.Machine.Name;
+                                    dictExpectedQuantity[key] += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
                                 }
-                                if (string.IsNullOrEmpty(employeeName) && plan.Employee != null)
+                                if (dictActualQuantity.ContainsKey(key))
                                 {
-                                    employeeName = plan.Employee.DisplayName;
-                                }
-                                if (string.IsNullOrEmpty(chartName))
-                                {
-                                    chartName = "chart-" + plan.Id;
-                                }
-                                if (string.IsNullOrEmpty(gridName))
-                                {
-                                    gridName = "grid-" + plan.Id;
-                                }
-                                if (plan.CreatedOn.HasValue && plan.CreatedOn.Value.ToShortDateString() == label)
-                                {
-                                    sumActualQuantity += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
-                                    sumExpectedQuantity += plan.ExpectedQuantity.HasValue ? plan.ExpectedQuantity.Value : 0;
+                                    dictActualQuantity[key] += plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
                                 }
                             }
-                            seriesActualQuantity.Add(sumActualQuantity);
-                            seriesExpectedQuantity.Add(sumExpectedQuantity);
                         }
 
                         // update chartVM
                         chartVM.GridName = gridName;
                         chartVM.ChartName = chartName;
                         chartVM.Machine = machineName;
-                        chartVM.Employee = employeeName;
+                        var seriesActualQuantity = new ChartValues<double>(dictActualQuantity.Values.ToArray());
+                        var seriesExpectedQuantity = new ChartValues<double>(dictExpectedQuantity.Values.ToArray());
                         chartVM.SeriesCollection = new SeriesCollection
                             {
                                 new ColumnSeries
@@ -258,13 +258,7 @@ namespace ProductionEquipmentControlSoftware
                                 }
                             };
 
-                        // grid info
-                        foreach (var plan in group)
-                        {
-                            var planVM = new PlanViewModel(plan);
-                            chartVM.GridPlanVMs.Items.Add(planVM);
-                        }
-
+                        // add chartVM
                         _chartViewModels.Add(chartVM);
                     }
                 }

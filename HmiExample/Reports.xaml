@@ -52,7 +52,7 @@
                     <DataTemplate>
                         <Border BorderThickness="1" BorderBrush="LightCoral">
                             <StackPanel>
-                                <TextBlock Text="{Binding ChartTitle}"
+                                <TextBlock Name="txtChartTitle" Text="{Binding Machine}"
                                            HorizontalAlignment="Center" VerticalAlignment="Top"
                                            FontSize="12" FontWeight="DemiBold"
                                            TextWrapping="Wrap" TextAlignment="Center"></TextBlock>
@@ -76,6 +76,8 @@
                                           Tag="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=DataContext.GridName}"
                                           DataContext="{Binding GridPlanVMs}" ItemsSource="{Binding Items}">
                                     <DataGrid.Columns>
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding EmployeeName}" Header="Employee" 
+                                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ProductName}" Header="Product" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity" 

@@ -6,7 +6,6 @@ namespace ProductionEquipmentControlSoftware.Models
     public class ChartViewModel : ObservableBase
     {
         private string _machine;
-        private string _employee;
 
         private SeriesCollection _seriesCollection;
         private string[] _labels;
@@ -14,7 +13,6 @@ namespace ProductionEquipmentControlSoftware.Models
         private int _width;
         private string _gridName;
         private string _chartName;
-        private string _chartTitle;
 
         private GridViewModel<PlanViewModel> _gridPlanVMs = new GridViewModel<PlanViewModel>();
         public GridViewModel<PlanViewModel> GridPlanVMs
@@ -26,17 +24,6 @@ namespace ProductionEquipmentControlSoftware.Models
             //    _gridPlanVMs = value;
             //    OnPropertyChanged();
             //}
-        }
-
-        public string Employee
-        {
-            get { return _employee; }
-            set
-            {
-                if (_employee == value) return;
-                _employee = value;
-                OnPropertyChanged();
-            }
         }
 
         public string Machine
@@ -112,17 +99,6 @@ namespace ProductionEquipmentControlSoftware.Models
             {
                 if (_chartName == value) return;
                 _chartName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ChartTitle
-        {
-            get { return _machine + " - " + _employee; }
-            set
-            {
-                if (_chartTitle == value) return;
-                _chartTitle = value;
                 OnPropertyChanged();
             }
         }
