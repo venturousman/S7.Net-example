@@ -18,9 +18,7 @@ namespace ProductionEquipmentControlSoftware.Models
         [Index(IsUnique = true)]
         public string Code { get; set; }    // unique
 
-        public int Count { get; set; } // so lan dap khuon tich luy
-
-        public int CumulativeCount { get; set; }
+        public int CumulativeCount { get; set; } // so lan dap khuon tich luy
 
         [DefaultValue(-1)]
         public int TagIndex { get; set; } // vd: M2{1}.0

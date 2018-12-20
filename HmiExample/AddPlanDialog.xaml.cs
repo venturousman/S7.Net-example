@@ -38,7 +38,6 @@ namespace ProductionEquipmentControlSoftware
                             Id = x.Id,
                             Name = x.Name,
                             Code = x.Code,
-                            Count = x.Count,
                             CumulativeCount = x.CumulativeCount,
                             TagIndex = x.TagIndex
                         })

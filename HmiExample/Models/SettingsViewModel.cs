@@ -89,7 +89,6 @@ namespace ProductionEquipmentControlSoftware.Models
                         Name = machine.Name,
                         Code = machine.Code,
                         TagIndex = machine.TagIndex,
-                        Count = machine.Count,
                         CumulativeCount = machine.CumulativeCount
                     };
                     _machines.Items.Add(machineVM);
@@ -161,7 +160,7 @@ namespace ProductionEquipmentControlSoftware.Models
                                 editingMachine.Code = context.Code;
                                 editingMachine.TagIndex = context.TagIndex;
                                 //editingMachine.Counts = context.Counts;
-                                editingMachine.ModifiedOn = DateTime.UtcNow;
+                                editingMachine.ModifiedOn = DateTime.Now;
 
                                 // save databases
                                 applicationDbContext.SaveChanges();
@@ -179,9 +178,8 @@ namespace ProductionEquipmentControlSoftware.Models
                                 Name = context.Name,
                                 Code = context.Code,
                                 TagIndex = context.TagIndex,
-                                Count = 0,
                                 CumulativeCount = 0,
-                                CreatedOn = DateTime.UtcNow,
+                                CreatedOn = DateTime.Now,
                             };
                             applicationDbContext.Machines.Add(newMachine);
 
@@ -235,7 +233,6 @@ namespace ProductionEquipmentControlSoftware.Models
                     Name = editingMachine.Name,
                     Code = editingMachine.Code,
                     TagIndex = editingMachine.TagIndex,
-                    Count = editingMachine.Count,
                     CumulativeCount = editingMachine.CumulativeCount
                 }
             };
@@ -268,7 +265,7 @@ namespace ProductionEquipmentControlSoftware.Models
                         if (deletingMachine != null)
                         {
                             deletingMachine.IsDeleted = true; // soft delete
-                            deletingMachine.ModifiedOn = DateTime.UtcNow;
+                            deletingMachine.ModifiedOn = DateTime.Now;
 
                             // save databases
                             applicationDbContext.SaveChanges();
@@ -342,7 +339,7 @@ namespace ProductionEquipmentControlSoftware.Models
                                 editingEmployee.PhoneNumber = context.PhoneNumber;
                                 editingEmployee.Photo = context.Photo;
                                 editingEmployee.PhotoContent = context.PhotoContent;
-                                editingEmployee.ModifiedOn = DateTime.UtcNow;
+                                editingEmployee.ModifiedOn = DateTime.Now;
 
                                 // save databases
                                 applicationDbContext.SaveChanges();
@@ -366,7 +363,7 @@ namespace ProductionEquipmentControlSoftware.Models
                                 PhoneNumber = context.PhoneNumber,
                                 Photo = context.Photo,
                                 PhotoContent = context.PhotoContent,
-                                CreatedOn = DateTime.UtcNow,
+                                CreatedOn = DateTime.Now,
                             };
                             applicationDbContext.Employees.Add(newEmployee);
 
@@ -452,7 +449,7 @@ namespace ProductionEquipmentControlSoftware.Models
                         if (deletingEmployee != null)
                         {
                             deletingEmployee.IsDeleted = true; // soft delete
-                            deletingEmployee.ModifiedOn = DateTime.UtcNow;
+                            deletingEmployee.ModifiedOn = DateTime.Now;
 
                             // save databases
                             applicationDbContext.SaveChanges();
@@ -518,7 +515,7 @@ namespace ProductionEquipmentControlSoftware.Models
                             {
                                 editingProduct.Name = context.Name;
                                 editingProduct.Code = context.Code;
-                                editingProduct.ModifiedOn = DateTime.UtcNow;
+                                editingProduct.ModifiedOn = DateTime.Now;
 
                                 // save databases
                                 applicationDbContext.SaveChanges();
@@ -535,7 +532,7 @@ namespace ProductionEquipmentControlSoftware.Models
                                 Id = Guid.NewGuid(),
                                 Name = context.Name,
                                 Code = context.Code,
-                                CreatedOn = DateTime.UtcNow
+                                CreatedOn = DateTime.Now
                             };
                             applicationDbContext.Products.Add(newProduct);
 
@@ -614,7 +611,7 @@ namespace ProductionEquipmentControlSoftware.Models
                         if (deletingProduct != null)
                         {
                             deletingProduct.IsDeleted = true; // soft delete
-                            deletingProduct.ModifiedOn = DateTime.UtcNow;
+                            deletingProduct.ModifiedOn = DateTime.Now;
 
                             // save databases
                             applicationDbContext.SaveChanges();

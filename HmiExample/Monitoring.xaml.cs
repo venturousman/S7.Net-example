@@ -186,7 +186,7 @@ namespace ProductionEquipmentControlSoftware
                         if (editingPlan != null)
                         {
                             editingPlan.IsProcessed = true;
-                            editingPlan.ModifiedOn = DateTime.UtcNow;
+                            editingPlan.ModifiedOn = DateTime.Now;
 
                             // save databases
                             applicationDbContext.SaveChanges();
@@ -373,7 +373,7 @@ namespace ProductionEquipmentControlSoftware
                             {
                                 Id = Guid.NewGuid(),
                                 IsProcessed = false,
-                                CreatedOn = DateTime.UtcNow
+                                CreatedOn = DateTime.Now
                             };
                             failedRow = false; // reset
 
@@ -640,7 +640,7 @@ namespace ProductionEquipmentControlSoftware
                     if (item.Machine != null)
                     {
                         // warning - need to be replace machine's mold
-                        if (intMoldLife.HasValue && item.Machine.Count >= intMoldLife.Value)
+                        if (intMoldLife.HasValue && item.Machine.CumulativeCount >= intMoldLife.Value)
                         {
                             //item.CanStart = false;
                             //item.LedStatusColor = Brushes.Red;
@@ -658,7 +658,7 @@ namespace ProductionEquipmentControlSoftware
 
 
 
-                        // TODO
+                        // save new ActualQuantity & CumulativeCount
                         //if (item.ActualQuantity.HasValue) // && item.ActualQuantity.Value != item.Db.IntVariable1)
                         //{
                         //    var oldValue = item.ActualQuantity.Value;
@@ -672,12 +672,19 @@ namespace ProductionEquipmentControlSoftware
                         //            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == item.Id).FirstOrDefault();
                         //            if (editingPlan != null)
                         //            {
-                        //                editingPlan.IsDeleted = true; // soft delete
-                        //                editingPlan.ModifiedOn = DateTime.UtcNow;
-
-                        //                // save databases
-                        //                applicationDbContext.SaveChanges();
+                        //                editingPlan.ActualQuantity = newValue;
+                        //                editingPlan.ModifiedOn = DateTime.Now;
                         //            }
+
+                        //            var editingMachine = applicationDbContext.Machines.Where(x => x.Id == item.MachineId).FirstOrDefault();
+                        //            if (editingMachine != null)
+                        //            {
+                        //                editingMachine.CumulativeCount += amount;
+                        //                editingMachine.ModifiedOn = DateTime.Now;
+                        //            }
+
+                        //            // save databases
+                        //            applicationDbContext.SaveChanges();
                         //        }
                         //    }
                         //}
@@ -787,7 +794,7 @@ namespace ProductionEquipmentControlSoftware
                         if (deletingPlan != null)
                         {
                             deletingPlan.IsDeleted = true; // soft delete
-                            deletingPlan.ModifiedOn = DateTime.UtcNow;
+                            deletingPlan.ModifiedOn = DateTime.Now;
 
                             // save databases
                             applicationDbContext.SaveChanges();
@@ -868,7 +875,7 @@ namespace ProductionEquipmentControlSoftware
                                 //editingPlan.StartTime = newItem.StartTime;
                                 //editingPlan.EndTime = newItem.EndTime;
                                 //editingPlan.IsProcessed = newItem.IsProcessed;
-                                editingPlan.ModifiedOn = DateTime.UtcNow;
+                                editingPlan.ModifiedOn = DateTime.Now;
 
                                 // save databases
                                 applicationDbContext.SaveChanges();
@@ -887,7 +894,7 @@ namespace ProductionEquipmentControlSoftware
                                 EmployeeId = context.EmployeeId,
                                 ProductId = context.ProductId,
                                 ExpectedQuantity = context.ExpectedQuantity,
-                                CreatedOn = DateTime.UtcNow,
+                                CreatedOn = DateTime.Now,
                                 IsProcessed = false
                             };
                             applicationDbContext.Plans.Add(newPlan);

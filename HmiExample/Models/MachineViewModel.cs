@@ -11,7 +11,6 @@ namespace ProductionEquipmentControlSoftware.Models
         private string _name;
         private string _code;
         private int _tagIndex;
-        private int _count;
         private int _cumulativeCount;
 
         public Guid Id
@@ -59,17 +58,6 @@ namespace ProductionEquipmentControlSoftware.Models
             }
         }
 
-        public int Count
-        {
-            get { return _count; }
-            set
-            {
-                if (_count == value) return;
-                _count = value;
-                OnPropertyChanged();
-            }
-        }
-
         public int CumulativeCount
         {
             get { return _cumulativeCount; }
@@ -94,7 +82,6 @@ namespace ProductionEquipmentControlSoftware.Models
             _name = machine.Name;
             _code = machine.Code;
             _tagIndex = machine.TagIndex;
-            _count = machine.Count;
             _cumulativeCount = machine.CumulativeCount;
         }
         #endregion
