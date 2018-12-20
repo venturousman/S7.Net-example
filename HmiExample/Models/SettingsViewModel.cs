@@ -162,16 +162,13 @@ namespace ProductionEquipmentControlSoftware.Models
                                 editingMachine.TagIndex = context.TagIndex;
                                 //editingMachine.Counts = context.Counts;
                                 editingMachine.ModifiedOn = DateTime.UtcNow;
+
+                                // save databases
+                                applicationDbContext.SaveChanges();
+
+                                // notify
+                                MessageBox.Show("Successfully updated machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-
-                            // save databases
-                            applicationDbContext.SaveChanges();
-
-                            // notify
-                            MessageBox.Show("Successfully updated machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadMachines();
                         }
                         else
                         {
@@ -193,12 +190,12 @@ namespace ProductionEquipmentControlSoftware.Models
 
                             // notify
                             MessageBox.Show("Successfully created machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadMachines();
                         }
                     }
                 }
+
+                // update UI
+                LoadMachines();
             }
             catch (Exception ex)
             {
@@ -272,17 +269,17 @@ namespace ProductionEquipmentControlSoftware.Models
                         {
                             deletingMachine.IsDeleted = true; // soft delete
                             deletingMachine.ModifiedOn = DateTime.UtcNow;
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully deleted machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
-
-                        // save databases
-                        applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully deleted machine", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        LoadMachines();
                     }
+
+                    // update UI
+                    LoadMachines();
                 }
                 catch (Exception ex)
                 {
@@ -346,16 +343,13 @@ namespace ProductionEquipmentControlSoftware.Models
                                 editingEmployee.Photo = context.Photo;
                                 editingEmployee.PhotoContent = context.PhotoContent;
                                 editingEmployee.ModifiedOn = DateTime.UtcNow;
+
+                                // save databases
+                                applicationDbContext.SaveChanges();
+
+                                // notify
+                                MessageBox.Show("Successfully updated employee", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-
-                            // save databases
-                            applicationDbContext.SaveChanges();
-
-                            // notify
-                            MessageBox.Show("Successfully updated employee", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadEmployees();
                         }
                         else
                         {
@@ -381,12 +375,12 @@ namespace ProductionEquipmentControlSoftware.Models
 
                             // notify
                             MessageBox.Show("Successfully created employee", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadEmployees();
                         }
                     }
                 }
+
+                // update UI
+                LoadEmployees();
             }
             catch (Exception ex)
             {
@@ -459,17 +453,17 @@ namespace ProductionEquipmentControlSoftware.Models
                         {
                             deletingEmployee.IsDeleted = true; // soft delete
                             deletingEmployee.ModifiedOn = DateTime.UtcNow;
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully deleted employee", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
-
-                        // save databases
-                        applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully deleted employee", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        LoadEmployees();
                     }
+
+                    // update UI
+                    LoadEmployees();
                 }
                 catch (Exception ex)
                 {
@@ -525,16 +519,13 @@ namespace ProductionEquipmentControlSoftware.Models
                                 editingProduct.Name = context.Name;
                                 editingProduct.Code = context.Code;
                                 editingProduct.ModifiedOn = DateTime.UtcNow;
+
+                                // save databases
+                                applicationDbContext.SaveChanges();
+
+                                // notify
+                                MessageBox.Show("Successfully updated product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-
-                            // save databases
-                            applicationDbContext.SaveChanges();
-
-                            // notify
-                            MessageBox.Show("Successfully updated product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI                        
-                            LoadProducts();
                         }
                         else
                         {
@@ -553,12 +544,12 @@ namespace ProductionEquipmentControlSoftware.Models
 
                             // notify
                             MessageBox.Show("Successfully created product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadProducts();
                         }
                     }
                 }
+
+                // update UI                        
+                LoadProducts();
             }
             catch (Exception ex)
             {
@@ -624,17 +615,17 @@ namespace ProductionEquipmentControlSoftware.Models
                         {
                             deletingProduct.IsDeleted = true; // soft delete
                             deletingProduct.ModifiedOn = DateTime.UtcNow;
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully deleted product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
-
-                        // save databases
-                        applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully deleted product", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        LoadProducts();
                     }
+
+                    // update UI
+                    LoadProducts();
                 }
                 catch (Exception ex)
                 {

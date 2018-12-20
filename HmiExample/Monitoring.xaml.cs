@@ -187,32 +187,34 @@ namespace ProductionEquipmentControlSoftware
                         {
                             editingPlan.IsProcessed = true;
                             editingPlan.ModifiedOn = DateTime.UtcNow;
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully completed plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
+                    }
 
-                        // save databases
-                        applicationDbContext.SaveChanges();
+                    // clone new plan ??
 
-                        // notify
-                        MessageBox.Show("Successfully completed plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
+                    // update UI
+                    LoadPlanData();
 
-                        // update UI
-                        LoadPlanData();
+                    // reset counter, reset act qty, reset qty plan
+                    if (plan.Machine != null)
+                    {
+                        // reset counter
+                        string name = string.Format(PlcTags.BitVariable1, plan.Machine.TagIndex);
+                        Plc.Instance.Write(name, 1);
 
-                        // reset counter, reset act qty, reset qty plan
-                        if (plan.Machine != null)
-                        {
-                            // reset counter
-                            string name = string.Format(PlcTags.BitVariable1, plan.Machine.TagIndex);
-                            Plc.Instance.Write(name, 1);
+                        // reset expected qty
+                        name = string.Format(PlcTags.IntVariable0, plan.Machine.TagIndex);
+                        Plc.Instance.Write(name, 0);
 
-                            // reset expected qty
-                            name = string.Format(PlcTags.IntVariable0, plan.Machine.TagIndex);
-                            Plc.Instance.Write(name, 0);
-
-                            // reset actual qty
-                            name = string.Format(PlcTags.IntVariable1, plan.Machine.TagIndex);
-                            Plc.Instance.Write(name, 0);
-                        }
+                        // reset actual qty
+                        name = string.Format(PlcTags.IntVariable1, plan.Machine.TagIndex);
+                        Plc.Instance.Write(name, 0);
                     }
                 }
             }
@@ -238,6 +240,8 @@ namespace ProductionEquipmentControlSoftware
                 {
                     string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
                     Plc.Instance.Write(name, 1);
+
+                    // TODO: save StartTime
                 }
             }
             catch (Exception exc)
@@ -257,6 +261,8 @@ namespace ProductionEquipmentControlSoftware
                 {
                     string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
                     Plc.Instance.Write(name, 0);
+
+                    // TODO: save EndTime
                 }
             }
             catch (Exception exc)
@@ -453,13 +459,13 @@ namespace ProductionEquipmentControlSoftware
                         applicationDbContext.Plans.AddRange(succeededPlans);
                         applicationDbContext.SaveChanges();
 
-                        // update UI
-                        LoadPlanData();
-
                         // notify
                         MessageBox.Show("Plans were imported successfully.", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
+
+                // update UI
+                LoadPlanData();
             }
             catch (Exception ex)
             {
@@ -636,7 +642,7 @@ namespace ProductionEquipmentControlSoftware
                         // warning - need to be replace machine's mold
                         if (intMoldLife.HasValue && item.Machine.Count >= intMoldLife.Value)
                         {
-                            //item.CanStart = false; // temporarily comment
+                            //item.CanStart = false;
                             //item.LedStatusColor = Brushes.Red;
                             //item.TriggerAnimation = true;
                         }
@@ -650,8 +656,36 @@ namespace ProductionEquipmentControlSoftware
                         // read expected quantity of each machine
                         //item.ExpectedQuantity = item.Db.IntVariable0;
 
+
+
+                        // TODO
+                        //if (item.ActualQuantity.HasValue) // && item.ActualQuantity.Value != item.Db.IntVariable1)
+                        //{
+                        //    var oldValue = item.ActualQuantity.Value;
+                        //    var newValue = item.Db.IntVariable1;
+                        //    if (oldValue < newValue)
+                        //    {
+                        //        var amount = newValue - oldValue;
+
+                        //        using (var applicationDbContext = new ApplicationDbContext())
+                        //        {
+                        //            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == item.Id).FirstOrDefault();
+                        //            if (editingPlan != null)
+                        //            {
+                        //                editingPlan.IsDeleted = true; // soft delete
+                        //                editingPlan.ModifiedOn = DateTime.UtcNow;
+
+                        //                // save databases
+                        //                applicationDbContext.SaveChanges();
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
                         // read actual quantity of each machine
-                        item.ActualQuantity = item.Db.IntVariable1; // TODO
+                        item.ActualQuantity = item.Db.IntVariable1;
+
+
                     }
                 }
             }
@@ -680,19 +714,17 @@ namespace ProductionEquipmentControlSoftware
                         Id = plan.Id,
                         Machine = plan.Machine != null ? new MachineViewModel(plan.Machine) : null,
                         MachineId = plan.MachineId,
-                        //MachineName = plan.Machine != null ? plan.Machine.Name : string.Empty,
                         Employee = plan.Employee != null ? new EmployeeViewModel(plan.Employee) : null,
                         EmployeeId = plan.EmployeeId,
-                        //EmployeeName = plan.Employee != null ? plan.Employee.DisplayName : string.Empty,
                         Product = plan.Product != null ? new ProductViewModel(plan.Product) : null,
                         ProductId = plan.ProductId,
-                        //ProductName = plan.Product != null ? plan.Product.Name : string.Empty,
                         ExpectedQuantity = plan.ExpectedQuantity,
                         ActualQuantity = plan.ActualQuantity,
-                        StartTime = plan.StartTime,
-                        EndTime = plan.EndTime,
+                        //StartTime = plan.StartTime,
+                        //EndTime = plan.EndTime,
                         IsProcessed = plan.IsProcessed,
-                        CreatedOn = plan.CreatedOn
+                        CreatedOn = plan.CreatedOn,
+                        NotGoodQuantity = plan.NotGoodQuantity
                     };
                     // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
                     GridPlanVMs.Items.Add(planVM);
@@ -756,17 +788,17 @@ namespace ProductionEquipmentControlSoftware
                         {
                             deletingPlan.IsDeleted = true; // soft delete
                             deletingPlan.ModifiedOn = DateTime.UtcNow;
+
+                            // save databases
+                            applicationDbContext.SaveChanges();
+
+                            // notify
+                            MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                         }
-
-                        // save databases
-                        applicationDbContext.SaveChanges();
-
-                        // notify
-                        MessageBox.Show("Successfully deleted plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                        // update UI
-                        LoadPlanData();
                     }
+
+                    // update UI
+                    LoadPlanData();
                 }
                 catch (Exception ex)
                 {
@@ -837,16 +869,13 @@ namespace ProductionEquipmentControlSoftware
                                 //editingPlan.EndTime = newItem.EndTime;
                                 //editingPlan.IsProcessed = newItem.IsProcessed;
                                 editingPlan.ModifiedOn = DateTime.UtcNow;
+
+                                // save databases
+                                applicationDbContext.SaveChanges();
+
+                                // notify
+                                MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
                             }
-
-                            // save databases
-                            applicationDbContext.SaveChanges();
-
-                            // notify
-                            MessageBox.Show("Successfully updated plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadPlanData();
                         }
                         else
                         {
@@ -868,12 +897,12 @@ namespace ProductionEquipmentControlSoftware
 
                             // notify
                             MessageBox.Show("Successfully created plan", Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Information);
-
-                            // update UI
-                            LoadPlanData();
                         }
                     }
                 }
+
+                // update UI
+                LoadPlanData();
             }
             catch (Exception ex)
             {
