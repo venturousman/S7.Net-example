@@ -237,10 +237,10 @@ namespace ProductionEquipmentControlSoftware.Models
             }
         }
 
-        public int CumulativeCount
-        {
-            get { return _machine != null ? _machine.CumulativeCount : 0; }
-        }
+        //public int CumulativeCount
+        //{
+        //    get { return _machine != null ? _machine.CumulativeCount : 0; }
+        //}
 
         public string MachineName
         {

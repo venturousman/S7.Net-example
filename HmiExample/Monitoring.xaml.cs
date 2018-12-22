@@ -76,7 +76,7 @@ namespace ProductionEquipmentControlSoftware
             lblReadTime.Text = Plc.Instance.CycleReadTime.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
 
             // update grid
-            UpdateGridPlan();
+            UpdateGridPlanState();
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
@@ -620,7 +620,7 @@ namespace ProductionEquipmentControlSoftware
             }
         }
 
-        private void UpdateGridPlan()
+        private void UpdateGridPlanState()
         {
             try
             {
@@ -640,12 +640,12 @@ namespace ProductionEquipmentControlSoftware
                     if (item.Machine != null)
                     {
                         // warning - need to be replace machine's mold
-                        if (intMoldLife.HasValue && item.Machine.CumulativeCount >= intMoldLife.Value)
-                        {
-                            //item.CanStart = false;
-                            //item.LedStatusColor = Brushes.Red;
-                            //item.TriggerAnimation = true;
-                        }
+                        //if (intMoldLife.HasValue && item.Machine.CumulativeCount >= intMoldLife.Value)
+                        //{
+                        //    item.CanStart = false;
+                        //    item.LedStatusColor = Brushes.Red;
+                        //    item.TriggerAnimation = true;
+                        //}
 
                         // Read class
                         Plc.Instance.ReadClass(item.Db, item.Machine.TagIndex);
@@ -656,43 +656,8 @@ namespace ProductionEquipmentControlSoftware
                         // read expected quantity of each machine
                         //item.ExpectedQuantity = item.Db.IntVariable0;
 
-
-
-                        // save new ActualQuantity & CumulativeCount
-                        //if (item.ActualQuantity.HasValue) // && item.ActualQuantity.Value != item.Db.IntVariable1)
-                        //{
-                        //    var oldValue = item.ActualQuantity.Value;
-                        //    var newValue = item.Db.IntVariable1;
-                        //    if (oldValue < newValue)
-                        //    {
-                        //        var amount = newValue - oldValue;
-
-                        //        using (var applicationDbContext = new ApplicationDbContext())
-                        //        {
-                        //            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == item.Id).FirstOrDefault();
-                        //            if (editingPlan != null)
-                        //            {
-                        //                editingPlan.ActualQuantity = newValue;
-                        //                editingPlan.ModifiedOn = DateTime.Now;
-                        //            }
-
-                        //            var editingMachine = applicationDbContext.Machines.Where(x => x.Id == item.MachineId).FirstOrDefault();
-                        //            if (editingMachine != null)
-                        //            {
-                        //                editingMachine.CumulativeCount += amount;
-                        //                editingMachine.ModifiedOn = DateTime.Now;
-                        //            }
-
-                        //            // save databases
-                        //            applicationDbContext.SaveChanges();
-                        //        }
-                        //    }
-                        //}
-
                         // read actual quantity of each machine
                         item.ActualQuantity = item.Db.IntVariable1;
-
-
                     }
                 }
             }
@@ -706,11 +671,15 @@ namespace ProductionEquipmentControlSoftware
 
         private void LoadPlanData()
         {
+            // reset
+            foreach (var item in GridPlanVMs.Items)
+            {
+                item.PropertyChanged -= PlanViewModel_PropertyChanged;
+            }
+            GridPlanVMs.Items.Clear();
+
             using (var applicationDbContext = new ApplicationDbContext())
             {
-                // reset
-                GridPlanVMs.Items.Clear();
-
                 // load databases
                 var lstPlans = applicationDbContext.Plans.Where(x => !x.IsDeleted && !x.IsProcessed).ToList();
 
@@ -733,7 +702,7 @@ namespace ProductionEquipmentControlSoftware
                         CreatedOn = plan.CreatedOn,
                         NotGoodQuantity = plan.NotGoodQuantity
                     };
-                    // planVM.PropertyChanged += PlanViewModel_PropertyChanged;
+                    planVM.PropertyChanged += PlanViewModel_PropertyChanged;
                     GridPlanVMs.Items.Add(planVM);
                 }
             }
@@ -741,10 +710,64 @@ namespace ProductionEquipmentControlSoftware
 
         private void PlanViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            //if (e.PropertyName == "ActualQuantity")
-            //{
-            //}
-            throw new NotImplementedException();
+            if (e.PropertyName == "ActualQuantity")
+            {
+                if (sender is PlanViewModel)
+                {
+                    var plan = sender as PlanViewModel;
+
+                    try
+                    {
+                        int amount = 0;
+                        using (var applicationDbContext = new ApplicationDbContext())
+                        {
+                            // update ActualQuantity
+                            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
+                            if (editingPlan != null)
+                            {
+                                var oldValue = editingPlan.ActualQuantity.HasValue ? editingPlan.ActualQuantity.Value : 0;
+                                var newValue = plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
+                                amount = newValue - oldValue;
+
+                                if (amount > 0) // has changes
+                                {
+                                    editingPlan.ActualQuantity = newValue;
+                                    editingPlan.ModifiedOn = DateTime.Now;
+
+                                    // update CumulativeCount
+                                    var editingMachine = applicationDbContext.Machines.Where(x => x.Id == plan.MachineId).FirstOrDefault();
+                                    if (editingMachine != null)
+                                    {
+                                        editingMachine.CumulativeCount += amount;
+                                        editingMachine.ModifiedOn = DateTime.Now;
+                                    }
+
+                                    // save databases
+                                    applicationDbContext.SaveChanges();
+                                }
+                            }
+                        }
+
+                        // update UI
+                        if (amount > 0) // has changes
+                        {
+                            // update UI
+                            //LoadPlanData(); // cannot call this function, it will throw an error Collection was modified at line 632
+
+                            if (NavigationService != null)
+                            {
+                                NavigationService.Refresh();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = ex.GetAllExceptionInfo();
+                        log.Error(msg, ex);
+                        MessageBox.Show(Constants.ApplicationCommonErrorMessage, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
