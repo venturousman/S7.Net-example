@@ -206,7 +206,7 @@ namespace ProductionEquipmentControlSoftware
                     {
                         // reset counter
                         string name = string.Format(PlcTags.BitVariable1, plan.Machine.TagIndex);
-                        Plc.Instance.Write(name, 1);
+                        //Plc.Instance.Write(name, 1); // TODO: comment temporarily
 
                         // reset expected qty
                         name = string.Format(PlcTags.IntVariable0, plan.Machine.TagIndex);
@@ -240,8 +240,6 @@ namespace ProductionEquipmentControlSoftware
                 {
                     string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
                     Plc.Instance.Write(name, 1);
-
-                    // TODO: save StartTime
                 }
             }
             catch (Exception exc)
@@ -658,6 +656,18 @@ namespace ProductionEquipmentControlSoftware
 
                         // read actual quantity of each machine
                         item.ActualQuantity = item.Db.IntVariable1;
+
+                        // read StartTime
+                        //if (item.Db.BitVariable0 && !item.StartTime.HasValue)
+                        //{
+                        //    item.StartTime = DateTime.Now;
+                        //}
+
+                        // read EndTime
+                        //if (!item.Db.BitVariable0 && !item.EndTime.HasValue)
+                        //{
+                        //    item.EndTime = DateTime.Now;
+                        //}
                     }
                 }
             }
@@ -696,8 +706,8 @@ namespace ProductionEquipmentControlSoftware
                         ProductId = plan.ProductId,
                         ExpectedQuantity = plan.ExpectedQuantity,
                         ActualQuantity = plan.ActualQuantity,
-                        //StartTime = plan.StartTime,
-                        //EndTime = plan.EndTime,
+                        StartTime = plan.StartTime,
+                        EndTime = plan.EndTime,
                         IsProcessed = plan.IsProcessed,
                         CreatedOn = plan.CreatedOn,
                         NotGoodQuantity = plan.NotGoodQuantity
@@ -710,27 +720,27 @@ namespace ProductionEquipmentControlSoftware
 
         private void PlanViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ActualQuantity")
+            try
             {
                 if (sender is PlanViewModel)
                 {
                     var plan = sender as PlanViewModel;
+                    var hasChanges = false;
 
-                    try
+                    if (e.PropertyName == "ActualQuantity")
                     {
-                        int amount = 0;
                         using (var applicationDbContext = new ApplicationDbContext())
                         {
-                            // update ActualQuantity
                             var editingPlan = applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
                             if (editingPlan != null)
                             {
                                 var oldValue = editingPlan.ActualQuantity.HasValue ? editingPlan.ActualQuantity.Value : 0;
                                 var newValue = plan.ActualQuantity.HasValue ? plan.ActualQuantity.Value : 0;
-                                amount = newValue - oldValue;
+                                var amount = newValue - oldValue;
 
                                 if (amount > 0) // has changes
                                 {
+                                    // update ActualQuantity
                                     editingPlan.ActualQuantity = newValue;
                                     editingPlan.ModifiedOn = DateTime.Now;
 
@@ -744,29 +754,48 @@ namespace ProductionEquipmentControlSoftware
 
                                     // save databases
                                     applicationDbContext.SaveChanges();
+
+                                    hasChanges = true;
                                 }
                             }
                         }
-
-                        // update UI
-                        if (amount > 0) // has changes
+                    }
+                    else if (e.PropertyName == "StartTime")
+                    {
+                        using (var applicationDbContext = new ApplicationDbContext())
                         {
-                            // update UI
-                            //LoadPlanData(); // cannot call this function, it will throw an error Collection was modified at line 632
-
-                            if (NavigationService != null)
+                            var editingPlan = applicationDbContext.Plans.Where(x => x.Id == plan.Id).FirstOrDefault();
+                            if (editingPlan != null)
                             {
-                                NavigationService.Refresh();
+                                // update StartTime
+                                editingPlan.StartTime = plan.StartTime;
+                                editingPlan.ModifiedOn = DateTime.Now;
+
+                                // save databases
+                                applicationDbContext.SaveChanges();
+
+                                hasChanges = true;
                             }
                         }
                     }
-                    catch (Exception ex)
+
+                    // update UI
+                    if (hasChanges)
                     {
-                        var msg = ex.GetAllExceptionInfo();
-                        log.Error(msg, ex);
-                        MessageBox.Show(Constants.ApplicationCommonErrorMessage, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
+                        //LoadPlanData(); // cannot call this function, it will throw an error Collection was modified at line 632
+
+                        if (NavigationService != null)
+                        {
+                            NavigationService.Refresh();
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.GetAllExceptionInfo();
+                log.Error(msg, ex);
+                MessageBox.Show(Constants.ApplicationCommonErrorMessage, Constants.ApplicationName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

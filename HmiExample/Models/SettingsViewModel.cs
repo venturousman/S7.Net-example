@@ -321,8 +321,7 @@ namespace ProductionEquipmentControlSoftware.Models
             {
                 using (var applicationDbContext = new ApplicationDbContext())
                 {
-                    if (!string.IsNullOrEmpty(context.Code) && !string.IsNullOrEmpty(context.FirstName)
-                    && !string.IsNullOrEmpty(context.LastName) && !string.IsNullOrEmpty(context.Email))
+                    if (!string.IsNullOrEmpty(context.Code) && !string.IsNullOrEmpty(context.FirstName) && !string.IsNullOrEmpty(context.LastName))
                     {
                         if (context.Id != Guid.Empty)
                         {

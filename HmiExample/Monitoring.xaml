@@ -86,14 +86,14 @@
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine.CumulativeCount}" Header="Cumulative Count"
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine.CumulativeCount}" Header="Mold life Count"
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
                         <!--<DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
                                             EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />-->
 
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat='dd/MM/yyyy'}" Header="Created Date" 
-                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                        <!--<materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat='dd/MM/yyyy'}" Header="Created Date" 
+                                                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />-->
 
                         <DataGridTemplateColumn Header="Online/Offline">
                             <DataGridTemplateColumn.CellTemplate>
