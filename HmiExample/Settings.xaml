@@ -30,9 +30,9 @@
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" BorderBrush="DarkGray" BorderThickness="1">
@@ -59,12 +59,14 @@
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                             <materialDesign:MaterialDataGridTextColumn Binding="{Binding Name}" Header="Name" 
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding TagIndex}" Header="Tag index" 
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding TagIndex}" Header="Tag Index" 
+                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding CumulativeCount}" Header="Mold Life Count"
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit machine" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit Machine" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.EditMachineCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgMachines}">
                                             <materialDesign:PackIcon Kind="Pencil" Height="22" Width="22" />
@@ -75,7 +77,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete machine" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete Machine" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeleteMachineCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgMachines}">
                                             <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />
@@ -110,8 +112,11 @@
                         <DataGrid.Columns>
                             <materialDesign:MaterialDataGridTextColumn Binding="{Binding Code}" Header="Code" 
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding DisplayName}" Header="Display name" 
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding DisplayName}" Header="Display Name" 
                                                                        EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+                            <materialDesign:MaterialDataGridTextColumn Binding="{Binding PhoneNumber}" Header="Phone Number" 
+                                                                       EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
+
                             <DataGridTemplateColumn Header="Photo">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -122,7 +127,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit employee" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit Employee" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.EditEmployeeCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgEmployees}">
                                             <materialDesign:PackIcon Kind="Pencil" Height="22" Width="22" />
@@ -133,7 +138,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete employee" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete Employee" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeleteEmployeeCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgEmployees}">
                                             <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />
@@ -173,7 +178,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit product" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit Product" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.EditProductCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgProducts}">
                                             <materialDesign:PackIcon Kind="Pencil" Height="22" Width="22" />
@@ -184,7 +189,7 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete product" 
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete Product" 
                                                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeleteProductCommand}"
                                                 CommandParameter="{Binding SelectedItem, ElementName=dgProducts}">
                                             <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />

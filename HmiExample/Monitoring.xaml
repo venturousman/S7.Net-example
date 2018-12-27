@@ -31,7 +31,7 @@
             <GroupBox Grid.Column="1" Name="gbPlan" Header="Import/Export Plan" Margin="0,0,0,5" Width="auto">
                 <!-- Margin L,T,R,B -->
                 <StackPanel Orientation="Horizontal">
-                    <TextBox materialDesign:HintAssist.Hint="File Path" Width="320" Margin="0,0,5,0"
+                    <TextBox materialDesign:HintAssist.Hint="File Path" Width="auto" Margin="0,0,5,0"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="18"
                      Name="txtFilePath" />
                     <Button x:Name="btnBrowse" Content="Browse" Click="btnBrowse_Click" Margin="0,0,5,0"></Button>
@@ -86,7 +86,7 @@
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine.CumulativeCount}" Header="Mold life Count"
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Machine.CumulativeCount}" Header="Mold Life Count"
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
                         <!--<DataGridTextColumn Binding="{Binding NotGoodQuantity}" Header="Not Good Quantity (NG)"
@@ -159,7 +159,7 @@
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit plan" 
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Edit Plan" 
                                             Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.EditPlanCommand}"
                                             CommandParameter="{Binding SelectedItem, ElementName=dgPlans}">
                                         <materialDesign:PackIcon Kind="Pencil" Height="22" Width="22" />
@@ -170,7 +170,7 @@
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete plan" 
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Delete Plan" 
                                             Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.DeletePlanCommand}"
                                             CommandParameter="{Binding SelectedItem, ElementName=dgPlans}">
                                         <materialDesign:PackIcon Kind="Delete" Height="22" Width="22" />
