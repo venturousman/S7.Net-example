@@ -95,7 +95,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 20, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 20, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 20, 16, 0, 0),
-                TotalMilliseconds = 8 / 1000 / 60 / 60,
+                TotalMilliseconds = 8 * 60 * 60 * 1000,
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -110,7 +110,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 21, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 21, 9, 0, 0),
                 //EndTime = new DateTime(2018, 11, 21, 16, 0, 0),
-                TotalMilliseconds = 7 / 1000 / 60 / 60,
+                TotalMilliseconds = 7 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -127,7 +127,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
-                TotalMilliseconds = 11 / 1000 / 60 / 60,
+                TotalMilliseconds = 11 * 60 * 60 * 1000,
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -142,7 +142,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 22, 7, 30, 0),
                 //EndTime = new DateTime(2018, 11, 22, 19, 0, 0),
-                TotalMilliseconds = 12 / 1000 / 60 / 60,
+                TotalMilliseconds = 12 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -159,7 +159,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 19, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 19, 6, 0, 0),
                 //EndTime = new DateTime(2018, 11, 19, 15, 0, 0),
-                TotalMilliseconds = 9 / 1000 / 60 / 60,
+                TotalMilliseconds = 9 * 60 * 60 * 1000,
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -174,7 +174,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 22, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 22, 9, 0, 0),
                 //EndTime = new DateTime(2018, 11, 22, 16, 30, 0),
-                TotalMilliseconds = 7 / 1000 / 60 / 60,
+                TotalMilliseconds = 7 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -191,7 +191,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
-                TotalMilliseconds = 9 / 1000 / 60 / 60,
+                TotalMilliseconds = 9 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -208,7 +208,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 18, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 18, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 18, 17, 0, 0),
-                TotalMilliseconds = 9 / 1000 / 60 / 60,
+                TotalMilliseconds = 9 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -225,7 +225,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 23, 10, 0, 0),
                 //EndTime = new DateTime(2018, 11, 23, 18, 0, 0),
-                TotalMilliseconds = 8 / 1000 / 60 / 60,
+                TotalMilliseconds = 8 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
@@ -242,7 +242,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 16, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 16, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 16, 19, 0, 0),
-                TotalMilliseconds = 11 / 1000 / 60 / 60,
+                TotalMilliseconds = 11 * 60 * 60 * 1000,
                 IsProcessed = true
             });
             defaultPlans.Add(new Plan()
@@ -257,7 +257,7 @@ namespace ProductionEquipmentControlSoftware.Data
                 CreatedOn = new DateTime(2018, 11, 23, 12, 0, 0),
                 //StartTime = new DateTime(2018, 11, 23, 8, 0, 0),
                 //EndTime = new DateTime(2018, 11, 23, 17, 0, 0),
-                TotalMilliseconds = 9 / 1000 / 60 / 60,
+                TotalMilliseconds = 9 * 60 * 60 * 1000,
                 IsProcessed = true
             });
 
