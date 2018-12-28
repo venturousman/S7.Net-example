@@ -11,6 +11,7 @@ using ProductionEquipmentControlSoftware.PlcConnectivity;
 using S7NetWrapper;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -196,7 +197,7 @@ namespace ProductionEquipmentControlSoftware
                         }
                     }
 
-                    // clone new plan ??
+                    // TODO: clone new plan ??
 
                     // update UI
                     LoadPlanData();
@@ -230,11 +231,6 @@ namespace ProductionEquipmentControlSoftware
         {
             try
             {
-                //if (Plc.Instance.ConnectionState == ConnectionStates.Offline)
-                //{
-                //    return; // or messagebox
-                //}                
-
                 PlanViewModel obj = ((FrameworkElement)sender).DataContext as PlanViewModel;
                 if (obj != null && obj.Machine != null)
                 {
@@ -259,8 +255,6 @@ namespace ProductionEquipmentControlSoftware
                 {
                     string name = string.Format(PlcTags.BitVariable0, obj.Machine.TagIndex);
                     Plc.Instance.Write(name, 0);
-
-                    // TODO: save EndTime
                 }
             }
             catch (Exception exc)
@@ -645,29 +639,54 @@ namespace ProductionEquipmentControlSoftware
                         //    item.TriggerAnimation = true;
                         //}
 
-                        // Read class
+                        // old values
+                        var oldStartStopValue = item.Db.BitVariable0;
+
+                        // read Db class
                         Plc.Instance.ReadClass(item.Db, item.Machine.TagIndex);
 
                         // read start/stop state of each machine
                         item.LedColor = item.Db.BitVariable0 ? Brushes.Green : Brushes.Gray;
 
                         // read expected quantity of each machine
-                        //item.ExpectedQuantity = item.Db.IntVariable0;
+                        //item.ExpectedQuantity = item.Db.IntVariable0; // plc will only display this value
 
                         // read actual quantity of each machine
                         item.ActualQuantity = item.Db.IntVariable1;
 
+                        // ============================
+                        var newStartStopValue = item.Db.BitVariable0;
+                        var hasStarted = oldStartStopValue == false && newStartStopValue == true; // from Stop to Start
+                        var hasStopped = oldStartStopValue == true && newStartStopValue == false; // from Start to Stop
+
                         // read StartTime
-                        //if (item.Db.BitVariable0 && !item.StartTime.HasValue)
-                        //{
-                        //    item.StartTime = DateTime.Now;
-                        //}
+                        if (hasStarted)// && !item.StartTime.HasValue)
+                        {
+                            if (!item.StartTime.HasValue)
+                            {
+                                item.StartTime = DateTime.Now;
+                            }
+                        }
 
                         // read EndTime
-                        //if (!item.Db.BitVariable0 && !item.EndTime.HasValue)
-                        //{
-                        //    item.EndTime = DateTime.Now;
-                        //}
+                        if (hasStopped)// && !item.EndTime.HasValue)
+                        {
+                            if (!item.StartTime.HasValue)
+                            {
+                                var currentProcess = Process.GetCurrentProcess();
+                                item.StartTime = currentProcess != null ? currentProcess.StartTime : DateTime.Now;
+                            }
+
+                            item.EndTime = DateTime.Now;
+
+                            if (item.StartTime.HasValue && item.EndTime.HasValue && item.EndTime.Value > item.StartTime.Value)
+                            {
+                                var timeSpan = item.EndTime.Value - item.StartTime.Value;
+                                item.TotalMilliseconds += timeSpan.TotalMilliseconds;
+                            }
+                        }
+
+                        // TODO: case: complete plan
                     }
                 }
             }
@@ -706,10 +725,12 @@ namespace ProductionEquipmentControlSoftware
                         ProductId = plan.ProductId,
                         ExpectedQuantity = plan.ExpectedQuantity,
                         ActualQuantity = plan.ActualQuantity,
-                        StartTime = plan.StartTime,
-                        EndTime = plan.EndTime,
+                        //StartTime = plan.StartTime,
+                        //EndTime = plan.EndTime,
+                        TotalMilliseconds = plan.TotalMilliseconds,
                         IsProcessed = plan.IsProcessed,
                         CreatedOn = plan.CreatedOn,
+                        ModifiedOn = plan.ModifiedOn,
                         NotGoodQuantity = plan.NotGoodQuantity
                     };
                     planVM.PropertyChanged += PlanViewModel_PropertyChanged;
@@ -760,7 +781,7 @@ namespace ProductionEquipmentControlSoftware
                             }
                         }
                     }
-                    else if (e.PropertyName == "StartTime")
+                    else if (e.PropertyName == "TotalMilliseconds")
                     {
                         using (var applicationDbContext = new ApplicationDbContext())
                         {
@@ -768,7 +789,7 @@ namespace ProductionEquipmentControlSoftware
                             if (editingPlan != null)
                             {
                                 // update StartTime
-                                editingPlan.StartTime = plan.StartTime;
+                                editingPlan.TotalMilliseconds = plan.TotalMilliseconds;
                                 editingPlan.ModifiedOn = DateTime.Now;
 
                                 // save databases

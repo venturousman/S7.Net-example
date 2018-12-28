@@ -13,10 +13,12 @@ namespace ProductionEquipmentControlSoftware.Models
         private int? _expectedQuantity;  // output, san luong san xuat theo plan
         private int? _actualQuantity;  // output, san luong san xuat theo thuc te
         private int? _notGoodQuantity; // output, san luong san xuat k dat chuan
-        private DateTime? _startTime;
-        private DateTime? _endTime;
+        private DateTime? _startTime; // runtime only, not in database
+        private DateTime? _endTime; // runtime only, not in database
         private DateTime? _createdOn;
+        private DateTime? _modifiedOn;
         private bool _isProcessed;
+        private double _totalMilliseconds;
 
         private ProductViewModel _product;
         private MachineViewModel _machine;
@@ -262,8 +264,20 @@ namespace ProductionEquipmentControlSoftware.Models
         {
             get
             {
-                var timeSpan = (EndTime - StartTime);
-                return timeSpan.HasValue ? timeSpan.Value.TotalHours : 0;
+                //var timeSpan = (EndTime - StartTime);
+                //return timeSpan.HasValue ? timeSpan.Value.TotalHours : 0;
+                return (_totalMilliseconds / 1000 / 60 / 60);
+            }
+        }
+
+        public double TotalMilliseconds
+        {
+            get { return _totalMilliseconds; }
+            set
+            {
+                if (_totalMilliseconds == value) return;
+                _totalMilliseconds = value;
+                OnPropertyChanged();
             }
         }
 
@@ -276,6 +290,17 @@ namespace ProductionEquipmentControlSoftware.Models
             {
                 if (_createdOn == value) return;
                 _createdOn = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime? ModifiedOn
+        {
+            get { return _modifiedOn; }
+            set
+            {
+                if (_modifiedOn == value) return;
+                _modifiedOn = value;
                 OnPropertyChanged();
             }
         }
@@ -294,10 +319,12 @@ namespace ProductionEquipmentControlSoftware.Models
             _productId = plan.ProductId;
             _expectedQuantity = plan.ExpectedQuantity;
             _actualQuantity = plan.ActualQuantity;
-            _startTime = plan.StartTime;
-            _endTime = plan.EndTime;
+            //_startTime = plan.StartTime;
+            //_endTime = plan.EndTime;
+            _totalMilliseconds = plan.TotalMilliseconds;
             _isProcessed = plan.IsProcessed;
             _createdOn = plan.CreatedOn;
+            _modifiedOn = plan.ModifiedOn;
             Product = new ProductViewModel(plan.Product);
             Machine = new MachineViewModel(plan.Machine);
             Employee = new EmployeeViewModel(plan.Employee);

@@ -23,9 +23,11 @@ namespace ProductionEquipmentControlSoftware.Models
 
         public int? NotGoodQuantity { get; set; }
 
-        public DateTime? StartTime { get; set; }
+        public double TotalMilliseconds { get; set; }
 
-        public DateTime? EndTime { get; set; }
+        //public DateTime? StartTime { get; set; }
+
+        //public DateTime? EndTime { get; set; }
 
         public bool IsProcessed { get; set; }
 
