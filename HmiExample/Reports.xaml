@@ -84,7 +84,7 @@
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
-                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding TotalMinutes}" Header="Total Minutes" 
+                                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding TotalMinutes, StringFormat={}{0:0.##}}" Header="Total Minutes" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding CreatedOn, StringFormat='dd/MM/yyyy'}" Header="Date" 
                                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
