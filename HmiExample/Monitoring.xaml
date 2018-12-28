@@ -82,7 +82,7 @@
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ProductName}" Header="Product" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
 
-                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity" 
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding ExpectedQuantity}" Header="Expected Quantity" FontWeight="Bold"
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />
                         <materialDesign:MaterialDataGridTextColumn Binding="{Binding ActualQuantity}" Header="Actual Quantity" 
                                                                    EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" />

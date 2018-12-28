@@ -270,6 +270,22 @@ namespace ProductionEquipmentControlSoftware.Models
             }
         }
 
+        public double TotalMinutes
+        {
+            get
+            {
+                return (_totalMilliseconds / 1000 / 60);
+            }
+        }
+
+        public double TotalSeconds
+        {
+            get
+            {
+                return (_totalMilliseconds / 1000);
+            }
+        }
+
         public double TotalMilliseconds
         {
             get { return _totalMilliseconds; }
